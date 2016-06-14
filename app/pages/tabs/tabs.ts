@@ -10,7 +10,7 @@ import {Tests} from '../tests/tests';
 export class TabsPage {
   // this tells the tabs component which Pages
   // should be each tab's root Page
-  tab1Root: any = Sections;
-  tab2Root: any = Profile;
-  tab3Root: any = Tests;
+  tab2Root: any = Sections;
+  tab3Root: any = Profile;
+  tab4Root: any = Tests;
 }
