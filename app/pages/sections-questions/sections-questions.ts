@@ -17,7 +17,7 @@ export class SectionsQuestionsPage {
 		this.section = params.data.section;
 		this.questions = params.data.questions;
 		this.maxN = this.questions.length;
-		console.log(this.maxN);
+		//console.log(this.maxN);
 		this.currentQuestion = this.questions[this.n];
 	}
 
@@ -28,6 +28,15 @@ export class SectionsQuestionsPage {
 		} else {
 			this.nav.push(Sections);
 		}
+	}
 
+	previous() {
+		console.log("clicked");
+		if(this.n < this.maxN - 1){
+			this.n -= 1;
+			this.currentQuestion = this.questions[this.n];
+		} else {
+			this.nav.push(Sections);
+		}
 	}
 }

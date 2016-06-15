@@ -191,12 +191,22 @@ var SectionsQuestionsPage = (function () {
         this.section = params.data.section;
         this.questions = params.data.questions;
         this.maxN = this.questions.length;
-        console.log(this.maxN);
+        //console.log(this.maxN);
         this.currentQuestion = this.questions[this.n];
     }
     SectionsQuestionsPage.prototype.next = function () {
         if (this.n < this.maxN - 1) {
             this.n += 1;
+            this.currentQuestion = this.questions[this.n];
+        }
+        else {
+            this.nav.push(sections_1.Sections);
+        }
+    };
+    SectionsQuestionsPage.prototype.previous = function () {
+        console.log("clicked");
+        if (this.n < this.maxN - 1) {
+            this.n -= 1;
             this.currentQuestion = this.questions[this.n];
         }
         else {
