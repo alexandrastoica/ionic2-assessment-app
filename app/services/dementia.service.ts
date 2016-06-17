@@ -1,14 +1,21 @@
 import {Injectable} from '@angular/core';
 
+//window["PouchDB"] = PouchDB;
+declare var require: any
 let PouchDB = require('pouchdb');
+window["PouchDB"] = PouchDB;
 
 @Injectable()
-export class BirthdayService {
+export class DementiaService {
     private _db;
     private _data;
 
     initDB() {
         this._db = new PouchDB('dementia-db', { adapter: 'websql' });
+
+       // console.log("db is " + this._db);
+      //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
+        //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
     }
 
     //responsible for inserting data:
@@ -36,7 +43,6 @@ export class BirthdayService {
                     // Each row has a .doc object and we just want to send an
                     // array of birthday objects back to the calling controller,
                     // so let's map the array to contain just the .doc objects.
-
                     this._data = data.rows.map(row => {
                         // Dates are not automatically converted from a string.
                         row.doc.Date = new Date(row.doc.Date);
@@ -53,6 +59,34 @@ export class BirthdayService {
             // Return cached data as a promise
             return Promise.resolve(this._data);
         }
+    }
+
+    private onDatabaseChange = (change) => {
+        var index = this.findIndex(this._data, change.id);
+        var data = this._data[index];
+
+        if (change.deleted) {
+            if (data) {
+                this._data.splice(index, 1); // delete
+            }
+        } else {
+            change.doc.Date = new Date(change.doc.Date);
+            if (data && data._id === change.id) {
+                this._data[index] = change.doc; // update
+            } else {
+                this._data.splice(index, 0, change.doc) // insert
+            }
+        }
+    }
+
+    // Binary search, the array is by default sorted by _id.
+    private findIndex(array, id) {
+        var low = 0, high = array.length, mid;
+        while (low < high) {
+            mid = (low + high) >>> 1;
+            array[mid]._id < id ? low = mid + 1 : high = mid
+        }
+        return low;
     }
 
 }
