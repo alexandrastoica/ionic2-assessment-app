@@ -186,7 +186,10 @@ var RegistrationPage = (function () {
     RegistrationPage.prototype.ionViewLoaded = function () {
         this.user = this.navParams.get('user');
         if (!this.user) {
-            this.user = {};
+            this.user = {
+                "Name": user.Name,
+                "Email": user.Email
+            };
         }
         else {
             this.isNew = false;
@@ -493,7 +496,7 @@ var DementiaService = (function () {
                 }
             }
             else {
-                change.doc.Date = new Date(change.doc.Date);
+                //change.doc.Date = new Date(change.doc.Date);
                 if (data && data._id === change.id) {
                     _this._data[index] = change.doc; // update
                 }
@@ -532,7 +535,7 @@ var DementiaService = (function () {
                 // so let's map the array to contain just the .doc objects.
                 _this._data = data.rows.map(function (row) {
                     // Dates are not automatically converted from a string.
-                    row.doc.Date = new Date(row.doc.Date);
+                    // row.doc.Date = new Date(row.doc.Date);
                     return row.doc;
                 });
                 // Listen for changes on the database.

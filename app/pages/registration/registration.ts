@@ -29,7 +29,7 @@ export class RegistrationPage {
         if (!this.user) {
             this.user = {
                 "Name": user.Name,
-                "Email" user.Email
+                "Email": user.Email
             };
         }
         else {

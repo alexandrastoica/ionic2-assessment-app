@@ -45,7 +45,7 @@ export class DementiaService {
                     // so let's map the array to contain just the .doc objects.
                     this._data = data.rows.map(row => {
                         // Dates are not automatically converted from a string.
-                        row.doc.Date = new Date(row.doc.Date);
+                 // row.doc.Date = new Date(row.doc.Date);
                         return row.doc;
                     });
 
@@ -70,7 +70,7 @@ export class DementiaService {
                 this._data.splice(index, 1); // delete
             }
         } else {
-            change.doc.Date = new Date(change.doc.Date);
+            //change.doc.Date = new Date(change.doc.Date);
             if (data && data._id === change.id) {
                 this._data[index] = change.doc; // update
             } else {

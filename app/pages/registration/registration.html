@@ -48,7 +48,7 @@
     <button block danger (click)="enterTabsPage()">Submit</button>
 </ion-content> -->
 <ion-navbar *navbar>
-  <ion-title>{{ action }} Register</ion-title>
+  <ion-title>{{ action }} Registration</ion-title>
   <ion-buttons end *ngIf="!isNew">
       <button (click)="delete()">
           <ion-icon name="trash"></ion-icon>
@@ -63,7 +63,7 @@
             <ion-input type="text" [(ngModel)]="user.Name"></ion-input>
         </ion-item>
 
-       <ion-item>
+        <ion-item>
           <ion-label>Email</ion-label>
           <ion-input type="text" [(ngModel)]="user.Email"></ion-input>
         </ion-item>
