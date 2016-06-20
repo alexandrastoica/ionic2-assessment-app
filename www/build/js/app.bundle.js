@@ -186,10 +186,7 @@ var RegistrationPage = (function () {
     RegistrationPage.prototype.ionViewLoaded = function () {
         this.user = this.navParams.get('user');
         if (!this.user) {
-            this.user = {
-                "Name": user.Name,
-                "Email": user.Email
-            };
+            this.user = {};
         }
         else {
             this.isNew = false;

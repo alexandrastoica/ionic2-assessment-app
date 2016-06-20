@@ -68,10 +68,26 @@
           <ion-input type="text" [(ngModel)]="user.Email"></ion-input>
         </ion-item>
 
-       <!-- <ion-item>
-            <ion-label>Birthday</ion-label>
-            <ion-input type="text" [(ngModel)]="isoDate" placeholder="YYYY-MM-DD"></ion-input>
-        </ion-item> -->
+         <ion-item>
+          <ion-label fixed>Role</ion-label>
+          <ion-input type="text" [(ngModel)]="user.Role"></ion-input>
+         </ion-item>
+
+        <ion-item>
+          <ion-label fixed>Job Title</ion-label>
+          <ion-input type="text" [(ngModel)]="user.Job"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label fixed>Organization</ion-label>
+          <ion-input type="text" [(ngModel)]="user.Organization"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label fixed>Department</ion-label>
+          <ion-input type="text" [(ngModel)]="user.Department"></ion-input>
+    </ion-item>
+
     </ion-list>
     <button block (click)="save()">Save</button>
 </ion-content>

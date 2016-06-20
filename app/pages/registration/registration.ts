@@ -28,8 +28,8 @@ export class RegistrationPage {
 
         if (!this.user) {
             this.user = {
-                "Name": user.Name,
-                "Email": user.Email
+                //"Name": user.Name,
+               // "Email": user.Email
             };
         }
         else {
