@@ -111,13 +111,19 @@ var registration_1 = require("../registration/registration");
 var LoginPage = (function () {
     function LoginPage(nav) {
         this.nav = nav;
-        this.nav = nav;
+        // this. nav = nav;
     }
     LoginPage.prototype.enterTabsPage = function () {
         this.nav.push(tabs_1.TabsPage);
     };
     LoginPage.prototype.enterRegisterPage = function () {
         this.nav.push(registration_1.RegistrationPage);
+    };
+    LoginPage.prototype.showDetail = function (user) {
+        var modal = ionic_angular_1.Modal.create(registration_1.RegistrationPage, { user: user });
+        this.nav.present(modal);
+        modal.onDismiss(function () {
+        });
     };
     LoginPage = __decorate([
         core_1.Component({

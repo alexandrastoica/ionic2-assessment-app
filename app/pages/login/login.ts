@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {Modal, NavController} from 'ionic-angular';
 import {TabsPage} from "../tabs/tabs";
 import {RegistrationPage} from "../registration/registration";
 /*
@@ -13,7 +13,7 @@ import {RegistrationPage} from "../registration/registration";
 })
 export class LoginPage {
   constructor(public nav: NavController) {
-    this. nav = nav;
+   // this. nav = nav;
   }
 
    enterTabsPage() {
@@ -23,5 +23,14 @@ export class LoginPage {
    enterRegisterPage() {
        this.nav.push(RegistrationPage);
    }
+
+     showDetail(user) {
+        let modal = Modal.create(RegistrationPage, { user: user });
+        this.nav.present(modal);
+
+        modal.onDismiss(() => {
+
+        });
+    }
 
 }
