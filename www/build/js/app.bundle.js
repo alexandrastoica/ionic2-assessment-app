@@ -101,6 +101,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var ionic_angular_1 = require('ionic-angular');
 var tabs_1 = require("../tabs/tabs");
+var dementia_service_1 = require('../../services/dementia.service');
 var registration_1 = require("../registration/registration");
 /*
   Generated class for the LoginPage page.
@@ -109,9 +110,17 @@ var registration_1 = require("../registration/registration");
   Ionic pages and navigation.
 */
 var LoginPage = (function () {
-    function LoginPage(nav) {
+    function LoginPage(nav, dementiaService) {
         this.nav = nav;
+        this.dementiaService = dementiaService;
         // this. nav = nav;
+        this.dementiaService.initDB();
+        if (this.dementiaService) {
+            console.log("db created");
+        }
+        else {
+            console.log("not created");
+        }
     }
     LoginPage.prototype.enterTabsPage = function () {
         this.nav.push(tabs_1.TabsPage);
@@ -129,13 +138,13 @@ var LoginPage = (function () {
         core_1.Component({
             templateUrl: 'build/pages/login/login.html',
         }), 
-        __metadata('design:paramtypes', [ionic_angular_1.NavController])
+        __metadata('design:paramtypes', [ionic_angular_1.NavController, dementia_service_1.DementiaService])
     ], LoginPage);
     return LoginPage;
 }());
 exports.LoginPage = LoginPage;
 
-},{"../registration/registration":5,"../tabs/tabs":9,"@angular/core":145,"ionic-angular":396}],4:[function(require,module,exports){
+},{"../../services/dementia.service":12,"../registration/registration":5,"../tabs/tabs":9,"@angular/core":145,"ionic-angular":396}],4:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;

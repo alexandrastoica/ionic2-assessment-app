@@ -1,7 +1,9 @@
 import {Component} from '@angular/core';
 import {Modal, NavController} from 'ionic-angular';
 import {TabsPage} from "../tabs/tabs";
+import {DementiaService} from '../../services/dementia.service';
 import {RegistrationPage} from "../registration/registration";
+
 /*
   Generated class for the LoginPage page.
 
@@ -12,8 +14,15 @@ import {RegistrationPage} from "../registration/registration";
   templateUrl: 'build/pages/login/login.html',
 })
 export class LoginPage {
-  constructor(public nav: NavController) {
+  constructor(public nav: NavController, private dementiaService: DementiaService) {
    // this. nav = nav;
+   this.dementiaService.initDB();
+   if(this.dementiaService)
+   {
+    console.log("db created");
+   } else {
+    console.log("not created");
+   }
   }
 
    enterTabsPage() {
@@ -24,13 +33,11 @@ export class LoginPage {
        this.nav.push(RegistrationPage);
    }
 
-     showDetail(user) {
-        let modal = Modal.create(RegistrationPage, { user: user });
-        this.nav.present(modal);
-
-        modal.onDismiss(() => {
-
-        });
+    showDetail(user) {
+      let modal = Modal.create(RegistrationPage, { user: user });
+      this.nav.present(modal);
+      modal.onDismiss(() => {
+     });
     }
 
 }

@@ -28,8 +28,8 @@ export class RegistrationPage {
 
         if (!this.user) {
             this.user = {
-                //"Name": user.Name,
-               // "Email": user.Email
+              //object: use this to append properties in the view for adding to the database
+              //example [(ngMODEL)]="user.number"
             };
         }
         else {
