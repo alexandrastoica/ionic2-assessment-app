@@ -34,7 +34,7 @@ export class DementiaService {
         return this._db.remove(removeData);
     }
 
-    getAllUsers()
+    getAllData()
     {
         if (!this._data) {
             return this._db.allDocs({ include_docs: true})

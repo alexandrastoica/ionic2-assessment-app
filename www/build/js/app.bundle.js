@@ -61,8 +61,8 @@ var HomePage = (function () {
     HomePage.prototype.ionViewLoaded = function () {
         var _this = this;
         this.platform.ready().then(function () {
-            _this.dementiaService.initDB();
-            _this.dementiaService.getAllUsers()
+            // this.dementiaService.initDB();
+            _this.dementiaService.getAllData()
                 .then(function (data) {
                 _this.zone.run(function () {
                     _this.users = data;
@@ -286,9 +286,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var ionic_angular_1 = require('ionic-angular');
 var sections_1 = require("../sections/sections");
+var dementia_service_1 = require('../../services/dementia.service');
 var SectionsQuestionsPage = (function () {
-    function SectionsQuestionsPage(params, nav) {
+    function SectionsQuestionsPage(params, nav, dementiaService) {
         this.nav = nav;
+        this.dementiaService = dementiaService;
+        this.total = {};
         this.n = 0;
         this.nav = nav;
         this.section = params.data.section;
@@ -297,22 +300,20 @@ var SectionsQuestionsPage = (function () {
         //console.log(this.maxN);
         this.currentQuestion = this.questions[this.n];
     }
-    /*ionViewLoaded() {
-        this.user = this.params.get('questions');
-
-        if (!this.questions) {
-            this.questions = {
-              //leave this scope empty and just:
-              //object: use this to append properties in the view (registration.html) for adding to the database
-              //example [(ngMODEL)]="user.number"
-            };
-        }
-    } */
     SectionsQuestionsPage.prototype.next = function () {
+        this.total = {
+            "section_id": this.section.id,
+            "questions": this.currentQuestion,
+            "question_id": this.n,
+            "answer_value": this.answer
+        };
         if (this.n < this.maxN - 1) {
             this.n += 1;
             this.currentQuestion = this.questions[this.n];
-            console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
+            //console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
+            //console.log("questions " + this.questions);
+            console.log("total " + JSON.stringify(this.total));
+            this.dementiaService.addData(this.total);
         }
         else {
             this.nav.push(sections_1.Sections);
@@ -339,13 +340,13 @@ var SectionsQuestionsPage = (function () {
         ionic_angular_1.Page({
             templateUrl: 'build/pages/sections-questions/sections-questions.html',
         }), 
-        __metadata('design:paramtypes', [ionic_angular_1.NavParams, ionic_angular_1.NavController])
+        __metadata('design:paramtypes', [ionic_angular_1.NavParams, ionic_angular_1.NavController, dementia_service_1.DementiaService])
     ], SectionsQuestionsPage);
     return SectionsQuestionsPage;
 }());
 exports.SectionsQuestionsPage = SectionsQuestionsPage;
 
-},{"../sections/sections":8,"ionic-angular":396}],8:[function(require,module,exports){
+},{"../../services/dementia.service":12,"../sections/sections":8,"ionic-angular":396}],8:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -553,7 +554,7 @@ var DementiaService = (function () {
     DementiaService.prototype.removeData = function (removeData) {
         return this._db.remove(removeData);
     };
-    DementiaService.prototype.getAllUsers = function () {
+    DementiaService.prototype.getAllData = function () {
         var _this = this;
         if (!this._data) {
             return this._db.allDocs({ include_docs: true })

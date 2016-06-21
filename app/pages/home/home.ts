@@ -18,9 +18,9 @@ export class HomePage {
 
     ionViewLoaded() {
         this.platform.ready().then(() => {
-            this.dementiaService.initDB();
+           // this.dementiaService.initDB();
 
-            this.dementiaService.getAllUsers()
+            this.dementiaService.getAllData()
                 .then(data => {
                     this.zone.run(() => {
                         this.users = data;

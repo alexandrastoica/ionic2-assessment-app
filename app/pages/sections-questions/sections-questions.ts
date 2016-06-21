@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {Page, NavController, NavParams} from 'ionic-angular';
 import {Sections} from "../sections/sections";
+import {DementiaService} from '../../services/dementia.service';
 
 @Page({
   templateUrl: 'build/pages/sections-questions/sections-questions.html',
@@ -10,37 +11,36 @@ export class SectionsQuestionsPage {
 	public questions;
 	public section;
 	public answer;
+	public total = {};
 	public currentQuestion;
 	public n = 0; maxN;
 
-	constructor(params: NavParams, public nav: NavController) {
+	constructor(params: NavParams, public nav: NavController, private dementiaService: DementiaService) {
 		this.nav = nav;
 		this.section = params.data.section;
 		this.questions = params.data.questions;
 		this.maxN = this.questions.length;
 		//console.log(this.maxN);
 		this.currentQuestion = this.questions[this.n];
-
 	}
 
-	/*ionViewLoaded() {
-        this.user = this.params.get('questions');
 
-        if (!this.questions) {
-            this.questions = {
-              //leave this scope empty and just:
-              //object: use this to append properties in the view (registration.html) for adding to the database
-              //example [(ngMODEL)]="user.number"
-            };
-        }
-    } */
 
 	next(){
+		this.total  = {
+			"section_id": this.section.id,
+			"questions": this.currentQuestion,
+			"question_id": this.n,
+			"answer_value": this.answer
+		};
+
 		if(this.n < this.maxN - 1){
 			this.n += 1;
 			this.currentQuestion = this.questions[this.n];
-			console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
+			//console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
 			//console.log("questions " + this.questions);
+			console.log("total " + JSON.stringify(this.total));
+			this.dementiaService.addData(this.total);
 		} else {
 			this.nav.push(Sections);
 		}
