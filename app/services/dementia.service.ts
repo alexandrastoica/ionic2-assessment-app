@@ -61,6 +61,11 @@ export class DementiaService {
         }
     }
 
+    test()
+    {
+        console.log("fdifdofidofidofi");
+    }
+
     private onDatabaseChange = (change) => {
         var index = this.findIndex(this._data, change.id);
         var data = this._data[index];

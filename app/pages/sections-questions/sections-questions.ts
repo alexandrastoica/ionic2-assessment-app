@@ -9,6 +9,7 @@ import {Sections} from "../sections/sections";
 export class SectionsQuestionsPage {
 	public questions;
 	public section;
+	public answer;
 	public currentQuestion;
 	public n = 0; maxN;
 
@@ -19,12 +20,27 @@ export class SectionsQuestionsPage {
 		this.maxN = this.questions.length;
 		//console.log(this.maxN);
 		this.currentQuestion = this.questions[this.n];
+
 	}
+
+	/*ionViewLoaded() {
+        this.user = this.params.get('questions');
+
+        if (!this.questions) {
+            this.questions = {
+              //leave this scope empty and just:
+              //object: use this to append properties in the view (registration.html) for adding to the database
+              //example [(ngMODEL)]="user.number"
+            };
+        }
+    } */
 
 	next(){
 		if(this.n < this.maxN - 1){
 			this.n += 1;
 			this.currentQuestion = this.questions[this.n];
+			console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
+			//console.log("questions " + this.questions);
 		} else {
 			this.nav.push(Sections);
 		}

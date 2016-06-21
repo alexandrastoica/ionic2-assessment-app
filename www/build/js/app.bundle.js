@@ -115,12 +115,6 @@ var LoginPage = (function () {
         this.dementiaService = dementiaService;
         // this. nav = nav;
         this.dementiaService.initDB();
-        if (this.dementiaService) {
-            console.log("db created");
-        }
-        else {
-            console.log("not created");
-        }
     }
     LoginPage.prototype.enterTabsPage = function () {
         this.nav.push(tabs_1.TabsPage);
@@ -132,6 +126,8 @@ var LoginPage = (function () {
         var modal = ionic_angular_1.Modal.create(registration_1.RegistrationPage, { user: user });
         this.nav.present(modal);
         modal.onDismiss(function () {
+            //goto login
+            //his.nav.push(TabsPage);
         });
     };
     LoginPage = __decorate([
@@ -190,13 +186,13 @@ var dementia_service_1 = require('../../services/dementia.service');
   Ionic pages and navigation.
 */
 var RegistrationPage = (function () {
-    function RegistrationPage(viewCtrl, navParams, dementiaService) {
+    function RegistrationPage(viewCtrl, navParams, platform, dementiaService) {
         this.viewCtrl = viewCtrl;
         this.navParams = navParams;
         this.dementiaService = dementiaService;
         this.isNew = true;
         this.action = 'Add';
-        this.isoDate = '';
+        this.platform = platform;
     }
     RegistrationPage.prototype.ionViewLoaded = function () {
         this.user = this.navParams.get('user');
@@ -209,7 +205,6 @@ var RegistrationPage = (function () {
         }
     };
     RegistrationPage.prototype.save = function () {
-        // this.user.Date = new Date(this.isoDate);
         if (this.isNew) {
             this.dementiaService.addData(this.user)
                 .catch(console.error.bind(console));
@@ -228,11 +223,19 @@ var RegistrationPage = (function () {
     RegistrationPage.prototype.dismiss = function () {
         this.viewCtrl.dismiss(this.user);
     };
+    RegistrationPage.prototype.showThing = function () {
+        this.dementiaService.test();
+    };
+    RegistrationPage.prototype.showToast = function (message, position) {
+        this.platform.ready().then(function () {
+            window.plugins.toast.show(message, "short", position);
+        });
+    };
     RegistrationPage = __decorate([
         core_1.Component({
             templateUrl: 'build/pages/registration/registration.html',
         }), 
-        __metadata('design:paramtypes', [ionic_angular_1.ViewController, ionic_angular_1.NavParams, dementia_service_1.DementiaService])
+        __metadata('design:paramtypes', [ionic_angular_1.ViewController, ionic_angular_1.NavParams, ionic_angular_1.Platform, dementia_service_1.DementiaService])
     ], RegistrationPage);
     return RegistrationPage;
 }());
@@ -294,10 +297,22 @@ var SectionsQuestionsPage = (function () {
         //console.log(this.maxN);
         this.currentQuestion = this.questions[this.n];
     }
+    /*ionViewLoaded() {
+        this.user = this.params.get('questions');
+
+        if (!this.questions) {
+            this.questions = {
+              //leave this scope empty and just:
+              //object: use this to append properties in the view (registration.html) for adding to the database
+              //example [(ngMODEL)]="user.number"
+            };
+        }
+    } */
     SectionsQuestionsPage.prototype.next = function () {
         if (this.n < this.maxN - 1) {
             this.n += 1;
             this.currentQuestion = this.questions[this.n];
+            console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
         }
         else {
             this.nav.push(sections_1.Sections);
@@ -357,6 +372,7 @@ var Sections = (function () {
         this.getData.load()
             .then(function (data) {
             _this.sections = data;
+            console.log("sections " + _this.sections);
         });
     };
     Sections.prototype.navigate = function (section) {
@@ -560,6 +576,9 @@ var DementiaService = (function () {
             // Return cached data as a promise
             return Promise.resolve(this._data);
         }
+    };
+    DementiaService.prototype.test = function () {
+        console.log("fdifdofidofidofi");
     };
     // Binary search, the array is by default sorted by _id.
     DementiaService.prototype.findIndex = function (array, id) {

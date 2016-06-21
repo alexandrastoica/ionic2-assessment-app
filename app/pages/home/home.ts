@@ -35,7 +35,7 @@ export class HomePage {
         this.nav.present(modal);
 
         modal.onDismiss(() => {
-
         });
     }
+
 }

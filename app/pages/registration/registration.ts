@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
-import {Modal, NavParams, ViewController} from 'ionic-angular';
+import {Modal, NavParams, ViewController, Platform} from 'ionic-angular';
 import {TabsPage} from "../tabs/tabs";
+import {LoginPage} from "../login/login";
 import {DementiaService} from '../../services/dementia.service';
 
 /*
@@ -16,11 +17,11 @@ export class RegistrationPage {
     public user;
     public isNew = true;
     public action = 'Add';
-    public isoDate = '';
 
     constructor(private viewCtrl: ViewController,
-        private navParams: NavParams,
+        private navParams: NavParams, platform: Platform,
         private dementiaService: DementiaService) {
+        this.platform = platform;
     }
 
     ionViewLoaded() {
@@ -28,20 +29,18 @@ export class RegistrationPage {
 
         if (!this.user) {
             this.user = {
-              //object: use this to append properties in the view for adding to the database
+              //leave this scope empty and just:
+              //object: use this to append properties in the view (registration.html) for adding to the database
               //example [(ngMODEL)]="user.number"
             };
         }
         else {
             this.isNew = false;
             this.action = 'Edit';
-            //this.isoDate = this.user.Date.toISOString().slice(0, 10);
         }
     }
 
     save() {
-       // this.user.Date = new Date(this.isoDate);
-
         if (this.isNew) {
             this.dementiaService.addData(this.user)
                 .catch(console.error.bind(console));
@@ -64,8 +63,14 @@ export class RegistrationPage {
         this.viewCtrl.dismiss(this.user);
     }
 
-    /*enterTabsPage() {
-        this.nav.push(TabsPage);
-    }*/
+    showThing()
+    {
+        this.dementiaService.test();
+    }
 
+    showToast(message, position) {
+        this.platform.ready().then(() => {
+            window.plugins.toast.show(message, "short", position);
+        });
+    }
 }

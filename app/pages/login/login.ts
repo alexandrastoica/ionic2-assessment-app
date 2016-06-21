@@ -17,12 +17,6 @@ export class LoginPage {
   constructor(public nav: NavController, private dementiaService: DementiaService) {
    // this. nav = nav;
    this.dementiaService.initDB();
-   if(this.dementiaService)
-   {
-    console.log("db created");
-   } else {
-    console.log("not created");
-   }
   }
 
    enterTabsPage() {
@@ -36,7 +30,10 @@ export class LoginPage {
     showDetail(user) {
       let modal = Modal.create(RegistrationPage, { user: user });
       this.nav.present(modal);
+
       modal.onDismiss(() => {
+        //goto login
+        //his.nav.push(TabsPage);
      });
     }
 

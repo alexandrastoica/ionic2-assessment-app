@@ -1,62 +1,22 @@
-<!--
-  Generated template for the RegistrationPage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<!--<ion-navbar *navbar>
-  <ion-title>registration</ion-title>
-</ion-navbar>
-
-<ion-content padding class="registration">
-  <ion-list>
-  <ion-item>
-    <ion-label fixed>Username</ion-label>
-    <ion-input type="text" value=""></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label fixed>Firsname</ion-label>
-    <ion-input type="text"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label fixed>Email</ion-label>
-    <ion-input type="text"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label fixed>Role</ion-label>
-    <ion-input type="text"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label fixed>Job Title</ion-label>
-    <ion-input type="text"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label fixed>Organization</ion-label>
-    <ion-input type="text"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label fixed>Department</ion-label>
-    <ion-input type="text"></ion-input>
-  </ion-item>
-</ion-list>
-    <button block danger (click)="enterTabsPage()">Submit</button>
-</ion-content> -->
 <ion-navbar *navbar>
-  <ion-title>{{ action }} Registration</ion-title>
+<ion-title>Registration</ion-title>
+
+  <ion-buttons start>
+      <button (click)="dismiss()">
+          <ion-icon name="ios-arrow-round-back-outline"></ion-icon>
+      </button>
+  </ion-buttons>
+
   <ion-buttons end *ngIf="!isNew">
       <button (click)="delete()">
           <ion-icon name="trash"></ion-icon>
       </button>
   </ion-buttons>
+
 </ion-navbar>
 
 <ion-content padding class="registration">
+
     <ion-list inset>
         <ion-item>
             <ion-label>Name</ion-label>
@@ -82,7 +42,6 @@
           <ion-label fixed>Organization</ion-label>
           <ion-input type="text" [(ngModel)]="user.Organization"></ion-input>
         </ion-item>
-
         <ion-item>
           <ion-label fixed>Department</ion-label>
           <ion-input type="text" [(ngModel)]="user.Department"></ion-input>
@@ -90,4 +49,6 @@
 
     </ion-list>
     <button block (click)="save()">Save</button>
+    <button (click)="showToast('Thank you, registration successful', 'top')">Show Top</button>
+    <button (click)="showThing()">thing</button>
 </ion-content>
