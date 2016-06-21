@@ -41,11 +41,11 @@ export class DementiaService {
                 .then(data => {
 
                     // Each row has a .doc object and we just want to send an
-                    // array of birthday objects back to the calling controller,
+                    // array of  objects back to the calling controller,
                     // so let's map the array to contain just the .doc objects.
                     this._data = data.rows.map(row => {
                         // Dates are not automatically converted from a string.
-                 // row.doc.Date = new Date(row.doc.Date);
+                       // row.doc.Date = new Date(row.doc.Date);
                         return row.doc;
                     });
 

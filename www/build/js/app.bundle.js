@@ -437,20 +437,40 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
+var ionic_angular_1 = require('ionic-angular');
+var dementia_service_1 = require('../../services/dementia.service');
 var Tests = (function () {
-    function Tests() {
+    function Tests(dementiaService, zone, platform) {
+        this.dementiaService = dementiaService;
+        this.zone = zone;
+        this.platform = platform;
+        this.answers = [];
     }
+    Tests.prototype.ionViewLoaded = function () {
+        var _this = this;
+        this.platform.ready().then(function () {
+            // this.dementiaService.initDB();
+            _this.dementiaService.getAllData()
+                .then(function (data) {
+                _this.zone.run(function () {
+                    _this.answers = data;
+                    console.log(" data is " + JSON.stringify(_this.answers));
+                });
+            })
+                .catch(console.error.bind(console));
+        });
+    };
     Tests = __decorate([
         core_1.Component({
             templateUrl: 'build/pages/tests/tests.html'
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [dementia_service_1.DementiaService, core_1.NgZone, ionic_angular_1.Platform])
     ], Tests);
     return Tests;
 }());
 exports.Tests = Tests;
 
-},{"@angular/core":145}],11:[function(require,module,exports){
+},{"../../services/dementia.service":12,"@angular/core":145,"ionic-angular":396}],11:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -560,7 +580,7 @@ var DementiaService = (function () {
             return this._db.allDocs({ include_docs: true })
                 .then(function (data) {
                 // Each row has a .doc object and we just want to send an
-                // array of birthday objects back to the calling controller,
+                // array of  objects back to the calling controller,
                 // so let's map the array to contain just the .doc objects.
                 _this._data = data.rows.map(function (row) {
                     // Dates are not automatically converted from a string.

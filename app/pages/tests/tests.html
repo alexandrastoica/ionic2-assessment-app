@@ -3,5 +3,11 @@
 </ion-navbar>
 
 <ion-content class="tests">
-
+  <ion-list inset>
+          <ion-item *ngFor="let answer of answers">
+            <div item-left > {{ answer.questions }}</div>
+            <!--<div item-right>{{ user.Date | date:'yMMMMd' }}</div> -->
+            <div item-right > {{ answer.answer_value }}</div>
+          </ion-item>
+       </ion-list>
 </ion-content>
