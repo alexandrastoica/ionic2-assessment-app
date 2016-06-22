@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 //window["PouchDB"] = PouchDB;
 declare var require: any
 let PouchDB = require('pouchdb');
+PouchDB.plugin(require('pouchdb-authentication'));
 window["PouchDB"] = PouchDB;
 
 @Injectable()

@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {Modal, NavParams, ViewController, Platform} from 'ionic-angular';
+import {FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl }  from '@angular/common';
 import {TabsPage} from "../tabs/tabs";
 import {LoginPage} from "../login/login";
 import {DementiaService} from '../../services/dementia.service';
@@ -18,9 +19,19 @@ export class RegistrationPage {
     public isNew = true;
     public action = 'Add';
 
-    constructor(private viewCtrl: ViewController,
+   /* authForm: ControlGroup;
+    name: AbstractControl;
+    email: AbstractControl;
+    role: AbstractControl;
+    jobTitle: AbstractControl;
+    Organization: AbstractControl;
+    Department: AbstractControl; */
+
+    constructor(fb: FormBuilder, private viewCtrl: ViewController,
         private navParams: NavParams, platform: Platform,
         private dementiaService: DementiaService) {
+
+
         this.platform = platform;
     }
 
