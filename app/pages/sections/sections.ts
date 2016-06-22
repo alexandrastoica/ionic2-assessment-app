@@ -21,7 +21,7 @@ export class Sections {
 		this.getData.load()
 		.then(data => {
 		  this.sections = data;
-		  console.log("sections " + this.sections);
+		  //console.log("sections " + this.sections);
 		});
 	}
 

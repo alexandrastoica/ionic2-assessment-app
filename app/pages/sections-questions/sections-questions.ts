@@ -39,7 +39,7 @@ export class SectionsQuestionsPage {
 			this.currentQuestion = this.questions[this.n];
 			//console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
 			//console.log("questions " + this.questions);
-			console.log("total " + JSON.stringify(this.total));
+			//console.log("total " + JSON.stringify(this.total));
 			this.dementiaService.addData(this.total);
 		} else {
 			this.nav.push(Sections);

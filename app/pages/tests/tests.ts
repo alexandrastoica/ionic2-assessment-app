@@ -23,7 +23,7 @@ export class Tests {
                 .then(data => {
                     this.zone.run(() => {
                         this.answers = data;
-                        console.log(" data is " + JSON.stringify(this.answers));
+                       // console.log(" data is " + JSON.stringify(this.answers));
                     });
                 })
                 .catch(console.error.bind(console));

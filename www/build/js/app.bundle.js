@@ -100,6 +100,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var ionic_angular_1 = require('ionic-angular');
+var common_1 = require('@angular/common');
 var tabs_1 = require("../tabs/tabs");
 var dementia_service_1 = require('../../services/dementia.service');
 var registration_1 = require("../registration/registration");
@@ -110,12 +111,27 @@ var registration_1 = require("../registration/registration");
   Ionic pages and navigation.
 */
 var LoginPage = (function () {
-    function LoginPage(nav, dementiaService) {
+    function LoginPage(fb, nav, dementiaService) {
         this.nav = nav;
         this.dementiaService = dementiaService;
-        // this. nav = nav;
+        this.nav = nav;
         this.dementiaService.initDB();
+        this.authForm = fb.group({
+            'email': ['', common_1.Validators.compose([common_1.Validators.required, common_1.Validators.minLength(5)])],
+        });
+        this.email = this.authForm.controls['email'];
     }
+    LoginPage.prototype.onSubmit = function (value) {
+        if (this.authForm.valid) {
+            //window.localStorage.setItem('email', value.email);
+            //DO pouchDB email validation here
+            //if email from JSON stored data is equal to the email enter
+            //push users to tabs page
+            //else
+            //stay on login page and state email address is invalid
+            this.nav.push(tabs_1.TabsPage);
+        }
+    };
     LoginPage.prototype.enterTabsPage = function () {
         this.nav.push(tabs_1.TabsPage);
     };
@@ -133,14 +149,15 @@ var LoginPage = (function () {
     LoginPage = __decorate([
         core_1.Component({
             templateUrl: 'build/pages/login/login.html',
+            directives: [common_1.FORM_DIRECTIVES]
         }), 
-        __metadata('design:paramtypes', [ionic_angular_1.NavController, dementia_service_1.DementiaService])
+        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.NavController, dementia_service_1.DementiaService])
     ], LoginPage);
     return LoginPage;
 }());
 exports.LoginPage = LoginPage;
 
-},{"../../services/dementia.service":12,"../registration/registration":5,"../tabs/tabs":9,"@angular/core":145,"ionic-angular":396}],4:[function(require,module,exports){
+},{"../../services/dementia.service":12,"../registration/registration":5,"../tabs/tabs":9,"@angular/common":13,"@angular/core":145,"ionic-angular":396}],4:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -312,7 +329,7 @@ var SectionsQuestionsPage = (function () {
             this.currentQuestion = this.questions[this.n];
             //console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
             //console.log("questions " + this.questions);
-            console.log("total " + JSON.stringify(this.total));
+            //console.log("total " + JSON.stringify(this.total));
             this.dementiaService.addData(this.total);
         }
         else {
@@ -373,7 +390,7 @@ var Sections = (function () {
         this.getData.load()
             .then(function (data) {
             _this.sections = data;
-            console.log("sections " + _this.sections);
+            //console.log("sections " + this.sections);
         });
     };
     Sections.prototype.navigate = function (section) {
@@ -454,7 +471,7 @@ var Tests = (function () {
                 .then(function (data) {
                 _this.zone.run(function () {
                     _this.answers = data;
-                    console.log(" data is " + JSON.stringify(_this.answers));
+                    // console.log(" data is " + JSON.stringify(this.answers));
                 });
             })
                 .catch(console.error.bind(console));

@@ -9,14 +9,23 @@
 </ion-navbar>
 
 <ion-content padding class="login">
-<ion-list>
-  <ion-item>
-    <ion-label fixed>Email</ion-label>
-    <ion-input type="email"></ion-input>
-  </ion-item>
+<ion-list inset>
+  <form [ngFormModel]="authForm" (ngSubmit)="onSubmit(authForm.value)">
+      <ion-item [class.error]="!email.valid && email.touched">
+        <ion-label floating>Email</ion-label>
+        <ion-input type="email" value="" [ngFormControl]="email"></ion-input>
+      </ion-item>
+
+      <div *ngIf="email.hasError('required') && email.touched"
+          class="error-box">* email is required to login</div>
+      <div *ngIf="email.hasError('minlength') && email.touched"
+          class="error-box">* minimum email length is 4</div>
+
+      <button type="submit" block danger>Submit</button>
+  </form>
 </ion-list>
-    <button block danger (click)="enterTabsPage()">Submit</button>
-    <button block clear (click)="showDetail()">Register</button>
+  <!--<button block danger (click)="enterTabsPage()">Submit</button> -->
+  <button block clear (click)="showDetail()">Register</button>
 
 
 </ion-content>
