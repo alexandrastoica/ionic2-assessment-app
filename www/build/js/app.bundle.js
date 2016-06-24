@@ -186,7 +186,7 @@ var LoginPage = (function () {
             //push users to tabs page
             //else
             //stay on login page and state email address is invalid
-            if (this.userForm.value.email) {
+            if (this.userForm.value.email == window.localStorage.getItem('Email')) {
                 this.nav.push(tabs_1.TabsPage);
             }
             else {
@@ -301,7 +301,7 @@ var RegistrationPage = (function () {
     RegistrationPage.prototype.onSubmit = function (value) {
         if (this.authForm.valid) {
             window.localStorage.setItem('Email', value.Email);
-            console.log("email is " + window.localStorage.getItem('Email'));
+            // console.log("email is " + window.localStorage.getItem('Email'));
             this.save();
         }
     };
@@ -382,10 +382,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var ionic_angular_1 = require('ionic-angular');
+var common_1 = require('@angular/common');
 var sections_1 = require("../sections/sections");
 var dementia_service_1 = require('../../services/dementia.service');
 var SectionsQuestionsPage = (function () {
-    function SectionsQuestionsPage(params, nav, dementiaService) {
+    //authForm: ControlGroup;
+    //  validate = AbstractControl;
+    function SectionsQuestionsPage(fb, params, nav, dementiaService) {
+        this.fb = fb;
         this.nav = nav;
         this.dementiaService = dementiaService;
         this.total = {};
@@ -437,13 +441,13 @@ var SectionsQuestionsPage = (function () {
         ionic_angular_1.Page({
             templateUrl: 'build/pages/sections-questions/sections-questions.html',
         }), 
-        __metadata('design:paramtypes', [ionic_angular_1.NavParams, ionic_angular_1.NavController, dementia_service_1.DementiaService])
+        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.NavParams, ionic_angular_1.NavController, dementia_service_1.DementiaService])
     ], SectionsQuestionsPage);
     return SectionsQuestionsPage;
 }());
 exports.SectionsQuestionsPage = SectionsQuestionsPage;
 
-},{"../../services/dementia.service":13,"../sections/sections":9,"ionic-angular":398}],9:[function(require,module,exports){
+},{"../../services/dementia.service":13,"../sections/sections":9,"@angular/common":15,"ionic-angular":398}],9:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;

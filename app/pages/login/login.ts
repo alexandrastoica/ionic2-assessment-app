@@ -46,7 +46,7 @@ export class LoginPage {
         //else
         //stay on login page and state email address is invalid
 
-        if(this.userForm.value.email ) {
+        if(this.userForm.value.email == window.localStorage.getItem('Email')) {
              this.nav.push(TabsPage);
         } else {
           console.log("invalid email");

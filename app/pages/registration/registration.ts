@@ -72,9 +72,8 @@ export class RegistrationPage {
     onSubmit(value: string): void {
         if(this.authForm.valid) {
               window.localStorage.setItem('Email', value.Email);
-              console.log("email is " + window.localStorage.getItem('Email'));
+             // console.log("email is " + window.localStorage.getItem('Email'));
              this.save();
-
         }
     }
 
@@ -84,10 +83,9 @@ export class RegistrationPage {
             this.dementiaService.addData(this.user)
                 .catch(console.error.bind(console));
         } else {
-            this.dementiaService.updateData(this.user)
-                .catch(console.error.bind(console));
+        this.dementiaService.updateData(this.user)
+            .catch(console.error.bind(console));
         }
-
         this.dismiss();
     }
 
