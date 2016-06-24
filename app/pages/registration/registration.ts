@@ -104,4 +104,9 @@ export class RegistrationPage {
     {
         this.dementiaService.test();
     }
+<<<<<<< HEAD
+
+   
+=======
+>>>>>>> origin/master
 }
