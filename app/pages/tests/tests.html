@@ -5,7 +5,7 @@
 <ion-content class="tests">
   <ion-list inset>
           <ion-item *ngFor="let answer of answers">
-            <div item-left > section: {{answer.section_id}} : {{ answer.questions }}</div>
+            <div item-left > section: {{answer.section_id}} : {{ answer.questions | lowercase }}</div>
             <!--<div item-right>{{ user.Date | date:'yMMMMd' }}</div> -->
             <div item-right > score: {{ answer.answer_value }}</div>
           </ion-item>

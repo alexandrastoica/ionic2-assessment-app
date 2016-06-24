@@ -32,7 +32,7 @@ export class RegistrationPage {
         private dementiaService: DementiaService) {
 
 
-        this.platform = platform;
+        //this.platform = platform;
     }
 
     ionViewLoaded() {

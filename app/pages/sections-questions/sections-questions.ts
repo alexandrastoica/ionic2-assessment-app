@@ -14,6 +14,7 @@ export class SectionsQuestionsPage {
 	public total = {};
 	public currentQuestion;
 	public n = 0; maxN;
+	public test;
 
 	constructor(params: NavParams, public nav: NavController, private dementiaService: DementiaService) {
 		this.nav = nav;
@@ -31,7 +32,7 @@ export class SectionsQuestionsPage {
 			"section_id": this.section.id,
 			"questions": this.currentQuestion,
 			"question_id": this.n,
-			"answer_value": this.answer
+			"answer_value": this.answer,
 		};
 
 		if(this.n < this.maxN - 1){

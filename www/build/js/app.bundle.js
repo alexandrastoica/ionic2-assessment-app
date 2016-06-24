@@ -166,7 +166,7 @@ var LoginPage = (function () {
         this.nav = nav;
         this.dementiaService.initDB();
         this.userForm = this._formBuilder.group({
-            'email': ['', common_1.Validators.compose([common_1.Validators.required, common_1.Validators.minLength(3), validation_service_1.ValidationService.emailValidator])]
+            'email': ['', common_1.Validators.compose([common_1.Validators.required, common_1.Validators.minLength(1), validation_service_1.ValidationService.emailValidator])]
         });
     }
     /*onSubmit(value: string): void {
@@ -178,13 +178,13 @@ var LoginPage = (function () {
     LoginPage.prototype.submit = function () {
         if (this.userForm.dirty && this.userForm.valid) {
             //console.log(`Email: ${this.userForm.value.email}`);
-            console.log("email is " + this.dementiaService.getAllData().email);
+            // console.log("email is " + JSON.stringify(this.dementiaService.getAllData()));
             //DO pouchDB email validation here
             //if email from JSON stored data is equal to the email enter
             //push users to tabs page
             //else
             //stay on login page and state email address is invalid
-            if (this.userForm.value.email == "email@email.com") {
+            if (this.userForm.value.email) {
                 this.nav.push(tabs_1.TabsPage);
             }
             else {
@@ -387,7 +387,7 @@ var SectionsQuestionsPage = (function () {
             "section_id": this.section.id,
             "questions": this.currentQuestion,
             "question_id": this.n,
-            "answer_value": this.answer
+            "answer_value": this.answer,
         };
         if (this.n < this.maxN - 1) {
             this.n += 1;

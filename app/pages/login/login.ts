@@ -24,7 +24,7 @@ export class LoginPage {
 
 
        this.userForm = this._formBuilder.group({
-          'email': ['', Validators.compose([Validators.required,  Validators.minLength(3), ValidationService.emailValidator])]
+          'email': ['', Validators.compose([Validators.required,  Validators.minLength(1), ValidationService.emailValidator])]
        });
   }
 
@@ -41,14 +41,14 @@ export class LoginPage {
     if (this.userForm.dirty && this.userForm.valid) {
       //console.log(`Email: ${this.userForm.value.email}`);
 
-      console.log("email is " + this.dementiaService.getAllData().email);
+     // console.log("email is " + JSON.stringify(this.dementiaService.getAllData()));
         //DO pouchDB email validation here
         //if email from JSON stored data is equal to the email enter
         //push users to tabs page
         //else
         //stay on login page and state email address is invalid
 
-        if(this.userForm.value.email == "email@email.com") {
+        if(this.userForm.value.email ) {
              this.nav.push(TabsPage);
         } else {
           console.log("invalid email");
