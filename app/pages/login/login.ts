@@ -14,7 +14,7 @@ import { ValidationService } from '../../services/validation.service';
 })
 export class LoginPage {
   userForm: any;
- public email;
+  public email;
 
   constructor(private _formBuilder: FormBuilder, public nav: NavController,
               private dementiaService: DementiaService,  private platform: Platform, private zone:NgZone)
@@ -22,12 +22,10 @@ export class LoginPage {
        this. nav = nav;
        this.dementiaService.initDB();
 
-
        this.userForm = this._formBuilder.group({
           'email': ['', Validators.compose([Validators.required,  Validators.minLength(1), ValidationService.emailValidator])]
        });
   }
-
 
 
 

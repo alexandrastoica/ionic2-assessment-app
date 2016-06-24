@@ -122,7 +122,9 @@ var HomePage = (function () {
         });
     };
     HomePage.prototype.showDetail = function (user) {
-        var modal = ionic_angular_1.Modal.create(registration_1.RegistrationPage, { user: user });
+        var modal = ionic_angular_1.Modal.create(registration_1.RegistrationPage, {
+            user: user
+        });
         this.nav.present(modal);
         modal.onDismiss(function () {
         });
@@ -274,7 +276,17 @@ var RegistrationPage = (function () {
         this.dementiaService = dementiaService;
         this.isNew = true;
         this.action = 'Add';
-        this.platform = platform;
+        //this.platform = platform;
+        this.authForm = fb.group({
+            // 'title': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
+            'FirstName': ['', common_1.Validators.compose([common_1.Validators.required, common_1.Validators.minLength(2)])],
+            'LastName': ['', common_1.Validators.compose([common_1.Validators.required, common_1.Validators.minLength(2)])],
+            'Email': ['', common_1.Validators.compose([common_1.Validators.required, common_1.Validators.minLength(2)])],
+        });
+        // this.title = this.authForm.controls['title'];
+        this.FirstName = this.authForm.controls['FirstName'];
+        this.LastName = this.authForm.controls['LastName'];
+        this.Email = this.authForm.controls['Email'];
     }
     RegistrationPage.prototype.ionViewLoaded = function () {
         this.user = this.navParams.get('user');
@@ -284,6 +296,13 @@ var RegistrationPage = (function () {
         else {
             this.isNew = false;
             this.action = 'Edit';
+        }
+    };
+    RegistrationPage.prototype.onSubmit = function (value) {
+        if (this.authForm.valid) {
+            window.localStorage.setItem('Email', value.Email);
+            console.log("email is " + window.localStorage.getItem('Email'));
+            this.save();
         }
     };
     RegistrationPage.prototype.save = function () {
@@ -308,14 +327,10 @@ var RegistrationPage = (function () {
     RegistrationPage.prototype.showThing = function () {
         this.dementiaService.test();
     };
-    RegistrationPage.prototype.showToast = function (message, position) {
-        this.platform.ready().then(function () {
-            window.plugins.toast.show(message, "short", position);
-        });
-    };
     RegistrationPage = __decorate([
         core_1.Component({
             templateUrl: 'build/pages/registration/registration.html',
+            directives: [common_1.FORM_DIRECTIVES]
         }), 
         __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.ViewController, ionic_angular_1.NavParams, ionic_angular_1.Platform, dementia_service_1.DementiaService])
     ], RegistrationPage);
