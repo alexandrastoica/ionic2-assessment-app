@@ -31,7 +31,9 @@ export class HomePage {
     }
 
     showDetail(user) {
-        let modal = Modal.create(RegistrationPage, { user: user });
+        let modal = Modal.create(RegistrationPage, {
+            user: user
+        });
         this.nav.present(modal);
 
         modal.onDismiss(() => {

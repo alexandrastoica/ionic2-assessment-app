@@ -16,39 +16,60 @@
 </ion-navbar>
 
 <ion-content padding class="registration">
+<ion-list inset>
+   <form [ngFormModel]="authForm" (ngSubmit)="onSubmit(authForm.value)">
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Title
+            </div>
+            <ion-select [(ngModel)]="user.title">
+              <ion-option selected>Mr</ion-option>
+              <ion-option>Mrs</ion-option>
+              <ion-option>Miss</ion-option>
+            </ion-select>
+        </label>
 
-    <ion-list inset>
-        <ion-item>
-            <ion-label>Name</ion-label>
-            <ion-input type="text" [(ngModel)]="user.Name"></ion-input>
-        </ion-item>
+          <ion-item>
+              <ion-label>First name</ion-label>
+              <ion-input type="text"  [(ngModel)]="user.Name" [ngFormControl]="FirstName"></ion-input>
+          </ion-item>
+            <div *ngIf="FirstName.hasError('required') && FirstName.touched" class="error-box">* First Name is required</div>
+            <div *ngIf="FirstName.hasError('minlength') && FirstName.touched" class="error-box">* Minimum length is 2</div>
 
-        <ion-item>
-          <ion-label>Email</ion-label>
-          <ion-input type="text" [(ngModel)]="user.Email"></ion-input>
-        </ion-item>
+           <ion-item>
+              <ion-label>Last name</ion-label>
+             <ion-input type="text"  [(ngModel)]="user.LastName" [ngFormControl]="LastName"></ion-input>
+          </ion-item>
+             <div *ngIf="LastName.hasError('required') && LastName.touched" class="error-box">* Last Name is required</div>
+            <div *ngIf="LastName.hasError('minlength') && LastName.touched" class="error-box">* Minimum length is 2</div>
 
-         <ion-item>
-          <ion-label fixed>Role</ion-label>
-          <ion-input type="text" [(ngModel)]="user.Role"></ion-input>
-         </ion-item>
+          <ion-item>
+            <ion-label>Email</ion-label>
+            <ion-input type="text"  [(ngModel)]="user.Email"  [ngFormControl]="Email"></ion-input>
+          </ion-item>
+            <div *ngIf="Email.hasError('required') && Email.touched" class="error-box">* Email is required</div>
+            <div *ngIf="Email.hasError('minlength') && Email.touched" class="error-box">* Minimum length is 2</div>
 
-        <ion-item>
-          <ion-label fixed>Job Title</ion-label>
-          <ion-input type="text" [(ngModel)]="user.Job"></ion-input>
-        </ion-item>
+           <ion-item>
+            <ion-label fixed>Role</ion-label>
+            <ion-input type="text" [(ngModel)]="user.Role"></ion-input>
+           </ion-item>
 
-        <ion-item>
-          <ion-label fixed>Organization</ion-label>
-          <ion-input type="text" [(ngModel)]="user.Organization"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label fixed>Department</ion-label>
-          <ion-input type="text" [(ngModel)]="user.Department"></ion-input>
-    </ion-item>
+          <ion-item>
+            <ion-label fixed>Job Title</ion-label>
+            <ion-input type="text" [(ngModel)]="user.Job"></ion-input>
+          </ion-item>
 
-    </ion-list>
-    <button block (click)="save()">Save</button>
-    <button (click)="showToast('Thank you, registration successful', 'top')">Show Top</button>
-    <button (click)="showThing()">thing</button>
+          <ion-item>
+            <ion-label fixed>Organization</ion-label>
+            <ion-input type="text" [(ngModel)]="user.Organization"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label fixed>Department</ion-label>
+            <ion-input type="text" [(ngModel)]="user.Department"></ion-input>
+      </ion-item>
+         <button danger type="submit" [disabled]="!authForm.valid" block>Submit</button>
+  </form>
+</ion-list>
+    <!--<button block (click)="save()">Save</button> -->
 </ion-content>

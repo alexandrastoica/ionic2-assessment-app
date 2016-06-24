@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {Page, NavController, NavParams} from 'ionic-angular';
+import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl } from '@angular/common';
 import {Sections} from "../sections/sections";
 import {DementiaService} from '../../services/dementia.service';
 
@@ -14,9 +15,10 @@ export class SectionsQuestionsPage {
 	public total = {};
 	public currentQuestion;
 	public n = 0; maxN;
-	public test;
+	//authForm: ControlGroup;
+  //  validate = AbstractControl;
 
-	constructor(params: NavParams, public nav: NavController, private dementiaService: DementiaService) {
+	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, private dementiaService: DementiaService) {
 		this.nav = nav;
 		this.section = params.data.section;
 		this.questions = params.data.questions;
