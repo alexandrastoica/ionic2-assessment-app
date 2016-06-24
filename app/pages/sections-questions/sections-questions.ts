@@ -6,6 +6,7 @@ import {DementiaService} from '../../services/dementia.service';
 
 @Page({
   templateUrl: 'build/pages/sections-questions/sections-questions.html',
+  directives: [FORM_DIRECTIVES]
 })
 
 export class SectionsQuestionsPage {
@@ -15,8 +16,8 @@ export class SectionsQuestionsPage {
 	public total = {};
 	public currentQuestion;
 	public n = 0; maxN;
-	//authForm: ControlGroup;
-  //  validate = AbstractControl;
+	questionForm: ControlGroup;
+    Validate: AbstractControl;
 
 	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, private dementiaService: DementiaService) {
 		this.nav = nav;
@@ -25,9 +26,20 @@ export class SectionsQuestionsPage {
 		this.maxN = this.questions.length;
 		//console.log(this.maxN);
 		this.currentQuestion = this.questions[this.n];
+
+		//this.platform = platform;
+        this.questionForm = fb.group({
+            'Validate': ['', Validators.compose([Validators.required])],
+        });
+
+        this.Validate = this.questionForm.controls['Validate'];
+
 	}
-
-
+	 onSubmit(value: string): void {
+        if(this.questionForm.valid) {
+             this.next();
+        }
+    }
 
 	next(){
 		this.total  = {

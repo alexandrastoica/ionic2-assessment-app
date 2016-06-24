@@ -386,8 +386,6 @@ var common_1 = require('@angular/common');
 var sections_1 = require("../sections/sections");
 var dementia_service_1 = require('../../services/dementia.service');
 var SectionsQuestionsPage = (function () {
-    //authForm: ControlGroup;
-    //  validate = AbstractControl;
     function SectionsQuestionsPage(fb, params, nav, dementiaService) {
         this.fb = fb;
         this.nav = nav;
@@ -400,7 +398,17 @@ var SectionsQuestionsPage = (function () {
         this.maxN = this.questions.length;
         //console.log(this.maxN);
         this.currentQuestion = this.questions[this.n];
+        //this.platform = platform;
+        this.questionForm = fb.group({
+            'Validate': ['', common_1.Validators.compose([common_1.Validators.required])],
+        });
+        this.Validate = this.questionForm.controls['Validate'];
     }
+    SectionsQuestionsPage.prototype.onSubmit = function (value) {
+        if (this.questionForm.valid) {
+            this.next();
+        }
+    };
     SectionsQuestionsPage.prototype.next = function () {
         this.total = {
             "section_id": this.section.id,
@@ -440,6 +448,7 @@ var SectionsQuestionsPage = (function () {
     SectionsQuestionsPage = __decorate([
         ionic_angular_1.Page({
             templateUrl: 'build/pages/sections-questions/sections-questions.html',
+            directives: [common_1.FORM_DIRECTIVES]
         }), 
         __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.NavParams, ionic_angular_1.NavController, dementia_service_1.DementiaService])
     ], SectionsQuestionsPage);
