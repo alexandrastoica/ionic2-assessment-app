@@ -22,7 +22,7 @@ export class GetData {
 
     // don't have the data yet
     return new Promise(resolve => {
-    this.http.get('../assets/data.json')
+    this.http.get('data/data.json')
       .map(res => res.json())
         .subscribe(data => {
           this.data = data.sections;

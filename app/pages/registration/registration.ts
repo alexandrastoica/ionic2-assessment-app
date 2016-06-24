@@ -79,9 +79,5 @@ export class RegistrationPage {
         this.dementiaService.test();
     }
 
-    showToast(message, position) {
-        this.platform.ready().then(() => {
-            window.plugins.toast.show(message, "short", position);
-        });
-    }
+   
 }
