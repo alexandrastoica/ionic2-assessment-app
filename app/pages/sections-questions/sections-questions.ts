@@ -56,7 +56,7 @@ export class SectionsQuestionsPage {
 			//console.log("questions " + this.questions);
 			//console.log("total " + JSON.stringify(this.total));
 			this.dementiaService.addData(this.total);
-			this.questionForm.value = null;
+			//this.questionForm.value = null;
 		} else {
 			this.nav.push(Sections);
 		}
