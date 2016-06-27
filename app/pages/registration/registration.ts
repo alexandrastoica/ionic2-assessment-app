@@ -104,4 +104,8 @@ export class RegistrationPage {
     {
         this.dementiaService.test();
     }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 }
