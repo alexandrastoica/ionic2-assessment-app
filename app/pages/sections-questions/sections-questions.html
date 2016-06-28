@@ -14,7 +14,7 @@
     <ion-list radio-group [(ngModel)]="answer" [ngFormControl]="Validate">
       <ion-item>
         <ion-label>1</ion-label>
-        <ion-radio  value="1"></ion-radio>
+        <ion-radio value="1"></ion-radio>
       </ion-item>
 
       <ion-item>
@@ -41,7 +41,7 @@
         <ion-label>N/A</ion-label>
         <ion-radio value="NA"> </ion-radio>
       </ion-item>
-        <div *ngIf="Validate.hasError('required') && Validate.touched" class="error-box">PLEASE SELECT A SCORE TO CONTINUE </div>
+        <div *ngIf="Validate.hasError('required') && Validate.touched" class="error-box">PLEASE SELECT A SCORE TO CONTINUE</div>
     <p>1 = Barely met <BR> 5 = Completely met <BR> N/A = non-applicable</p>
     <button purple type="submit" [disabled]="!questionForm.valid" block>Next</button>
     <button danger block (click)="previous()">Previous</button>
