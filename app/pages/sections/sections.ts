@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {GetData} from "../../providers/get-data/get-data";
 import {SectionsDetailPage} from "../sections-detail/sections-detail";
 import {Page, NavController} from 'ionic-angular';
+import {LoginPage} from "../login/login";
 
 
 @Component({
@@ -28,4 +29,15 @@ export class Sections {
     navigate(section) {
         this.nav.push(SectionsDetailPage, {section: section});
     }
+
+    logout(): void {
+	    window.localStorage.removeItem('username');
+	    window.localStorage.removeItem('password');
+
+	    this.nav.push(LoginPage);
+	  //  this.nav.popToRoot();
+    }
+
+
+
 }
