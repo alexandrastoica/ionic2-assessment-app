@@ -5,16 +5,16 @@
   Ionic pages and navigation.
 -->
 <ion-navbar *navbar>
-  <ion-title>login</ion-title>
+  <ion-title>Login</ion-title>
 </ion-navbar>
 
 <ion-content padding class="login">
 <form [ngFormModel]="userForm" (submit)="submit()">
-    <ion-label for="email">Email</ion-label>
-     <ion-input type="text" value="" ngControl="email"></ion-input>
-       <control-messages control="email"></control-messages>
+    <ion-label for="email" class="item-floating-label">Email</ion-label>
+    <ion-input type="text" value="" ngControl="email"></ion-input>
+    <control-messages control="email"></control-messages>
 
-    <button danger type="submit" block>Submit</button>
+    <button danger type="submit" [disabled]="!userForm.valid" block>Submit</button>
 </form>
   <!--<button block danger (click)="enterTabsPage()">Submit</button> -->
   <button block clear (click)="showDetail()">Register</button>

@@ -52,11 +52,10 @@ export class SectionsQuestionsPage {
 		if(this.n < this.maxN - 1){
 			this.n += 1;
 			this.currentQuestion = this.questions[this.n];
-			//console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
-			//console.log("questions " + this.questions);
-			//console.log("total " + JSON.stringify(this.total));
 			this.dementiaService.addData(this.total);
-			console.log("question form value " + JSON.stringify(this.questionForm.value));
+			
+			console.log(this.answer);
+			this.answer = null;
 		} else {
 			this.nav.push(Sections);
 		}
