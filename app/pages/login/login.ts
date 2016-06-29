@@ -27,6 +27,14 @@ export class LoginPage {
        });
   }
 
+
+
+  /*onSubmit(value: string): void {
+      if(this.authForm.valid) {
+
+        //window.localStorage.setItem('email', value.email);
+      }
+  }*/
    submit() {
     if (this.userForm.dirty && this.userForm.valid) {
       //console.log(`Email: ${this.userForm.value.email}`);
