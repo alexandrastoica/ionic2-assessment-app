@@ -11,13 +11,7 @@ export class DementiaService {
     _userData: any;
     remote: any;
     _currentUserData: any;
-    public currentUser;
 
-    constructor(){
-        this.currentUser = window.localStorage.getItem('Email');
-    }
-
-   
     initDB() {
         this._db = new PouchDB('dementia-db', { adapter: 'websql' });
 
@@ -68,8 +62,8 @@ export class DementiaService {
 
     }
 
-    getCurrentUserData(){
-        return this._db.get(this.currentUser).then(data => {
+    getCurrentUserData(currentUser){
+        return this._db.get(currentUser).then(data => {
 
             console.log(data);
             this._currentUserData = data;

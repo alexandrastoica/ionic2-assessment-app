@@ -9,12 +9,16 @@ import {RegistrationPage} from '../registration/registration';
 export class Profile {
 public users = [];
 public user = [];
+public currentUser;
+
+
 
     constructor(private dementiaService: DementiaService,
         private nav: NavController,
         private platform: Platform,
         private zone: NgZone) {
 
+    		this.currentUser = window.localStorage.getItem('Email');
     }
 
     ionViewLoaded() {
@@ -23,7 +27,7 @@ public user = [];
 
            //this.dementiaService.getCurrentUserData();
 
-            this.dementiaService.getCurrentUserData()
+            this.dementiaService.getCurrentUserData(this.currentUser)
                 .then(data => {
                     this.zone.run(() => {
                         this.user = data;
