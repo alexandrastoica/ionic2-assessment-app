@@ -20,10 +20,27 @@ export class DementiaService {
 
     //responsible for inserting data:
     //object is simply serialized into JSON and stored in the database
+   /* addData(insertData)
+    {
+        var insert = {
+            _id: new Date().toISOString(),
+            insertData: {},
+            complete: false
+        };
+
+         this._db.put(insert, function callback(err, result) {
+            if (!err) {
+              console.log('Successfully posted');
+            }
+          });
+    } */
+
+
     addData(insertData)
     {
         return this._db.post(insertData);
     }
+
     //inserts data and automatically generates a unique id
     updateData(updateData)
     {
@@ -37,7 +54,7 @@ export class DementiaService {
     getAllData()
     {
         if (!this._data) {
-            return this._db.allDocs({ include_docs: true})
+            return this._db.allDocs({ include_docs: true, descending: true})
                 .then(data => {
 
                     // Each row has a .doc object and we just want to send an
@@ -45,15 +62,15 @@ export class DementiaService {
                     // so let's map the array to contain just the .doc objects.
                     this._data = data.rows.map(row => {
                         // Dates are not automatically converted from a string.
-                       // row.doc.Date = new Date(row.doc.Date);
+                        // row.doc.Date = new Date(row.doc.Date);
                         return row.doc;
                     });
 
                     // Listen for changes on the database.
                     this._db.changes({ live: true, since: 'now', include_docs: true})
                         .on('change', this.onDatabaseChange);
-
                     return this._data;
+
                 });
         } else {
             // Return cached data as a promise

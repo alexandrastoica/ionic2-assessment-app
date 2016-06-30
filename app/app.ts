@@ -5,10 +5,11 @@ import {TabsPage} from './pages/tabs/tabs';
 import {RegistrationPage} from './pages/registration/registration';
 import {LoginPage} from './pages/login/login';
 import {DementiaService} from './services/dementia.service';
+import {DementiaSqlightService} from './services/dementiasqlight.service';
 
 @Component({
   template: '<ion-nav [root]="rootPage"></ion-nav>',
-  providers: [DementiaService]
+  providers: [DementiaService, DementiaSqlightService]
 })
 export class MyApp {
   rootPage: any = LoginPage;

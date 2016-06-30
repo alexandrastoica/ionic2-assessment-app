@@ -24,6 +24,8 @@ export class HomePage {
                 .then(data => {
                     this.zone.run(() => {
                         this.users = data;
+                        //console.log("users " + JSON.stringify(this.users));
+
                     });
                 })
                 .catch(console.error.bind(console));

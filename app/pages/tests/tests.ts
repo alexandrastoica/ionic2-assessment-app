@@ -1,32 +1,32 @@
-import {Component, NgZone} from "@angular/core";
-import {Platform} from 'ionic-angular';
-import {DementiaService} from '../../services/dementia.service';
+import {Page, Platform, NavController} from 'ionic-angular';
+import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
+import {Truncate} from '../../pipes/truncate';
 
-@Component({
-  templateUrl: 'build/pages/tests/tests.html'
+@Page({
+  templateUrl: 'build/pages/tests/tests.html',
+  pipes: [Truncate]
 })
+
 export class Tests {
-   public answers = [];
+    tests: Test[];
+    name: string;
 
-  constructor(private dementiaService: DementiaService,
-              private zone: NgZone,
-              private platform: Platform) {
-
-  }
+  constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, public nav: NavController) { this.name = "joshfdjfjdsofjsdoifjsoijfoisdjfsoidfjoi";}
 
    ionViewLoaded() {
         this.platform.ready().then(() => {
-           // this.dementiaService.initDB();
-
-            this.dementiaService.getAllData()
-                .then(data => {
-                    this.zone.run(() => {
-                        this.answers = data;
-                       // console.log(" data is " + JSON.stringify(this.answers));
-                    });
-                })
-                .catch(console.error.bind(console));
+           this.tests = [];
+            this.dementiaSqlService.get().then(
+              data => {
+                this.tests = [];
+                if (data.res.rows.length > 0) {
+                  for (var i = 0; i < data.res.rows.length; i++) {
+                    let item = data.res.rows.item(i);
+                    this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id));
+                  }
+                }
+            });
         });
     }
 }

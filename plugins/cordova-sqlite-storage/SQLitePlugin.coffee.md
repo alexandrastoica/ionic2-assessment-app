@@ -341,6 +341,7 @@
 
       # Workaround for litehelpers/Cordova-sqlite-storage#409
       # extra statement in case user function does not add any SQL statements
+      # TBD This also adds an extra statement to db.executeSql()
       else
         @addStatement "SELECT 1", [], null, null
 
@@ -374,6 +375,10 @@
     # This method adds the SQL statement to the transaction queue but does not check for
     # finalization since it is used to execute COMMIT and ROLLBACK.
     SQLitePluginTransaction::addStatement = (sql, values, success, error) ->
+      sqlStatement = if typeof sql is 'string'
+        sql
+      else
+        sql.toString()
 
       params = []
       if !!values && values.constructor == Array
@@ -381,7 +386,6 @@
           t = typeof v
           params.push (
             if v == null || v == undefined || t == 'number' || t == 'string' then v
-            else if v instanceof Blob then v.valueOf()
             else v.toString()
           )
 
@@ -389,7 +393,7 @@
         success: success
         error: error
 
-        sql: sql
+        sql: sqlStatement
         params: params
 
       return
@@ -607,9 +611,8 @@
         if !openargs.iosDatabaseLocation and !openargs.location and openargs.location isnt 0
           throw newSQLError 'Database location or iosDatabaseLocation value is now mandatory in openDatabase call'
 
-        # XXX TODO (with test):
-        #if !!openargs.location and !!openargs.iosDatabaseLocation
-        #  throw newSQLError 'Abiguous: both location or iosDatabaseLocation values are present in openDatabase call'
+        if !!openargs.location and !!openargs.iosDatabaseLocation
+          throw newSQLError 'Abiguous: both location or iosDatabaseLocation values are present in openDatabase call'
 
         dblocation =
           if !!openargs.location and openargs.location is 'default'
@@ -619,9 +622,8 @@
           else
             dblocations[openargs.location]
 
-        # XXX TODO (with test):
-        #if !dblocation
-        #  throw newSQLError 'Valid iOS database location could not be determined in openDatabase call'
+        if !dblocation
+          throw newSQLError 'Valid iOS database location could not be determined in openDatabase call'
 
         openargs.dblocation = dblocation
 
@@ -654,16 +656,20 @@
         else
           #console.log "delete db args: #{JSON.stringify first}"
           if !(first and first['name']) then throw new Error "Please specify db name"
-          args.path = first.name
+          dbname = first.name
+
+          if typeof dbname != 'string'
+            throw newSQLError 'delete database name must be a string'
+
+          args.path = dbname
           #dblocation = if !!first.location then dblocations[first.location] else null
           #args.dblocation = dblocation || dblocations[0]
 
         if !first.iosDatabaseLocation and !first.location and first.location isnt 0
           throw newSQLError 'Database location or iosDatabaseLocation value is now mandatory in deleteDatabase call'
 
-        # XXX TODO (with test):
-        #if !!first.location and !!first.iosDatabaseLocation
-        #  throw newSQLError 'Abiguous: both location or iosDatabaseLocation values are present in deleteDatabase call'
+        if !!first.location and !!first.iosDatabaseLocation
+          throw newSQLError 'Abiguous: both location or iosDatabaseLocation values are present in deleteDatabase call'
 
         dblocation =
           if !!first.location and first.location is 'default'
@@ -673,9 +679,8 @@
           else
             dblocations[first.location]
 
-        # XXX TODO (with test):
-        #if !dblocation
-        #  throw newSQLError 'Valid iOS database location could not be determined in deleteDatabase call'
+        if !dblocation
+          throw newSQLError 'Valid iOS database location could not be determined in deleteDatabase call'
 
         args.dblocation = dblocation
 

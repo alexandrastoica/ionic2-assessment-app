@@ -68,7 +68,7 @@ export class RegistrationPage {
             this.action = 'Edit';
         }
     }
- 
+
     onSubmit(value): void {
         if(this.authForm.valid) {
               window.localStorage.setItem('Email', value.Email);
@@ -79,8 +79,8 @@ export class RegistrationPage {
 
     save() {
        if (this.isNew) {
-            this.dementiaService.addData(this.user)
-                .catch(console.error.bind(console));
+            this.dementiaService.addData(this.user);
+               // .catch(console.error.bind(console));
         } else {
         this.dementiaService.updateData(this.user)
             .catch(console.error.bind(console));
