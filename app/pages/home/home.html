@@ -18,9 +18,9 @@
 <ion-content class="home">
       <ion-list inset>
           <ion-item *ngFor="let user of users" (click)="showDetail(user)">
-            <div item-left > {{ user.Name }}</div>
+            <div item-left > {{ user.firstname }}</div>
             <!--<div item-right>{{ user.Date | date:'yMMMMd' }}</div> -->
-            <div item-right > {{ user.Email }}</div>
+            <div item-right > {{ user.email }}</div>
           </ion-item>
        </ion-list>
 </ion-content>

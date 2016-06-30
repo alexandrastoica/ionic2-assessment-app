@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
 
-//window["PouchDB"] = PouchDB;
 declare var require: any
 let PouchDB = require('pouchdb');
 window["PouchDB"] = PouchDB;
 
 @Injectable()
 export class DementiaService {
-    private _db;
-    private _data;
+    _db: any;
+    _data: any;
+    _userData: any;
+    remote: any;
+    _currentUserData: any;
 
     initDB() {
         this._db = new PouchDB('dementia-db', { adapter: 'websql' });
@@ -16,6 +18,65 @@ export class DementiaService {
        // console.log("db is " + this._db);
       //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
         //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
+    }
+
+    addUser(userData) {
+        let user = {
+            _id: userData.email,
+            title: userData.title,
+            firstname: userData.firstName,
+            lastname: userData.lastName,
+            role: userData.role,
+            job: userData.job,
+            organisation: userData.organisation,
+            department: userData.department
+        }
+        console.log(user);
+        this._db.put(user);
+    }
+
+    getUserData(){
+        if (!this._userData) {
+            return this._db.allDocs({ include_docs: true})
+                .then(data => {
+
+                    // Each row has a .doc object and we just want to send an
+                    // array of  objects back to the calling controller,
+                    // so let's map the array to contain just the .doc objects.
+                    this._userData = data.rows.map(row => {
+                        // Dates are not automatically converted from a string.
+                       // row.doc.Date = new Date(row.doc.Date);
+                        return row.doc;
+                    });
+
+                    // Listen for changes on the database.
+                    this._db.changes({ live: true, since: 'now', include_docs: true})
+                        .on('change', this.onDatabaseChange);
+
+                    return this._userData;
+                });
+        } else {
+            // Return cached data as a promise
+            return Promise.resolve(this._userData);
+        }
+
+    }
+
+    getCurrentUserData(currentUser){
+        return this._db.get(currentUser).then(data => {
+
+            console.log(data);
+            this._currentUserData = data;
+
+            // Listen for changes on the database.
+            this._db.changes({ live: true, since: 'now', include_docs: true})
+                                .on('change', this.onDatabaseChange);
+
+            return this._currentUserData;
+
+        }).catch(function (err) {
+          console.log(err);
+        });
     }
 
     //responsible for inserting data:

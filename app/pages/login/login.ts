@@ -15,11 +15,12 @@ import { ValidationService } from '../../services/validation.service';
 export class LoginPage {
   userForm: any;
   public email;
+  public users = [];
 
   constructor(private _formBuilder: FormBuilder, public nav: NavController,
               private dementiaService: DementiaService,  private platform: Platform, private zone:NgZone)
   {
-       this. nav = nav;
+       this.nav = nav;
        this.dementiaService.initDB();
 
        this.userForm = this._formBuilder.group({
@@ -29,6 +30,24 @@ export class LoginPage {
 
    submit() {
     if (this.userForm.dirty && this.userForm.valid) {
+
+      this.dementiaService.getUserData().then(data => {
+                    this.zone.run(() => {
+                        this.users = data;
+                              
+                      for(let user of this.users){
+                          console.log(user);
+                          if(this.userForm.value.email == user._id) {
+                              window.localStorage.setItem('Email', user._id);
+                              this.nav.push(TabsPage);
+                          } else {
+                            console.log("invalid email");
+                          }
+                      }
+                    });
+                }).catch(console.error.bind(console));
+
+
       //console.log(`Email: ${this.userForm.value.email}`);
 
      // console.log("email is " + JSON.stringify(this.dementiaService.getAllData()));
@@ -38,11 +57,6 @@ export class LoginPage {
         //else
         //stay on login page and state email address is invalid
 
-        if(this.userForm.value.email == window.localStorage.getItem('Email')) {
-             this.nav.push(TabsPage);
-        } else {
-          console.log("invalid email");
-        }
 
     }
   }
