@@ -79,8 +79,8 @@ export class RegistrationPage {
 
     save() {
        if (this.isNew) {
-            this.dementiaService.addData(this.user)
-                .catch(console.error.bind(console));
+            this.dementiaService.addUser(this.user);
+            //.catch(console.error.bind(console));
         } else {
         this.dementiaService.updateData(this.user)
             .catch(console.error.bind(console));
