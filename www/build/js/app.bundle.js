@@ -167,6 +167,7 @@ var LoginPage = (function () {
         this.dementiaService = dementiaService;
         this.platform = platform;
         this.zone = zone;
+        this.users = [];
         this.nav = nav;
         this.dementiaService.initDB();
         this.userForm = this._formBuilder.group({
@@ -174,20 +175,28 @@ var LoginPage = (function () {
         });
     }
     LoginPage.prototype.submit = function () {
+        var _this = this;
         if (this.userForm.dirty && this.userForm.valid) {
-            //console.log(`Email: ${this.userForm.value.email}`);
-            // console.log("email is " + JSON.stringify(this.dementiaService.getAllData()));
-            //DO pouchDB email validation here
-            //if email from JSON stored data is equal to the email enter
-            //push users to tabs page
-            //else
-            //stay on login page and state email address is invalid
-            if (this.userForm.value.email == window.localStorage.getItem('Email')) {
-                this.nav.push(tabs_1.TabsPage);
-            }
-            else {
-                console.log("invalid email");
-            }
+            this.dementiaService.getUserData().then(function (data) {
+                _this.zone.run(function () {
+                    _this.users = data;
+                    for (var _i = 0, _a = _this.users; _i < _a.length; _i++) {
+                        var user = _a[_i];
+                        // console.log(user);
+                        if (_this.userForm.value.email == user._id) {
+                            window.localStorage.setItem('Email', user._id);
+                            _this.nav.push(tabs_1.TabsPage);
+                        }
+                        else {
+                            var toast = ionic_angular_1.Toast.create({
+                                message: 'Sorry username is isn\'t correct. ',
+                                duration: 500
+                            });
+                            _this.nav.present(toast);
+                        }
+                    }
+                });
+            }).catch(console.error.bind(console));
         }
     };
     LoginPage.prototype.enterRegisterPage = function () {
@@ -224,20 +233,53 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
+var ionic_angular_1 = require('ionic-angular');
+var dementia_service_1 = require('../../services/dementia.service');
+var registration_1 = require('../registration/registration');
 var Profile = (function () {
-    function Profile() {
+    function Profile(dementiaService, nav, platform, zone) {
+        this.dementiaService = dementiaService;
+        this.nav = nav;
+        this.platform = platform;
+        this.zone = zone;
+        this.users = [];
+        this.user = [];
+        this.currentUser = window.localStorage.getItem('Email');
     }
+    Profile.prototype.ionViewLoaded = function () {
+        var _this = this;
+        this.platform.ready().then(function () {
+            // this.dementiaService.initDB();
+            //this.dementiaService.getCurrentUserData();
+            _this.dementiaService.getCurrentUserData(_this.currentUser)
+                .then(function (data) {
+                _this.zone.run(function () {
+                    _this.user = data;
+                    console.log(data);
+                });
+            })
+                .catch(console.error.bind(console));
+        });
+    };
+    Profile.prototype.showDetail = function (user) {
+        var modal = ionic_angular_1.Modal.create(registration_1.RegistrationPage, {
+            user: user
+        });
+        this.nav.present(modal);
+        modal.onDismiss(function () {
+        });
+    };
     Profile = __decorate([
         core_1.Component({
             templateUrl: 'build/pages/profile/profile.html',
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [dementia_service_1.DementiaService, ionic_angular_1.NavController, ionic_angular_1.Platform, core_1.NgZone])
     ], Profile);
     return Profile;
 }());
 exports.Profile = Profile;
 
-},{"@angular/core":149}],6:[function(require,module,exports){
+},{"../../services/dementia.service":14,"../registration/registration":6,"@angular/core":149,"ionic-angular":400}],6:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -266,10 +308,11 @@ var RegistrationPage = (function () {
      jobTitle: AbstractControl;
      Organization: AbstractControl;
      Department: AbstractControl; */
-    function RegistrationPage(fb, viewCtrl, navParams, platform, dementiaService) {
+    function RegistrationPage(fb, viewCtrl, navParams, platform, dementiaService, nav) {
         this.viewCtrl = viewCtrl;
         this.navParams = navParams;
         this.dementiaService = dementiaService;
+        this.nav = nav;
         this.isNew = true;
         this.action = 'Add';
         //this.platform = platform;
@@ -299,6 +342,11 @@ var RegistrationPage = (function () {
             window.localStorage.setItem('Email', value.Email);
             // console.log("email is " + window.localStorage.getItem('Email'));
             this.save();
+            var toast = ionic_angular_1.Toast.create({
+                message: 'Thank you for registering. You are now able to login',
+                duration: 500
+            });
+            this.nav.present(toast);
         }
     };
     RegistrationPage.prototype.save = function () {
@@ -327,7 +375,7 @@ var RegistrationPage = (function () {
             templateUrl: 'build/pages/registration/registration.html',
             directives: [common_1.FORM_DIRECTIVES]
         }), 
-        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.ViewController, ionic_angular_1.NavParams, ionic_angular_1.Platform, dementia_service_1.DementiaService])
+        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.ViewController, ionic_angular_1.NavParams, ionic_angular_1.Platform, dementia_service_1.DementiaService, ionic_angular_1.NavController])
     ], RegistrationPage);
     return RegistrationPage;
 }());
@@ -735,6 +783,57 @@ var DementiaService = (function () {
         // console.log("db is " + this._db);
         //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
         //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
+    };
+    DementiaService.prototype.addUser = function (userData) {
+        var user = {
+            _id: userData.email,
+            title: userData.title,
+            firstname: userData.firstName,
+            lastname: userData.lastName,
+            role: userData.role,
+            job: userData.job,
+            organisation: userData.organisation,
+            department: userData.department
+        };
+        console.log(user);
+        this._db.put(user);
+    };
+    DementiaService.prototype.getUserData = function () {
+        var _this = this;
+        if (!this._userData) {
+            return this._db.allDocs({ include_docs: true })
+                .then(function (data) {
+                // Each row has a .doc object and we just want to send an
+                // array of  objects back to the calling controller,
+                // so let's map the array to contain just the .doc objects.
+                _this._userData = data.rows.map(function (row) {
+                    // Dates are not automatically converted from a string.
+                    // row.doc.Date = new Date(row.doc.Date);
+                    return row.doc;
+                });
+                // Listen for changes on the database.
+                _this._db.changes({ live: true, since: 'now', include_docs: true })
+                    .on('change', _this.onDatabaseChange);
+                return _this._userData;
+            });
+        }
+        else {
+            // Return cached data as a promise
+            return Promise.resolve(this._userData);
+        }
+    };
+    DementiaService.prototype.getCurrentUserData = function (currentUser) {
+        var _this = this;
+        return this._db.get(currentUser).then(function (data) {
+            console.log(data);
+            _this._currentUserData = data;
+            // Listen for changes on the database.
+            _this._db.changes({ live: true, since: 'now', include_docs: true })
+                .on('change', _this.onDatabaseChange);
+            return _this._currentUserData;
+        }).catch(function (err) {
+            console.log(err);
+        });
     };
     //responsible for inserting data:
     //object is simply serialized into JSON and stored in the database

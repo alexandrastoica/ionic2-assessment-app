@@ -1,5 +1,5 @@
 import {Component, NgZone} from '@angular/core';
-import {Modal, NavController, Platform} from 'ionic-angular';
+import {Modal, NavController, Platform, Toast} from 'ionic-angular';
 import {FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl }  from '@angular/common';
 import {TabsPage} from "../tabs/tabs";
 import {DementiaService} from '../../services/dementia.service';
@@ -34,14 +34,18 @@ export class LoginPage {
       this.dementiaService.getUserData().then(data => {
                     this.zone.run(() => {
                         this.users = data;
-                              
+
                       for(let user of this.users){
-                          console.log(user);
+                         // console.log(user);
                           if(this.userForm.value.email == user._id) {
                               window.localStorage.setItem('Email', user._id);
                               this.nav.push(TabsPage);
                           } else {
-                            console.log("invalid email");
+                            let toast = Toast.create({
+                                message: 'Sorry username is isn\'t correct. ',
+                                duration: 500
+                             });
+                            this.nav.present(toast);
                           }
                       }
                     });

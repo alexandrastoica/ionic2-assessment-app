@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Modal, NavParams, ViewController, Platform} from 'ionic-angular';
+import {Modal, NavParams, NavController, ViewController, Platform, Toast} from 'ionic-angular';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl } from '@angular/common';
 import {TabsPage} from "../tabs/tabs";
 import {LoginPage} from "../login/login";
@@ -36,7 +36,7 @@ export class RegistrationPage {
 
     constructor(fb: FormBuilder, private viewCtrl: ViewController,
         private navParams: NavParams, platform: Platform,
-        private dementiaService: DementiaService) {
+        private dementiaService: DementiaService, public nav: NavController) {
 
         //this.platform = platform;
         this.authForm = fb.group({
@@ -74,6 +74,11 @@ export class RegistrationPage {
               window.localStorage.setItem('Email', value.Email);
              // console.log("email is " + window.localStorage.getItem('Email'));
              this.save();
+             let toast = Toast.create({
+              message: 'Thank you for registering. You are now able to login',
+              duration: 500
+             });
+            this.nav.present(toast);
         }
     }
 
