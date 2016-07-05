@@ -61,12 +61,12 @@ export class SectionsQuestionsPage {
 			"answer_value": this.answer, */
 		//};
          this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
-    	if(this.question.id == null) {
+    	if(!this.question) { //this.question.id == null
     		this.dementiaSqlService.add(this.question).then((data) => {
     			this.question.id = data.res["insertId"];
                 let toast = Toast.create({
                     message: 'Answer score was saved',
-                    duration: 1000
+                    duration: 300
                  });
                 this.nav.present(toast);
     		});
@@ -75,7 +75,7 @@ export class SectionsQuestionsPage {
 
             let toast = Toast.create({
                 message: 'Answer score was updated',
-                duration: 1000
+                duration: 300
               });
              this.nav.present(toast);
     	}

@@ -43,12 +43,18 @@
              <div *ngIf="LastName.hasError('required') && LastName.touched" class="error-box">* Last Name is required</div>
             <div *ngIf="LastName.hasError('minlength') && LastName.touched" class="error-box">* Minimum length is 2</div>
 
-          <ion-item>
-            <ion-label>Email</ion-label>
-            <ion-input type="text"  [(ngModel)]="user.email"  [ngFormControl]="Email"></ion-input>
+           <!-- <ion-item>
+           <ion-label>Email</ion-label>
+            <ion-input type="text"  [(ngModel)]="user.email" [ngFormControl]="Email" value="" ngControl="Email"></ion-input>
+            <control-messages control="Email"></control-messages>
           </ion-item>
             <div *ngIf="Email.hasError('required') && Email.touched" class="error-box">* Email is required</div>
-            <div *ngIf="Email.hasError('minlength') && Email.touched" class="error-box">* Minimum length is 2</div>
+            <div *ngIf="Email.hasError('minlength') && Email.touched" class="error-box">* Minimum length is 2</div> -->
+            <ion-item>
+              <ion-label> Email</ion-label>
+              <ion-input type="text" value="" ngControl="Email"></ion-input>
+              <control-messages control="Email"></control-messages>
+            </ion-item>
 
            <ion-item>
             <ion-label fixed>Role</ion-label>

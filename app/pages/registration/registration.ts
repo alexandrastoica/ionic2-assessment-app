@@ -4,6 +4,9 @@ import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractContro
 import {TabsPage} from "../tabs/tabs";
 import {LoginPage} from "../login/login";
 import {DementiaService} from '../../services/dementia.service';
+import { ControlMessages } from '../../components/control-messages component';
+import { ValidationService } from '../../services/validation.service';
+
 
 /*
   Generated class for the RegistrationPage page.
@@ -13,7 +16,7 @@ import {DementiaService} from '../../services/dementia.service';
 */
 @Component({
   templateUrl: 'build/pages/registration/registration.html',
-  directives: [FORM_DIRECTIVES]
+  directives: [ControlMessages]
 })
 export class RegistrationPage {
     public user;
@@ -43,7 +46,7 @@ export class RegistrationPage {
            // 'title': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
             'FirstName': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
             'LastName': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-            'Email': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
+            'Email': ['', Validators.compose([Validators.required, Validators.minLength(2), ValidationService.emailValidator])],
 
         });
 

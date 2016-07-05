@@ -28,7 +28,7 @@ export class DementiaSqlightService {
 
   // Get all notes of our DB
   public get() {
-    return this.storage.query('SELECT * FROM Tests ORDER BY section ASC');
+    return this.storage.query('SELECT * FROM Tests GROUP BY section ORDER BY section ASC');
   }
 
   public getBySection(section: number) {

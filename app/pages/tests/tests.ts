@@ -1,6 +1,7 @@
-import {Page, Platform, NavController} from 'ionic-angular';
+import {Modal, Page, Platform, NavController} from 'ionic-angular';
 import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
+import {TestquestionsPage} from "../testquestions/testquestions";
 import {Truncate} from '../../pipes/truncate';
 
 @Page({
@@ -12,12 +13,16 @@ export class Tests {
     tests: Test[];
     name: string;
 
-  constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, public nav: NavController) { this.name = "joshfdjfjdsofjsdoifjsoijfoisdjfsoidfjoi";}
+  constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, public nav: NavController)
+  {
+
+  }
 
    ionViewLoaded() {
-        this.platform.ready().then(() => {
+       // this.platform.ready().then(() => {
            this.tests = [];
-            this.dementiaSqlService.get().then(
+            this.dementiaSqlService.get()
+            .then(
               data => {
                 this.tests = [];
                 if (data.res.rows.length > 0) {
@@ -27,6 +32,16 @@ export class Tests {
                   }
                 }
             });
+      //  });
+    }
+
+     showDetail(section) {
+        let modal = Modal.create(TestquestionsPage, {
+            section: section
+        });
+        this.nav.present(modal);
+
+        modal.onDismiss(() => {
         });
     }
 }

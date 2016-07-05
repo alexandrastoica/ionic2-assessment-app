@@ -4,11 +4,11 @@
 
 <ion-content class="tests">
   <ion-list>
-      <ion-item *ngFor="let test of tests">
+      <ion-item *ngFor="let test of tests" (click)="showDetail(test)">
          <ion-item-content>
               <h2>Section: {{test.section}}</h2>
-              <div item-left> <p>{{test.question | truncate:50}}</p> </div>
-              <div item-right><h3>score : {{test.score}} </h3>  </div>
+              <!--<div item-left> <p>{{test.question | truncate:50}}</p> </div>
+              <div item-right><h3>score : {{test.score}} </h3>  </div> -->
          </ion-item-content>
       </ion-item>
    </ion-list>

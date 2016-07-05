@@ -1,0 +1,25 @@
+<!--
+  Generated template for the TestquestionsPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-navbar *navbar>
+  <ion-title>testquestions Section: {{section.section}}</ion-title>
+  <ion-buttons start>
+      <button (click)="dismiss()">
+          <ion-icon name="ios-arrow-round-back-outline"></ion-icon>
+      </button>
+  </ion-buttons>
+</ion-navbar>
+
+<ion-content padding class="testquestions">
+<ion-list>
+      <ion-item *ngFor="let section of sections">
+         <ion-item-content>
+              <div item-left> <p>{{section.question | truncate:50}}</p> </div>
+              <div item-right><h3>score : {{section.score}} </h3>  </div>
+         </ion-item-content>
+      </ion-item>
+   </ion-list>
+</ion-content>
