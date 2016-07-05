@@ -351,7 +351,7 @@ var RegistrationPage = (function () {
     };
     RegistrationPage.prototype.save = function () {
         if (this.isNew) {
-            this.dementiaService.addData(this.user);
+            this.dementiaService.addUser(this.user);
         }
         else {
             this.dementiaService.updateData(this.user)
