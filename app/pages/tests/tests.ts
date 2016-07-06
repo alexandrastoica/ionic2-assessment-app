@@ -1,4 +1,4 @@
-import {Modal, Page, Platform, NavController} from 'ionic-angular';
+import {Modal, Page, Platform, NavController, NavParams, ViewController} from 'ionic-angular';
 import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 import {TestquestionsPage} from "../testquestions/testquestions";
@@ -11,11 +11,12 @@ import {Truncate} from '../../pipes/truncate';
 
 export class Tests {
     tests: Test[];
-    name: string;
+    id: number;
 
-  constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, public nav: NavController)
+  constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, public nav: NavController, private navParams: NavParams, private viewCtrl: ViewController)
   {
-
+     this.id = this.navParams.get('id');
+     console.log("id is " + JSON.stringify(this.id));
   }
 
    ionViewLoaded() {
@@ -43,5 +44,9 @@ export class Tests {
 
         modal.onDismiss(() => {
         });
+    }
+
+     dismiss() {
+        this.viewCtrl.dismiss(this.id);
     }
 }
