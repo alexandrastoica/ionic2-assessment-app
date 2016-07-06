@@ -555,7 +555,7 @@ var SectionsQuestionsPage = (function () {
         this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
         if (this.question.id == null) {
             this.dementiaSqlService.add(this.question).then(function (data) {
-                _this.question.id = data.res["insertId"];
+                //this.question.id = data.res["insertId"];
                 var toast = ionic_angular_1.Toast.create({
                     message: 'Answer score was saved',
                     duration: 300
@@ -731,11 +731,13 @@ var TestquestionsPage = (function () {
         this.viewCtrl = viewCtrl;
         this.dementiaSqlService = dementiaSqlService;
         this.section = this.navParams.get('section');
+        this.id = this.navParams.get('id');
+        //this.id = 1;
     }
     TestquestionsPage.prototype.ionViewLoaded = function () {
         var _this = this;
         //this.sections = [];
-        this.dementiaSqlService.getBySection(this.section.section)
+        this.dementiaSqlService.getBySection(this.section.section, this.id.id)
             .then(function (data) {
             _this.sections = [];
             if (data.res.rows.length > 0) {
@@ -745,7 +747,7 @@ var TestquestionsPage = (function () {
                 }
             }
         });
-        // console.log("section is " + JSON.stringify(this.sections));
+        //console.log("id for test  is " + JSON.stringify(this.id.id));
     };
     TestquestionsPage.prototype.dismiss = function () {
         this.viewCtrl.dismiss(this.sections);
@@ -804,7 +806,8 @@ var Tests = (function () {
     };
     Tests.prototype.showDetail = function (section) {
         var modal = ionic_angular_1.Modal.create(testquestions_1.TestquestionsPage, {
-            section: section
+            section: section,
+            id: this.id
         });
         this.nav.present(modal);
         modal.onDismiss(function () {
@@ -1080,12 +1083,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ionic_angular_1 = require('ionic-angular');
 var core_1 = require('@angular/core');
 var Test = (function () {
-    function Test(section, question, score, question_id, id) {
+    function Test(section, question, score, question_id, test_id) {
         this.section = section;
         this.question = question;
         this.score = score;
         this.question_id = question_id;
-        this.id = id;
+        this.test_id = test_id;
     }
     return Test;
 }());
@@ -1121,9 +1124,9 @@ var DementiaSqlightService = (function () {
         var sql = ('SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC');
         return this.storage.query(sql, [id]);
     };
-    DementiaSqlightService.prototype.getBySection = function (section) {
-        var sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = 1 ORDER BY section ASC';
-        return this.storage.query(sql, [section]);
+    DementiaSqlightService.prototype.getBySection = function (section, id) {
+        var sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = ? ORDER BY section ASC';
+        return this.storage.query(sql, [section, id]);
     };
     // Save a new note to the DB
     DementiaSqlightService.prototype.add = function (test) {

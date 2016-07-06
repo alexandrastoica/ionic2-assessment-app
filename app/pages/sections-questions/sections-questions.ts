@@ -58,7 +58,7 @@ export class SectionsQuestionsPage {
 
     		this.dementiaSqlService.add(this.question).then((data) =>
             {
-    			this.question.id = data.res["insertId"];
+    			//this.question.id = data.res["insertId"];
                 let toast = Toast.create({
                     message: 'Answer score was saved',
                     duration: 300

@@ -17,16 +17,19 @@ export class TestquestionsPage {
 
     sections: Test[];
     public section;
+    public id;
 
   constructor(public nav: NavController, private navParams: NavParams,
               private viewCtrl: ViewController, public dementiaSqlService: DementiaSqlightService)
    {
            this.section = this.navParams.get('section');
+           this.id = this.navParams.get('id');
+           //this.id = 1;
    }
 
   ionViewLoaded() {
         //this.sections = [];
-            this.dementiaSqlService.getBySection(this.section.section)
+            this.dementiaSqlService.getBySection(this.section.section, this.id.id)
             .then(
               data => {
                 this.sections = [];
@@ -37,7 +40,7 @@ export class TestquestionsPage {
                   }
                 }
             });
-             // console.log("section is " + JSON.stringify(this.sections));
+             //console.log("id for test  is " + JSON.stringify(this.id.id));
     }
 
     dismiss() {

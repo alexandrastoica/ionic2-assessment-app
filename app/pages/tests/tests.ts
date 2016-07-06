@@ -29,6 +29,7 @@ export class Tests {
                   for (var i = 0; i < data.res.rows.length; i++) {
                     let item = data.res.rows.item(i);
                     this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id));
+                    //this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id,));
                   }
                 }
             });
@@ -38,7 +39,8 @@ export class Tests {
 
      showDetail(section) {
         let modal = Modal.create(TestquestionsPage, {
-            section: section
+            section: section,
+            id: this.id
         });
         this.nav.present(modal);
 

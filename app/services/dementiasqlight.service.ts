@@ -6,14 +6,14 @@ export class Test {
   question_id: number;
   score: number;
   section: number;
-  id: number;
+  test_id: number;
 
-  constructor(section: number, question: string, score: number, question_id: number, id: number) {
+  constructor(section: number, question: string, score: number, question_id: number, test_id: number) {
     this.section = section;
     this.question = question;
     this.score = score;
     this.question_id = question_id;
-    this.id = id;
+    this.test_id = test_id;
   }
 }
 
@@ -59,9 +59,9 @@ export class DementiaSqlightService {
     return this.storage.query(sql, [id]);
   }
 
-  public getBySection(section: number) {
-    let sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = 1 ORDER BY section ASC';
-    return this.storage.query(sql, [section]);
+  public getBySection(section: number, id: number) {
+    let sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = ? ORDER BY section ASC';
+    return this.storage.query(sql, [section, id]);
   }
 
   // Save a new note to the DB
