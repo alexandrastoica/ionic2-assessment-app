@@ -35,7 +35,7 @@ export class SectionsQuestionsPage {
             'Validate': ['', Validators.compose([Validators.required])],
         });
 
-        console.log(JSON.stringify(this. id = params.get('id')));
+        /////////////////console.log(JSON.stringify(this. id = params.get('id')));
 
            // this.question = new Test(2, ' adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu', 2, 1, null);
             //this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
@@ -53,7 +53,7 @@ export class SectionsQuestionsPage {
     saveTest(showBadge: boolean = false)
     {
         this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
-    	if(this.question == null)//this.question.id == null
+    	if(this.question.id == null)//this.question.id == null
         {
 
     		this.dementiaSqlService.add(this.question).then((data) =>

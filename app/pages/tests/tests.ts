@@ -11,18 +11,17 @@ import {Truncate} from '../../pipes/truncate';
 
 export class Tests {
     tests: Test[];
-    id: number;
+    public id;
 
   constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, public nav: NavController, private navParams: NavParams, private viewCtrl: ViewController)
   {
      this.id = this.navParams.get('id');
-     console.log("id is " + JSON.stringify(this.id));
   }
 
    ionViewLoaded() {
        // this.platform.ready().then(() => {
            this.tests = [];
-            this.dementiaSqlService.get()
+            this.dementiaSqlService.get(this.id.id)
             .then(
               data => {
                 this.tests = [];
@@ -34,6 +33,7 @@ export class Tests {
                 }
             });
       //  });
+      //  console.log("id is " + JSON.stringify(this.id.id));
     }
 
      showDetail(section) {

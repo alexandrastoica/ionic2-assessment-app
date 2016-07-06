@@ -54,12 +54,13 @@ export class DementiaSqlightService {
   ////////////////////////// QUERIES FOR TEST_SECTIONS //////////////////////
 
   // Get all notes of our DB
-  public get() {
-    return this.storage.query('SELECT * FROM test_sections GROUP BY section ORDER BY section ASC');
+  public get(id: number) {
+    let sql = ('SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC');
+    return this.storage.query(sql, [id]);
   }
 
   public getBySection(section: number) {
-    let sql = 'SELECT * FROM test_sections WHERE section = ? ORDER BY section ASC';
+    let sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = 1 ORDER BY section ASC';
     return this.storage.query(sql, [section]);
   }
 
@@ -67,7 +68,7 @@ export class DementiaSqlightService {
   public add(test: Test) {
    // let sql = 'INSERT INTO test_sections (section, question, score, question_id) VALUES (?, ?, ?, ?)';
    // return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
-       let sql = 'INSERT INTO test_sections (section, question, score, question_id) VALUES (?, ?, ?, ?)';
+       let sql = 'INSERT INTO test_sections (section, question, score, question_id, test_id) VALUES (?, ?, ?, ?, 1)';
     return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
 
   }

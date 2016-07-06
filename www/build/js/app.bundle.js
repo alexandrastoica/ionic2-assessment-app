@@ -538,7 +538,7 @@ var SectionsQuestionsPage = (function () {
         this.questionForm = fb.group({
             'Validate': ['', common_1.Validators.compose([common_1.Validators.required])],
         });
-        console.log(JSON.stringify(this.id = params.get('id')));
+        /////////////////console.log(JSON.stringify(this. id = params.get('id')));
         // this.question = new Test(2, ' adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu', 2, 1, null);
         //this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
         // this.saveTest();
@@ -553,7 +553,7 @@ var SectionsQuestionsPage = (function () {
         var _this = this;
         if (showBadge === void 0) { showBadge = false; }
         this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
-        if (this.question == null) {
+        if (this.question.id == null) {
             this.dementiaSqlService.add(this.question).then(function (data) {
                 _this.question.id = data.res["insertId"];
                 var toast = ionic_angular_1.Toast.create({
@@ -745,7 +745,7 @@ var TestquestionsPage = (function () {
                 }
             }
         });
-        console.log("section is " + JSON.stringify(this.sections));
+        // console.log("section is " + JSON.stringify(this.sections));
     };
     TestquestionsPage.prototype.dismiss = function () {
         this.viewCtrl.dismiss(this.sections);
@@ -784,13 +784,12 @@ var Tests = (function () {
         this.navParams = navParams;
         this.viewCtrl = viewCtrl;
         this.id = this.navParams.get('id');
-        console.log("id is " + JSON.stringify(this.id));
     }
     Tests.prototype.ionViewLoaded = function () {
         var _this = this;
         // this.platform.ready().then(() => {
         this.tests = [];
-        this.dementiaSqlService.get()
+        this.dementiaSqlService.get(this.id.id)
             .then(function (data) {
             _this.tests = [];
             if (data.res.rows.length > 0) {
@@ -801,6 +800,7 @@ var Tests = (function () {
             }
         });
         //  });
+        //  console.log("id is " + JSON.stringify(this.id.id));
     };
     Tests.prototype.showDetail = function (section) {
         var modal = ionic_angular_1.Modal.create(testquestions_1.TestquestionsPage, {
@@ -1117,18 +1117,19 @@ var DementiaSqlightService = (function () {
     };
     ////////////////////////// QUERIES FOR TEST_SECTIONS //////////////////////
     // Get all notes of our DB
-    DementiaSqlightService.prototype.get = function () {
-        return this.storage.query('SELECT * FROM test_sections GROUP BY section ORDER BY section ASC');
+    DementiaSqlightService.prototype.get = function (id) {
+        var sql = ('SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC');
+        return this.storage.query(sql, [id]);
     };
     DementiaSqlightService.prototype.getBySection = function (section) {
-        var sql = 'SELECT * FROM test_sections WHERE section = ? ORDER BY section ASC';
+        var sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = 1 ORDER BY section ASC';
         return this.storage.query(sql, [section]);
     };
     // Save a new note to the DB
     DementiaSqlightService.prototype.add = function (test) {
         // let sql = 'INSERT INTO test_sections (section, question, score, question_id) VALUES (?, ?, ?, ?)';
         // return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
-        var sql = 'INSERT INTO test_sections (section, question, score, question_id) VALUES (?, ?, ?, ?)';
+        var sql = 'INSERT INTO test_sections (section, question, score, question_id, test_id) VALUES (?, ?, ?, ?, 1)';
         return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
     };
     // Update an existing note with a given ID

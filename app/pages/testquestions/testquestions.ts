@@ -37,7 +37,7 @@ export class TestquestionsPage {
                   }
                 }
             });
-              console.log("section is " + JSON.stringify(this.sections));
+             // console.log("section is " + JSON.stringify(this.sections));
     }
 
     dismiss() {
