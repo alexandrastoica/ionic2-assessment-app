@@ -100,6 +100,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var ionic_angular_1 = require('ionic-angular');
 var dementiasqlight_service_1 = require('../../services/dementiasqlight.service');
+var sections_1 = require("../sections/sections");
 /*
   Generated class for the CreateTestPage page.
 
@@ -112,8 +113,12 @@ var CreateTestPage = (function () {
         this.dementiaSqlService = dementiaSqlService;
     }
     CreateTestPage.prototype.saveTest = function () {
-        this.createTest = new dementiasqlight_service_1.CreateTest(this.name);
-        this.dementiaSqlService.insertCreateTest(this.createTest);
+        var _this = this;
+        this.createTest = new dementiasqlight_service_1.CreateTest(0, this.name, '');
+        this.dementiaSqlService.insertCreateTest(this.createTest).then(function (data) {
+            var id = data.res.insertId;
+            _this.nav.push(sections_1.Sections, { testId: id });
+        });
     };
     CreateTestPage = __decorate([
         core_1.Component({
@@ -125,7 +130,7 @@ var CreateTestPage = (function () {
 }());
 exports.CreateTestPage = CreateTestPage;
 
-},{"../../services/dementiasqlight.service":18,"@angular/core":152,"ionic-angular":403}],4:[function(require,module,exports){
+},{"../../services/dementiasqlight.service":18,"../sections/sections":11,"@angular/core":152,"ionic-angular":403}],4:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -174,6 +179,15 @@ var DisplayCreatedTestsPage = (function () {
         this.nav.present(modal);
         modal.onDismiss(function () {
         });
+    };
+    DisplayCreatedTestsPage.prototype.showDetailSection = function () {
+        /*   let modal = Modal.create(Sections, {
+               id: id
+           });
+           this.nav.present(modal);
+   
+           modal.onDismiss(() => {
+           }); */
     };
     DisplayCreatedTestsPage = __decorate([
         core_1.Component({
@@ -491,9 +505,10 @@ var SectionsDetailPage = (function () {
         this.nav = nav;
         this.nav = nav;
         this.section = params.data.section;
+        this.testId = params.data.testId;
     }
     SectionsDetailPage.prototype.enterSection = function (questions, section) {
-        this.nav.push(sections_questions_1.SectionsQuestionsPage, { questions: questions, section: section });
+        this.nav.push(sections_questions_1.SectionsQuestionsPage, { questions: questions, section: section, testId: this.testId });
     };
     SectionsDetailPage = __decorate([
         ionic_angular_1.Page({
@@ -530,6 +545,7 @@ var SectionsQuestionsPage = (function () {
         this.nav = nav;
         this.section = params.data.section;
         this.questions = params.data.questions;
+        this.testId = params.data.testId;
         this.maxN = this.questions.length;
         //console.log(this.maxN);
         this.currentQuestion = this.questions[this.n];
@@ -538,10 +554,6 @@ var SectionsQuestionsPage = (function () {
         this.questionForm = fb.group({
             'Validate': ['', common_1.Validators.compose([common_1.Validators.required])],
         });
-        /////////////////console.log(JSON.stringify(this. id = params.get('id')));
-        // this.question = new Test(2, ' adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu', 2, 1, null);
-        //this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
-        // this.saveTest();
         this.Validate = this.questionForm.controls['Validate'];
     }
     SectionsQuestionsPage.prototype.onSubmit = function (value) {
@@ -552,8 +564,10 @@ var SectionsQuestionsPage = (function () {
     SectionsQuestionsPage.prototype.saveTest = function (showBadge) {
         var _this = this;
         if (showBadge === void 0) { showBadge = false; }
-        this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
-        if (this.question.id == null) {
+        this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.n, this.answer, this.testId);
+        console.log(JSON.stringify(this.question));
+        console.log(this.testId);
+        if (this.question) {
             this.dementiaSqlService.add(this.question).then(function (data) {
                 //this.question.id = data.res["insertId"];
                 var toast = ionic_angular_1.Toast.create({
@@ -630,22 +644,23 @@ var sections_detail_1 = require("../sections-detail/sections-detail");
 var ionic_angular_1 = require('ionic-angular');
 var login_1 = require("../login/login");
 var Sections = (function () {
-    function Sections(getData, nav) {
+    function Sections(getData, nav, navParams) {
         this.getData = getData;
         this.nav = nav;
+        this.navParams = navParams;
         this.load();
         this.nav = nav;
+        this.testId = this.navParams.get('testId');
     }
     Sections.prototype.load = function () {
         var _this = this;
         this.getData.load()
             .then(function (data) {
             _this.sections = data;
-            //console.log("sections " + this.sections);
         });
     };
     Sections.prototype.navigate = function (section) {
-        this.nav.push(sections_detail_1.SectionsDetailPage, { section: section });
+        this.nav.push(sections_detail_1.SectionsDetailPage, { testId: this.testId, section: section });
     };
     Sections.prototype.logout = function () {
         window.localStorage.removeItem('username');
@@ -658,7 +673,7 @@ var Sections = (function () {
             templateUrl: 'build/pages/sections/sections.html',
             providers: [get_data_1.GetData]
         }), 
-        __metadata('design:paramtypes', [get_data_1.GetData, ionic_angular_1.NavController])
+        __metadata('design:paramtypes', [get_data_1.GetData, ionic_angular_1.NavController, ionic_angular_1.NavParams])
     ], Sections);
     return Sections;
 }());
@@ -802,7 +817,7 @@ var Tests = (function () {
             }
         });
         //  });
-        //  console.log("id is " + JSON.stringify(this.id.id));
+        // console.log("id is " + JSON.stringify(this.id.id));
     };
     Tests.prototype.showDetail = function (section) {
         var modal = ionic_angular_1.Modal.create(testquestions_1.TestquestionsPage, {
@@ -1120,10 +1135,12 @@ var DementiaSqlightService = (function () {
     };
     ////////////////////////// QUERIES FOR TEST_SECTIONS //////////////////////
     // Get all notes of our DB
+    // Possibly change to getSections
     DementiaSqlightService.prototype.get = function (id) {
         var sql = ('SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC');
         return this.storage.query(sql, [id]);
     };
+    // Get tests by section and test id
     DementiaSqlightService.prototype.getBySection = function (section, id) {
         var sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = ? ORDER BY section ASC';
         return this.storage.query(sql, [section, id]);
@@ -1132,8 +1149,8 @@ var DementiaSqlightService = (function () {
     DementiaSqlightService.prototype.add = function (test) {
         // let sql = 'INSERT INTO test_sections (section, question, score, question_id) VALUES (?, ?, ?, ?)';
         // return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
-        var sql = 'INSERT INTO test_sections (section, question, score, question_id, test_id) VALUES (?, ?, ?, ?, 1)';
-        return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
+        var sql = 'INSERT INTO test_sections (section, question, question_id, score, test_id) VALUES (?, ?, ?, ?, ?)';
+        return this.storage.query(sql, [test.section, test.question, test.score, test.question_id, test.test_id]);
     };
     // Update an existing note with a given ID
     DementiaSqlightService.prototype.update = function (score, section) {

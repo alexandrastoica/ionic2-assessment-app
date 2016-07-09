@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {NavController} from 'ionic-angular';
 import {DementiaSqlightService, CreateTest} from '../../services/dementiasqlight.service';
-
+import {Sections} from "../sections/sections";
 /*
   Generated class for the CreateTestPage page.
 
@@ -20,8 +20,11 @@ export class CreateTestPage {
 
   public saveTest()
   {
-      this.createTest = new CreateTest(this.name);
-      this.dementiaSqlService.insertCreateTest(this.createTest);
+      this.createTest = new CreateTest(0, this.name, '');
+      this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
+        let id = data.res.insertId;
+        this.nav.push(Sections, {testId: id});
+      });
   }
 
 

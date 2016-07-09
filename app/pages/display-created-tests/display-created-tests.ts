@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Modal, NavController} from 'ionic-angular';
 import {DementiaSqlightService, CreateTest} from '../../services/dementiasqlight.service';
 import {Tests} from '../tests/tests';
+import {Sections} from "../sections/sections";
 /*
   Generated class for the DisplayCreatedTestsPage page.
 
@@ -41,6 +42,16 @@ export class DisplayCreatedTestsPage {
 
         modal.onDismiss(() => {
         });
+    }
+
+    showDetailSection() {
+     /*   let modal = Modal.create(Sections, {
+            id: id
+        });
+        this.nav.present(modal);
+
+        modal.onDismiss(() => {
+        }); */
     }
 
 }

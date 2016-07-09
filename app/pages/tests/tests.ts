@@ -34,7 +34,7 @@ export class Tests {
                 }
             });
       //  });
-      //  console.log("id is " + JSON.stringify(this.id.id));
+       // console.log("id is " + JSON.stringify(this.id.id));
     }
 
      showDetail(section) {

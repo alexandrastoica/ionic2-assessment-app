@@ -8,13 +8,16 @@ import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 export class SectionsDetailPage {
 
 	public section;
+    public testId;
 
 	constructor(params: NavParams, public nav: NavController) {
 		this.nav = nav;
-		this.section = params.data.section;
+        this.section = params.data.section;
+		this.testId = params.data.testId;
+
 	}
 
     enterSection(questions, section) {
-        this.nav.push(SectionsQuestionsPage, { questions: questions, section: section });
+        this.nav.push(SectionsQuestionsPage, { questions: questions, section: section, testId: this.testId });
     }
 }

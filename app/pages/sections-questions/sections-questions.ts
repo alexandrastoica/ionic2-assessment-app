@@ -17,14 +17,17 @@ export class SectionsQuestionsPage {
 	public question: Test = null;
 	public currentQuestion;
 	public n = 0; maxN;
-    public id;
+    //public id;
 	questionForm: ControlGroup;
     Validate: AbstractControl;
+
+    public testId;
 
 	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, private dementiaSqlService: DementiaSqlightService) {
 		this.nav = nav;
 		this.section = params.data.section;
-		this.questions = params.data.questions;
+        this.questions = params.data.questions;
+		this.testId = params.data.testId;
 		this.maxN = this.questions.length;
 		//console.log(this.maxN);
 		this.currentQuestion = this.questions[this.n];
@@ -34,12 +37,6 @@ export class SectionsQuestionsPage {
         this.questionForm = fb.group({
             'Validate': ['', Validators.compose([Validators.required])],
         });
-
-        /////////////////console.log(JSON.stringify(this. id = params.get('id')));
-
-           // this.question = new Test(2, ' adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu', 2, 1, null);
-            //this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
-           // this.saveTest();
 
         this.Validate = this.questionForm.controls['Validate'];
 
@@ -52,8 +49,10 @@ export class SectionsQuestionsPage {
 
     saveTest(showBadge: boolean = false)
     {
-        this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, null);
-    	if(this.question.id == null)//this.question.id == null
+        this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, this.testId);
+        console.log(JSON.stringify(this.question));
+        console.log(this.testId);
+    	if(this.question)
         {
 
     		this.dementiaSqlService.add(this.question).then((data) =>

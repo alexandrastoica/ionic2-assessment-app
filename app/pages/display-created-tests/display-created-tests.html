@@ -14,7 +14,9 @@
          <ion-item-content>
               <div item-left> <p>Name: {{createdTest.name }} </p> </div>
               <div item-right><p>date : {{createdTest.date}} </p>  </div>
+              <button clear danger (click)="showDetailSection(createdTest)">Enter Test sections</button>
          </ion-item-content>
       </ion-item>
+
    </ion-list>
 </ion-content>
