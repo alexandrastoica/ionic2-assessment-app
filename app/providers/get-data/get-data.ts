@@ -30,5 +30,18 @@ export class GetData {
         });
     });
   }
+
+  getBySectionId(passedId: number) {
+   let id = (Math.floor(passedId)-1);
+   console.log(id);
+    return new Promise(resolve => {
+    this.http.get('data/data.json')
+      .map(res => res.json())
+        .subscribe(data => {
+          this.data = data.sections;
+          resolve(this.data[id]);
+        });
+    });
+  }
 }
 

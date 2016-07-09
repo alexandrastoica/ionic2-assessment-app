@@ -51,12 +51,19 @@ export class DementiaSqlightService {
      return this.storage.query('SELECT * FROM tests ORDER BY date ASC');
    }
 
+   public getLastQuestion(test_id: number)
+   {
+     console.log(test_id);
+     let sql = 'SELECT * FROM test_sections WHERE test_id = ?';
+     return this.storage.query(sql, [test_id]);
+   }
+
   ////////////////////////// QUERIES FOR TEST_SECTIONS //////////////////////
 
   // Get all notes of our DB
   // Possibly change to getSections
   public get(id: number) {
-    let sql = ('SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC');
+    let sql = 'SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC';
     return this.storage.query(sql, [id]);
   }
 

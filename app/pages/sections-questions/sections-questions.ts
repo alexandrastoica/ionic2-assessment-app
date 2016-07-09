@@ -28,8 +28,9 @@ export class SectionsQuestionsPage {
 		this.section = params.data.section;
         this.questions = params.data.questions;
 		this.testId = params.data.testId;
+        console.log("quess" + this.questions);
 		this.maxN = this.questions.length;
-		//console.log(this.maxN);
+        this.n = params.data.next_question?params.data.next_question:0;
 		this.currentQuestion = this.questions[this.n];
 		//this.question = {};
 
@@ -49,7 +50,7 @@ export class SectionsQuestionsPage {
 
     saveTest(showBadge: boolean = false)
     {
-        this.question = new Test(this.section.id, this.currentQuestion, this.n, this.answer, this.testId);
+        this.question = new Test(this.section.id, this.currentQuestion, this.n+1, this.answer, this.testId);
         console.log(JSON.stringify(this.question));
         console.log(this.testId);
     	if(this.question)
@@ -71,21 +72,23 @@ export class SectionsQuestionsPage {
                 message: 'Answer score was updated',
                 duration: 300
             });
+
              this.nav.present(toast);
     	}
     }
 
 	next(){
 		if(this.n < this.maxN - 1){
-			this.n += 1;
+            this.saveTest(true);
+            this.n += 1;
 			this.currentQuestion = this.questions[this.n];
-			//this.dementiaService.addData(this.total);
-			this.saveTest(true);
-
-			//console.log(this.answer);
 			this.answer = null;
 		} else {
-			this.nav.push(Sections);
+            this.saveTest(true);
+            this.n = 0;
+            this.currentQuestion = null;
+            this.answer = null;
+			this.nav.push(Sections,  {testId: this.testId});
 		}
 	}
 
