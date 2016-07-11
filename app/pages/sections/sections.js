@@ -12,30 +12,38 @@ var core_1 = require("@angular/core");
 var get_data_1 = require("../../providers/get-data/get-data");
 var sections_detail_1 = require("../sections-detail/sections-detail");
 var ionic_angular_1 = require('ionic-angular');
+var login_1 = require("../login/login");
 var Sections = (function () {
-    function Sections(getData, nav) {
+    function Sections(getData, nav, navParams) {
         this.getData = getData;
         this.nav = nav;
+        this.navParams = navParams;
         this.load();
         this.nav = nav;
+        this.testId = this.navParams.get('testId');
     }
     Sections.prototype.load = function () {
         var _this = this;
         this.getData.load()
             .then(function (data) {
             _this.sections = data;
-            //console.log("sections " + this.sections);
         });
     };
     Sections.prototype.navigate = function (section) {
-        this.nav.push(sections_detail_1.SectionsDetailPage, { section: section });
+        this.nav.push(sections_detail_1.SectionsDetailPage, { testId: this.testId, section: section });
+    };
+    Sections.prototype.logout = function () {
+        window.localStorage.removeItem('username');
+        window.localStorage.removeItem('password');
+        this.nav.push(login_1.LoginPage);
+        //  this.nav.popToRoot();
     };
     Sections = __decorate([
         core_1.Component({
             templateUrl: 'build/pages/sections/sections.html',
             providers: [get_data_1.GetData]
         }), 
-        __metadata('design:paramtypes', [get_data_1.GetData, ionic_angular_1.NavController])
+        __metadata('design:paramtypes', [get_data_1.GetData, ionic_angular_1.NavController, ionic_angular_1.NavParams])
     ], Sections);
     return Sections;
 }());

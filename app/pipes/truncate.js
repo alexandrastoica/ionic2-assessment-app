@@ -8,25 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-var profile_1 = require('../profile/profile');
-var create_test_1 = require('../create-test/create-test');
-var display_created_tests_1 = require('../display-created-tests/display-created-tests');
-var TabsPage = (function () {
-    function TabsPage() {
-        // this tells the tabs component which Pages
-        // should be each tab's root Page
-        //tab1Root: any = Sections;
-        this.tab1Root = create_test_1.CreateTestPage;
-        this.tab2Root = display_created_tests_1.DisplayCreatedTestsPage;
-        this.tab3Root = profile_1.Profile;
+var core_1 = require('@angular/core');
+var Truncate = (function () {
+    function Truncate() {
     }
-    TabsPage = __decorate([
-        core_1.Component({
-            templateUrl: 'build/pages/tabs/tabs.html'
+    Truncate.prototype.transform = function (value, args) {
+        var limit = parseInt(args);
+        return value.length > limit ? value.substring(0, args) + '...' : value;
+    };
+    Truncate = __decorate([
+        core_1.Pipe({
+            name: 'truncate'
         }), 
         __metadata('design:paramtypes', [])
-    ], TabsPage);
-    return TabsPage;
+    ], Truncate);
+    return Truncate;
 }());
-exports.TabsPage = TabsPage;
+exports.Truncate = Truncate;

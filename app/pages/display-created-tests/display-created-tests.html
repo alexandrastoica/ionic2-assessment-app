@@ -14,7 +14,7 @@
          <ion-item-content>
 
               <div item-left> <p>Name: {{createdTest.name }} </p> </div>
-                       <progress max="100" value="{{percentage}}"></progress>
+              <progress max="100" value="{{createdTest.percentage}}"></progress> {{createdTest.percentage}}%
               <div item-right><p>date : {{createdTest.date}} </p>  </div>
               <button clear item-left (click)="showDetail(createdTest)">View test details</button>
               <button clear item-right danger (click)="showDetailSection(createdTest)">Continue test</button>

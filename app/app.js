@@ -13,6 +13,7 @@ var ionic_angular_1 = require('ionic-angular');
 var ionic_native_1 = require('ionic-native');
 var login_1 = require('./pages/login/login');
 var dementia_service_1 = require('./services/dementia.service');
+var dementiasqlight_service_1 = require('./services/dementiasqlight.service');
 var MyApp = (function () {
     function MyApp(platform) {
         this.rootPage = login_1.LoginPage;
@@ -25,7 +26,7 @@ var MyApp = (function () {
     MyApp = __decorate([
         core_1.Component({
             template: '<ion-nav [root]="rootPage"></ion-nav>',
-            providers: [dementia_service_1.DementiaService]
+            providers: [dementia_service_1.DementiaService, dementiasqlight_service_1.DementiaSqlightService]
         }), 
         __metadata('design:paramtypes', [ionic_angular_1.Platform])
     ], MyApp);

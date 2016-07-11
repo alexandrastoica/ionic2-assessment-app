@@ -28,6 +28,7 @@ var HomePage = (function () {
                 .then(function (data) {
                 _this.zone.run(function () {
                     _this.users = data;
+                    //console.log("users " + JSON.stringify(this.users));
                 });
             })
                 .catch(console.error.bind(console));

@@ -17,25 +17,25 @@ import {GetData} from "../../providers/get-data/get-data";
 })
 export class DisplayCreatedTestsPage {
   createdTests: CreateTest[];
-  public questionCount;
+  public questionCount = 0;
   public numberofQuestionsAnswered;
   public numberOfQuestionsTheSectionHas;
   public getData;
 
 
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
-    /*this.getData.load().then(data => {
-      this.questionCount = data.questions.length;
-    }); */
-    // let percentage = ((numberOfQuestionsAnswerd / numberOfQuestionTheSectionHas)  x 100)
     this.getData = getdata;
 
-
+    this.getData.load().then(data => {
+      for (var i = 0; i < data.length; i++) {
+        this.questionCount += data[i].questions.length;
+      }
+    });
   }
 
   ionViewLoaded() {
        // this.platform.ready().then(() => {
-           this.createdTests = [];
+            this.createdTests = [];
             this.dementiaSqlService.getCreatedTests()
             .then(
               data => {
@@ -43,7 +43,16 @@ export class DisplayCreatedTestsPage {
                 if (data.res.rows.length > 0) {
                   for (var i = 0; i < data.res.rows.length; i++) {
                     let item = data.res.rows.item(i);
-                    this.createdTests.push(new CreateTest(item.id, item.name, item.date));
+                    this.dementiaSqlService.getAnsweredQuestions(item.id).then(
+                    data => {
+                      if (item) {
+                        let percentage = ((data.res.rows.length / this.questionCount) * 100);
+                        console.log("answered: " + data.res.rows.length);
+                        console.log("qc: " + this.questionCount);
+                        console.log("pertange: " + percentage);
+                        this.createdTests.push(new CreateTest(item.id, item.name, item.date, percentage.toFixed(1)));
+                      }
+                    });
                   }
                 }
             });
@@ -62,7 +71,7 @@ export class DisplayCreatedTestsPage {
 
     showDetailSection(createdtest) {
       let id = createdtest.id;
-      this.dementiaSqlService.getLastQuestion(id).then(
+      this.dementiaSqlService.getAnsweredQuestions(id).then(
         data => {
           let item = data.res.rows[data.res.rows.length-1];
           if (!item) {
@@ -72,7 +81,7 @@ export class DisplayCreatedTestsPage {
           } else {
           this.getData.getBySectionId(item.section)
             .then(data => {
-              console.log(data.questions);
+             // console.log(data.questions);
               if(data.questions.length >= (item.question_id + 1)) {
                 this.nav.push(SectionsQuestionsPage, {
                   section: data,

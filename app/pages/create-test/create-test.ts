@@ -20,7 +20,7 @@ export class CreateTestPage {
 
   public saveTest()
   {
-      this.createTest = new CreateTest(0, this.name, '');
+      this.createTest = new CreateTest(0, this.name, '', 0);
       this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
         let id = data.res.insertId;
         this.nav.push(Sections, {testId: id});
