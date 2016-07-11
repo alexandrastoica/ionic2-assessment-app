@@ -49,7 +49,7 @@ export class DisplayCreatedTestsPage {
                     this.dementiaSqlService.getAnsweredQuestions(item.id).then(
                     data => {
                       if (item) {
-                        let percentage = parseInt(((data.res.rows.length / this.questionCount) * 100).toFixed(1));
+                        let percentage = ((data.res.rows.length / this.questionCount) * 100).toFixed(1);
                         //console.log("answered: " + data.res.rows.length);
                        // console.log("qc: " + this.questionCount);
                         //console.log("pertange: " + percentage);

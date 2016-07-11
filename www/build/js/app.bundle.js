@@ -187,7 +187,7 @@ var DisplayCreatedTestsPage = (function () {
                     var item = data.res.rows.item(i);
                     _this.dementiaSqlService.getAnsweredQuestions(item.id).then(function (data) {
                         if (item) {
-                            var percentage = parseInt(((data.res.rows.length / _this.questionCount) * 100).toFixed(1));
+                            var percentage = ((data.res.rows.length / _this.questionCount) * 100).toFixed(1);
                             //console.log("answered: " + data.res.rows.length);
                             // console.log("qc: " + this.questionCount);
                             //console.log("pertange: " + percentage);
@@ -561,29 +561,15 @@ var SectionsQuestionsPage = (function () {
         }
     };
     SectionsQuestionsPage.prototype.saveTest = function (showBadge) {
-        var _this = this;
         if (showBadge === void 0) { showBadge = false; }
-        this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.n + 1, this.answer, this.testId);
-        // console.log(JSON.stringify(this.question));
-        //console.log(this.testId);
-        if (this.question) {
-            this.dementiaSqlService.add(this.question).then(function (data) {
-                //this.question.id = data.res["insertId"];
-                var toast = ionic_angular_1.Toast.create({
-                    message: 'Answer score was saved',
-                    duration: 20
-                });
-                _this.nav.present(toast);
-            });
-        }
-        else {
-            this.dementiaSqlService.update(this.n, this.section.id);
-            var toast = ionic_angular_1.Toast.create({
-                message: 'Answer score was updated',
-                duration: 20
-            });
-            this.nav.present(toast);
-        }
+        this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.answer, this.n + 1, this.testId);
+        this.dementiaSqlService.add(this.question);
+        this.dementiaSqlService.update(this.question);
+        var toast = ionic_angular_1.Toast.create({
+            message: 'Answer score was saved',
+            duration: 20
+        });
+        this.nav.present(toast);
     };
     SectionsQuestionsPage.prototype.next = function () {
         if (this.n < this.maxN - 1) {
@@ -1132,8 +1118,8 @@ var DementiaSqlightService = (function () {
     function DementiaSqlightService() {
         this.storage = null;
         this.storage = new ionic_angular_1.Storage(ionic_angular_1.SqlStorage);
-        this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section Text, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER)');
         this.storage.query('CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, date TIMESTAMP)');
+        this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section Text, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER, CONSTRAINT composite_id UNIQUE (section, question_id, test_id))');
     }
     DementiaSqlightService.prototype.refreshDataSet = function () {
         this.storage = new ionic_angular_1.Storage(ionic_angular_1.SqlStorage);
@@ -1164,17 +1150,13 @@ var DementiaSqlightService = (function () {
     };
     // Save a new note to the DB
     DementiaSqlightService.prototype.add = function (test) {
-        // let sql = 'INSERT INTO test_sections (section, question, score, question_id) VALUES (?, ?, ?, ?)';
-        // return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
-        var sql = 'INSERT INTO test_sections (section, question, question_id, score, test_id) VALUES (?, ?, ?, ?, ?)';
+        var sql = 'INSERT OR IGNORE INTO test_sections (section, question, score, question_id, test_id) VALUES (?, ?, ?, ?, ?)';
         return this.storage.query(sql, [test.section, test.question, test.score, test.question_id, test.test_id]);
     };
     // Update an existing note with a given ID
-    DementiaSqlightService.prototype.update = function (score, section) {
-        var sql = 'UPDATE test_sections SET score = ? WHERE section = ?';
-        return this.storage.query(sql, [score, section]);
-        //let sql = 'UPDATE test_sections SET score = \"' + test.score + '\"';
-        // this.storage.query(sql);
+    DementiaSqlightService.prototype.update = function (test) {
+        var sql = 'UPDATE test_sections SET score = ? WHERE section = ? AND question_id = ? AND test_id = ?';
+        return this.storage.query(sql, [test.score, test.section, test.question_id, test.test_id]);
     };
     DementiaSqlightService = __decorate([
         core_1.Injectable(), 

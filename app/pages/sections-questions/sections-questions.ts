@@ -50,30 +50,15 @@ export class SectionsQuestionsPage {
 
     saveTest(showBadge: boolean = false)
     {
-        this.question = new Test(this.section.id, this.currentQuestion, this.n+1, this.answer, this.testId);
-       // console.log(JSON.stringify(this.question));
-        //console.log(this.testId);
-    	if(this.question)
-        {
-    		this.dementiaSqlService.add(this.question).then((data) =>
-            {
-    			//this.question.id = data.res["insertId"];
-                let toast = Toast.create({
-                    message: 'Answer score was saved',
-                    duration: 20
-                 });
-                this.nav.present(toast);
-    		});
-    	} else
-        {
-    		this.dementiaSqlService.update(this.n, this.section.id);
-            let toast = Toast.create({
-                message: 'Answer score was updated',
-                duration: 20
-            });
+        this.question = new Test(this.section.id, this.currentQuestion, this.answer, this.n+1, this.testId);
 
-             this.nav.present(toast);
-    	}
+    		this.dementiaSqlService.add(this.question);
+    		this.dementiaSqlService.update(this.question);
+            let toast = Toast.create({
+                message: 'Answer score was saved',
+                duration: 20
+             });
+            this.nav.present(toast);
     }
 
 	next(){
