@@ -12,12 +12,6 @@ var core_1 = require('@angular/core');
 var ionic_angular_1 = require('ionic-angular');
 var common_1 = require('@angular/common');
 var dementia_service_1 = require('../../services/dementia.service');
-/*
-  Generated class for the RegistrationPage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 var RegistrationPage = (function () {
     /* authForm: ControlGroup;
      name: AbstractControl;
@@ -26,10 +20,11 @@ var RegistrationPage = (function () {
      jobTitle: AbstractControl;
      Organization: AbstractControl;
      Department: AbstractControl; */
-    function RegistrationPage(fb, viewCtrl, navParams, platform, dementiaService) {
+    function RegistrationPage(fb, viewCtrl, navParams, platform, dementiaService, nav) {
         this.viewCtrl = viewCtrl;
         this.navParams = navParams;
         this.dementiaService = dementiaService;
+        this.nav = nav;
         this.isNew = true;
         this.action = 'Add';
         //this.platform = platform;
@@ -59,12 +54,16 @@ var RegistrationPage = (function () {
             window.localStorage.setItem('Email', value.Email);
             // console.log("email is " + window.localStorage.getItem('Email'));
             this.save();
+            var toast = ionic_angular_1.Toast.create({
+                message: 'Thank you for registering. You are now able to login',
+                duration: 300
+            });
+            this.nav.present(toast);
         }
     };
     RegistrationPage.prototype.save = function () {
         if (this.isNew) {
-            this.dementiaService.addData(this.user)
-                .catch(console.error.bind(console));
+            this.dementiaService.addUser(this.user);
         }
         else {
             this.dementiaService.updateData(this.user)
@@ -86,9 +85,8 @@ var RegistrationPage = (function () {
     RegistrationPage = __decorate([
         core_1.Component({
             templateUrl: 'build/pages/registration/registration.html',
-            directives: [common_1.FORM_DIRECTIVES]
         }), 
-        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.ViewController, ionic_angular_1.NavParams, ionic_angular_1.Platform, dementia_service_1.DementiaService])
+        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.ViewController, ionic_angular_1.NavParams, ionic_angular_1.Platform, dementia_service_1.DementiaService, ionic_angular_1.NavController])
     ], RegistrationPage);
     return RegistrationPage;
 }());

@@ -22,10 +22,12 @@ export class CreateTest {
   name: string;
   date: string;
   id: number;
-  constructor(id: number, name: string, date: string ) {
+  percentage: number;
+  constructor(id: number, name: string, date: string, percentage: number) {
     this.id = id;
     this.name = name;
     this.date = date;
+    this.percentage = percentage;
   }
 }
 
@@ -51,9 +53,8 @@ export class DementiaSqlightService {
      return this.storage.query('SELECT * FROM tests ORDER BY date ASC');
    }
 
-   public getLastQuestion(test_id: number)
+   public getAnsweredQuestions(test_id: number)
    {
-     console.log(test_id);
      let sql = 'SELECT * FROM test_sections WHERE test_id = ?';
      return this.storage.query(sql, [test_id]);
    }

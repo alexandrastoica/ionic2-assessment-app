@@ -11,20 +11,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ionic_angular_1 = require('ionic-angular');
 var common_1 = require('@angular/common');
 var sections_1 = require("../sections/sections");
-var dementia_service_1 = require('../../services/dementia.service');
+var dementiasqlight_service_1 = require('../../services/dementiasqlight.service');
 var SectionsQuestionsPage = (function () {
-    function SectionsQuestionsPage(fb, params, nav, dementiaService) {
+    function SectionsQuestionsPage(fb, params, nav, dementiaSqlService) {
         this.fb = fb;
         this.nav = nav;
-        this.dementiaService = dementiaService;
-        this.total = {};
+        this.dementiaSqlService = dementiaSqlService;
+        this.question = null;
         this.n = 0;
         this.nav = nav;
         this.section = params.data.section;
         this.questions = params.data.questions;
+        this.testId = params.data.testId;
+        console.log("quess" + this.questions);
         this.maxN = this.questions.length;
-        //console.log(this.maxN);
+        this.n = params.data.next_question ? params.data.next_question : 0;
         this.currentQuestion = this.questions[this.n];
+        //this.question = {};
         //this.platform = platform;
         this.questionForm = fb.group({
             'Validate': ['', common_1.Validators.compose([common_1.Validators.required])],
@@ -34,26 +37,46 @@ var SectionsQuestionsPage = (function () {
     SectionsQuestionsPage.prototype.onSubmit = function (value) {
         if (this.questionForm.valid) {
             this.next();
-            console.log(this.questionForm.value);
+        }
+    };
+    SectionsQuestionsPage.prototype.saveTest = function (showBadge) {
+        var _this = this;
+        if (showBadge === void 0) { showBadge = false; }
+        this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.n + 1, this.answer, this.testId);
+        console.log(JSON.stringify(this.question));
+        console.log(this.testId);
+        if (this.question) {
+            this.dementiaSqlService.add(this.question).then(function (data) {
+                //this.question.id = data.res["insertId"];
+                var toast = ionic_angular_1.Toast.create({
+                    message: 'Answer score was saved',
+                    duration: 300
+                });
+                _this.nav.present(toast);
+            });
+        }
+        else {
+            this.dementiaSqlService.update(this.n, this.section.id);
+            var toast = ionic_angular_1.Toast.create({
+                message: 'Answer score was updated',
+                duration: 300
+            });
+            this.nav.present(toast);
         }
     };
     SectionsQuestionsPage.prototype.next = function () {
-        this.total = {
-            "section_id": this.section.id,
-            "questions": this.currentQuestion,
-            "question_id": this.n,
-            "answer_value": this.answer,
-        };
         if (this.n < this.maxN - 1) {
+            this.saveTest(true);
             this.n += 1;
             this.currentQuestion = this.questions[this.n];
-            //console.log("section id " + this.section.id + " question " + this.currentQuestion + " id " + this.n + " value " + this.answer);
-            //console.log("questions " + this.questions);
-            //console.log("total " + JSON.stringify(this.total));
-            this.dementiaService.addData(this.total);
+            this.answer = null;
         }
         else {
-            this.nav.push(sections_1.Sections);
+            this.saveTest(true);
+            this.n = 0;
+            this.currentQuestion = null;
+            this.answer = null;
+            this.nav.push(sections_1.Sections, { testId: this.testId });
         }
     };
     //moves to previous section-question
@@ -78,7 +101,7 @@ var SectionsQuestionsPage = (function () {
             templateUrl: 'build/pages/sections-questions/sections-questions.html',
             directives: [common_1.FORM_DIRECTIVES]
         }), 
-        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.NavParams, ionic_angular_1.NavController, dementia_service_1.DementiaService])
+        __metadata('design:paramtypes', [common_1.FormBuilder, ionic_angular_1.NavParams, ionic_angular_1.NavController, dementiasqlight_service_1.DementiaSqlightService])
     ], SectionsQuestionsPage);
     return SectionsQuestionsPage;
 }());

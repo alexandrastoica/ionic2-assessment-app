@@ -39,8 +39,73 @@ var DementiaService = (function () {
         //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
         //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
     };
+    DementiaService.prototype.addUser = function (userData) {
+        var user = {
+            _id: userData.email,
+            title: userData.title,
+            firstname: userData.firstName,
+            lastname: userData.lastName,
+            role: userData.role,
+            job: userData.job,
+            organisation: userData.organisation,
+            department: userData.department
+        };
+        console.log(user);
+        this._db.put(user);
+    };
+    DementiaService.prototype.getUserData = function () {
+        var _this = this;
+        if (!this._userData) {
+            return this._db.allDocs({ include_docs: true })
+                .then(function (data) {
+                // Each row has a .doc object and we just want to send an
+                // array of  objects back to the calling controller,
+                // so let's map the array to contain just the .doc objects.
+                _this._userData = data.rows.map(function (row) {
+                    // Dates are not automatically converted from a string.
+                    // row.doc.Date = new Date(row.doc.Date);
+                    return row.doc;
+                });
+                // Listen for changes on the database.
+                _this._db.changes({ live: true, since: 'now', include_docs: true })
+                    .on('change', _this.onDatabaseChange);
+                return _this._userData;
+            });
+        }
+        else {
+            // Return cached data as a promise
+            return Promise.resolve(this._userData);
+        }
+    };
+    DementiaService.prototype.getCurrentUserData = function (currentUser) {
+        var _this = this;
+        return this._db.get(currentUser).then(function (data) {
+            console.log(data);
+            _this._currentUserData = data;
+            // Listen for changes on the database.
+            _this._db.changes({ live: true, since: 'now', include_docs: true })
+                .on('change', _this.onDatabaseChange);
+            return _this._currentUserData;
+        }).catch(function (err) {
+            console.log(err);
+        });
+    };
     //responsible for inserting data:
     //object is simply serialized into JSON and stored in the database
+    /* addData(insertData)
+     {
+         var insert = {
+             _id: new Date().toISOString(),
+             insertData: {},
+             complete: false
+         };
+ 
+          this._db.put(insert, function callback(err, result) {
+             if (!err) {
+               console.log('Successfully posted');
+             }
+           });
+     } */
     DementiaService.prototype.addData = function (insertData) {
         return this._db.post(insertData);
     };
@@ -55,7 +120,7 @@ var DementiaService = (function () {
     DementiaService.prototype.getAllData = function () {
         var _this = this;
         if (!this._data) {
-            return this._db.allDocs({ include_docs: true })
+            return this._db.allDocs({ include_docs: true, descending: true })
                 .then(function (data) {
                 // Each row has a .doc object and we just want to send an
                 // array of  objects back to the calling controller,

@@ -114,7 +114,7 @@ var CreateTestPage = (function () {
     }
     CreateTestPage.prototype.saveTest = function () {
         var _this = this;
-        this.createTest = new dementiasqlight_service_1.CreateTest(0, this.name, '');
+        this.createTest = new dementiasqlight_service_1.CreateTest(0, this.name, '', 0);
         this.dementiaSqlService.insertCreateTest(this.createTest).then(function (data) {
             var id = data.res.insertId;
             _this.nav.push(sections_1.Sections, { testId: id });
@@ -156,14 +156,17 @@ var get_data_1 = require("../../providers/get-data/get-data");
 */
 var DisplayCreatedTestsPage = (function () {
     function DisplayCreatedTestsPage(getdata, nav, dementiaSqlService) {
+        var _this = this;
         this.getdata = getdata;
         this.nav = nav;
         this.dementiaSqlService = dementiaSqlService;
-        /*this.getData.load().then(data => {
-          this.questionCount = data.questions.length;
-        }); */
-        // let percentage = ((numberOfQuestionsAnswerd / numberOfQuestionTheSectionHas)  x 100)
+        this.questionCount = 0;
         this.getData = getdata;
+        this.getData.load().then(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                _this.questionCount += data[i].questions.length;
+            }
+        });
     }
     DisplayCreatedTestsPage.prototype.ionViewLoaded = function () {
         var _this = this;
@@ -173,9 +176,20 @@ var DisplayCreatedTestsPage = (function () {
             .then(function (data) {
             _this.createdTests = [];
             if (data.res.rows.length > 0) {
-                for (var i = 0; i < data.res.rows.length; i++) {
+                var _loop_1 = function() {
                     var item = data.res.rows.item(i);
-                    _this.createdTests.push(new dementiasqlight_service_1.CreateTest(item.id, item.name, item.date));
+                    _this.dementiaSqlService.getAnsweredQuestions(item.id).then(function (data) {
+                        if (item) {
+                            var percentage = ((data.res.rows.length / _this.questionCount) * 100);
+                            console.log("answered: " + data.res.rows.length);
+                            console.log("qc: " + _this.questionCount);
+                            console.log("pertange: " + percentage);
+                            _this.createdTests.push(new dementiasqlight_service_1.CreateTest(item.id, item.name, item.date, percentage.toFixed(1)));
+                        }
+                    });
+                };
+                for (var i = 0; i < data.res.rows.length; i++) {
+                    _loop_1();
                 }
             }
         });
@@ -192,7 +206,7 @@ var DisplayCreatedTestsPage = (function () {
     DisplayCreatedTestsPage.prototype.showDetailSection = function (createdtest) {
         var _this = this;
         var id = createdtest.id;
-        this.dementiaSqlService.getLastQuestion(id).then(function (data) {
+        this.dementiaSqlService.getAnsweredQuestions(id).then(function (data) {
             var item = data.res.rows[data.res.rows.length - 1];
             if (!item) {
                 _this.nav.push(sections_1.Sections, {
@@ -202,7 +216,7 @@ var DisplayCreatedTestsPage = (function () {
             else {
                 _this.getData.getBySectionId(item.section)
                     .then(function (data) {
-                    console.log(data.questions);
+                    // console.log(data.questions);
                     if (data.questions.length >= (item.question_id + 1)) {
                         _this.nav.push(sections_questions_1.SectionsQuestionsPage, {
                             section: data,
@@ -1097,10 +1111,11 @@ var Test = (function () {
 }());
 exports.Test = Test;
 var CreateTest = (function () {
-    function CreateTest(id, name, date) {
+    function CreateTest(id, name, date, percentage) {
         this.id = id;
         this.name = name;
         this.date = date;
+        this.percentage = percentage;
     }
     return CreateTest;
 }());
@@ -1121,8 +1136,7 @@ var DementiaSqlightService = (function () {
     DementiaSqlightService.prototype.getCreatedTests = function () {
         return this.storage.query('SELECT * FROM tests ORDER BY date ASC');
     };
-    DementiaSqlightService.prototype.getLastQuestion = function (test_id) {
-        console.log(test_id);
+    DementiaSqlightService.prototype.getAnsweredQuestions = function (test_id) {
         var sql = 'SELECT * FROM test_sections WHERE test_id = ?';
         return this.storage.query(sql, [test_id]);
     };

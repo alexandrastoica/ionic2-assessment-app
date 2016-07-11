@@ -15,9 +15,10 @@ var SectionsDetailPage = (function () {
         this.nav = nav;
         this.nav = nav;
         this.section = params.data.section;
+        this.testId = params.data.testId;
     }
     SectionsDetailPage.prototype.enterSection = function (questions, section) {
-        this.nav.push(sections_questions_1.SectionsQuestionsPage, { questions: questions, section: section });
+        this.nav.push(sections_questions_1.SectionsQuestionsPage, { questions: questions, section: section, testId: this.testId });
     };
     SectionsDetailPage = __decorate([
         ionic_angular_1.Page({

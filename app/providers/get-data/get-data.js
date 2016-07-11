@@ -38,6 +38,19 @@ var GetData = (function () {
             });
         });
     };
+    GetData.prototype.getBySectionId = function (passedId) {
+        var _this = this;
+        var id = (Math.floor(passedId) - 1);
+        console.log(id);
+        return new Promise(function (resolve) {
+            _this.http.get('data/data.json')
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                _this.data = data.sections;
+                resolve(_this.data[id]);
+            });
+        });
+    };
     GetData = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])

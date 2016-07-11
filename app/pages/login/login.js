@@ -23,6 +23,7 @@ var LoginPage = (function () {
         this.dementiaService = dementiaService;
         this.platform = platform;
         this.zone = zone;
+        this.users = [];
         this.nav = nav;
         this.dementiaService.initDB();
         this.userForm = this._formBuilder.group({
@@ -30,20 +31,28 @@ var LoginPage = (function () {
         });
     }
     LoginPage.prototype.submit = function () {
+        var _this = this;
         if (this.userForm.dirty && this.userForm.valid) {
-            //console.log(`Email: ${this.userForm.value.email}`);
-            // console.log("email is " + JSON.stringify(this.dementiaService.getAllData()));
-            //DO pouchDB email validation here
-            //if email from JSON stored data is equal to the email enter
-            //push users to tabs page
-            //else
-            //stay on login page and state email address is invalid
-            if (this.userForm.value.email == window.localStorage.getItem('Email')) {
-                this.nav.push(tabs_1.TabsPage);
-            }
-            else {
-                console.log("invalid email");
-            }
+            this.dementiaService.getUserData().then(function (data) {
+                _this.zone.run(function () {
+                    _this.users = data;
+                    for (var _i = 0, _a = _this.users; _i < _a.length; _i++) {
+                        var user = _a[_i];
+                        // console.log(user);
+                        if (_this.userForm.value.email == user._id) {
+                            window.localStorage.setItem('Email', user._id);
+                            _this.nav.push(tabs_1.TabsPage);
+                        }
+                        else {
+                            var toast = ionic_angular_1.Toast.create({
+                                message: 'Sorry username is isn\'t correct. ',
+                                duration: 500
+                            });
+                            _this.nav.present(toast);
+                        }
+                    }
+                });
+            }).catch(console.error.bind(console));
         }
     };
     LoginPage.prototype.enterRegisterPage = function () {

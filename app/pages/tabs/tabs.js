@@ -9,18 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var sections_1 = require('../sections/sections');
 var profile_1 = require('../profile/profile');
-var tests_1 = require('../tests/tests');
-var home_1 = require('../home/home');
+var create_test_1 = require('../create-test/create-test');
+var display_created_tests_1 = require('../display-created-tests/display-created-tests');
 var TabsPage = (function () {
     function TabsPage() {
         // this tells the tabs component which Pages
         // should be each tab's root Page
-        this.tab1Root = sections_1.Sections;
-        this.tab2Root = profile_1.Profile;
-        this.tab3Root = tests_1.Tests;
-        this.tab4Root = home_1.HomePage;
+        //tab1Root: any = Sections;
+        this.tab1Root = create_test_1.CreateTestPage;
+        this.tab2Root = display_created_tests_1.DisplayCreatedTestsPage;
+        this.tab3Root = profile_1.Profile;
     }
     TabsPage = __decorate([
         core_1.Component({
