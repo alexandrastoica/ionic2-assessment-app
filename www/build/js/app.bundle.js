@@ -155,10 +155,15 @@ var get_data_1 = require("../../providers/get-data/get-data");
   Ionic pages and navigation.
 */
 var DisplayCreatedTestsPage = (function () {
-    function DisplayCreatedTestsPage(getData, nav, dementiaSqlService) {
-        this.getData = getData;
+    function DisplayCreatedTestsPage(getdata, nav, dementiaSqlService) {
+        this.getdata = getdata;
         this.nav = nav;
         this.dementiaSqlService = dementiaSqlService;
+        /*this.getData.load().then(data => {
+          this.questionCount = data.questions.length;
+        }); */
+        // let percentage = ((numberOfQuestionsAnswerd / numberOfQuestionTheSectionHas)  x 100)
+        this.getData = getdata;
     }
     DisplayCreatedTestsPage.prototype.ionViewLoaded = function () {
         var _this = this;
@@ -197,7 +202,7 @@ var DisplayCreatedTestsPage = (function () {
             else {
                 _this.getData.getBySectionId(item.section)
                     .then(function (data) {
-                    //console.log(data.questions);
+                    console.log(data.questions);
                     if (data.questions.length >= (item.question_id + 1)) {
                         _this.nav.push(sections_questions_1.SectionsQuestionsPage, {
                             section: data,

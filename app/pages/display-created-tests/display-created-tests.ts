@@ -17,8 +17,21 @@ import {GetData} from "../../providers/get-data/get-data";
 })
 export class DisplayCreatedTestsPage {
   createdTests: CreateTest[];
+  public questionCount;
+  public numberofQuestionsAnswered;
+  public numberOfQuestionsTheSectionHas;
+  public getData;
 
-  constructor(public getData: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {}
+
+  constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
+    /*this.getData.load().then(data => {
+      this.questionCount = data.questions.length;
+    }); */
+    // let percentage = ((numberOfQuestionsAnswerd / numberOfQuestionTheSectionHas)  x 100)
+    this.getData = getdata;
+
+
+  }
 
   ionViewLoaded() {
        // this.platform.ready().then(() => {
@@ -59,7 +72,7 @@ export class DisplayCreatedTestsPage {
           } else {
           this.getData.getBySectionId(item.section)
             .then(data => {
-              //console.log(data.questions);
+              console.log(data.questions);
               if(data.questions.length >= (item.question_id + 1)) {
                 this.nav.push(SectionsQuestionsPage, {
                   section: data,
