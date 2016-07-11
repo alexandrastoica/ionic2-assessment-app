@@ -51,7 +51,7 @@ export class DisplayCreatedTestsPage {
                       if (item) {
                         let percentage = ((data.res.rows.length / this.questionCount) * 100).toFixed(1);
                         //console.log("answered: " + data.res.rows.length);
-                       // console.log("qc: " + this.questionCount);
+                        // console.log("qc: " + this.questionCount);
                         //console.log("pertange: " + percentage);
                         this.createdTests.push(new CreateTest(item.id, item.name, item.date, percentage));
                       }

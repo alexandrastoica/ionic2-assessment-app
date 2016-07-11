@@ -119,7 +119,7 @@ var CreateTestPage = (function () {
     }
     CreateTestPage.prototype.saveTest = function () {
         var _this = this;
-        this.createTest = new dementiasqlight_service_1.CreateTest(0, this.name, '', 0);
+        this.createTest = new dementiasqlight_service_1.CreateTest(0, this.name, '', '');
         this.dementiaSqlService.insertCreateTest(this.createTest).then(function (data) {
             var id = data.res.insertId;
             _this.nav.push(sections_1.Sections, { testId: id });
