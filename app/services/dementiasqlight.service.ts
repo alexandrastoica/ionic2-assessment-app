@@ -42,6 +42,11 @@ export class DementiaSqlightService {
     this.storage.query('CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, date TIMESTAMP)');
   }
 
+  public refreshDataSet()
+  {
+    this.storage = new Storage(SqlStorage);
+  }
+
    ////////////////////////// QUERIES FOR TESTS //////////////////////
 
    public insertCreateTest(createTest: CreateTest) {

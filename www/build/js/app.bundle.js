@@ -16,11 +16,16 @@ var login_1 = require('./pages/login/login');
 var dementia_service_1 = require('./services/dementia.service');
 var dementiasqlight_service_1 = require('./services/dementiasqlight.service');
 var MyApp = (function () {
-    function MyApp(platform) {
+    function MyApp(platform, dementiaService, dementiaSqlService) {
+        var _this = this;
+        this.dementiaService = dementiaService;
+        this.dementiaSqlService = dementiaSqlService;
         this.rootPage = login_1.LoginPage;
         platform.ready().then(function () {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
+            _this.dementiaService.initDB();
+            _this.dementiaSqlService.refreshDataSet();
             ionic_native_1.StatusBar.styleDefault();
         });
     }
@@ -29,7 +34,7 @@ var MyApp = (function () {
             template: '<ion-nav [root]="rootPage"></ion-nav>',
             providers: [dementia_service_1.DementiaService, dementiasqlight_service_1.DementiaSqlightService]
         }), 
-        __metadata('design:paramtypes', [ionic_angular_1.Platform])
+        __metadata('design:paramtypes', [ionic_angular_1.Platform, dementia_service_1.DementiaService, dementiasqlight_service_1.DementiaSqlightService])
     ], MyApp);
     return MyApp;
 }());
@@ -161,6 +166,7 @@ var DisplayCreatedTestsPage = (function () {
         this.nav = nav;
         this.dementiaSqlService = dementiaSqlService;
         this.questionCount = 0;
+        this.dementiaSqlService.refreshDataSet();
         this.getData = getdata;
         this.getData.load().then(function (data) {
             for (var i = 0; i < data.length; i++) {
@@ -168,8 +174,9 @@ var DisplayCreatedTestsPage = (function () {
             }
         });
     }
-    DisplayCreatedTestsPage.prototype.ionViewLoaded = function () {
+    DisplayCreatedTestsPage.prototype.onPageDidEnter = function () {
         var _this = this;
+        //console.log("Loaded content");
         // this.platform.ready().then(() => {
         this.createdTests = [];
         this.dementiaSqlService.getCreatedTests()
@@ -180,11 +187,11 @@ var DisplayCreatedTestsPage = (function () {
                     var item = data.res.rows.item(i);
                     _this.dementiaSqlService.getAnsweredQuestions(item.id).then(function (data) {
                         if (item) {
-                            var percentage = ((data.res.rows.length / _this.questionCount) * 100);
-                            console.log("answered: " + data.res.rows.length);
-                            console.log("qc: " + _this.questionCount);
-                            console.log("pertange: " + percentage);
-                            _this.createdTests.push(new dementiasqlight_service_1.CreateTest(item.id, item.name, item.date, percentage.toFixed(1)));
+                            var percentage = parseInt(((data.res.rows.length / _this.questionCount) * 100).toFixed(1));
+                            //console.log("answered: " + data.res.rows.length);
+                            // console.log("qc: " + this.questionCount);
+                            //console.log("pertange: " + percentage);
+                            _this.createdTests.push(new dementiasqlight_service_1.CreateTest(item.id, item.name, item.date, percentage));
                         }
                     });
                 };
@@ -273,7 +280,7 @@ var LoginPage = (function () {
         this.zone = zone;
         this.users = [];
         this.nav = nav;
-        this.dementiaService.initDB();
+        //this.dementiaService.initDB();
         this.userForm = this._formBuilder.group({
             'email': ['', common_1.Validators.compose([common_1.Validators.required, common_1.Validators.minLength(1), validation_service_1.ValidationService.emailValidator])]
         });
@@ -537,7 +544,7 @@ var SectionsQuestionsPage = (function () {
         this.section = params.data.section;
         this.questions = params.data.questions;
         this.testId = params.data.testId;
-        console.log("quess" + this.questions);
+        // console.log("quess" + this.questions);
         this.maxN = this.questions.length;
         this.n = params.data.next_question ? params.data.next_question : 0;
         this.currentQuestion = this.questions[this.n];
@@ -557,14 +564,14 @@ var SectionsQuestionsPage = (function () {
         var _this = this;
         if (showBadge === void 0) { showBadge = false; }
         this.question = new dementiasqlight_service_1.Test(this.section.id, this.currentQuestion, this.n + 1, this.answer, this.testId);
-        console.log(JSON.stringify(this.question));
-        console.log(this.testId);
+        // console.log(JSON.stringify(this.question));
+        //console.log(this.testId);
         if (this.question) {
             this.dementiaSqlService.add(this.question).then(function (data) {
                 //this.question.id = data.res["insertId"];
                 var toast = ionic_angular_1.Toast.create({
                     message: 'Answer score was saved',
-                    duration: 300
+                    duration: 20
                 });
                 _this.nav.present(toast);
             });
@@ -573,7 +580,7 @@ var SectionsQuestionsPage = (function () {
             this.dementiaSqlService.update(this.n, this.section.id);
             var toast = ionic_angular_1.Toast.create({
                 message: 'Answer score was updated',
-                duration: 300
+                duration: 20
             });
             this.nav.present(toast);
         }
@@ -1128,6 +1135,9 @@ var DementiaSqlightService = (function () {
         this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section Text, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER)');
         this.storage.query('CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, date TIMESTAMP)');
     }
+    DementiaSqlightService.prototype.refreshDataSet = function () {
+        this.storage = new ionic_angular_1.Storage(ionic_angular_1.SqlStorage);
+    };
     ////////////////////////// QUERIES FOR TESTS //////////////////////
     DementiaSqlightService.prototype.insertCreateTest = function (createTest) {
         var sql = 'INSERT INTO tests (name, date) VALUES (?, DATE())';

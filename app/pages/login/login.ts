@@ -21,7 +21,7 @@ export class LoginPage {
               private dementiaService: DementiaService,  private platform: Platform, private zone:NgZone)
   {
        this.nav = nav;
-       this.dementiaService.initDB();
+       //this.dementiaService.initDB();
 
        this.userForm = this._formBuilder.group({
           'email': ['', Validators.compose([Validators.required,  Validators.minLength(1), ValidationService.emailValidator])]
