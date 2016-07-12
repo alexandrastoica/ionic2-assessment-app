@@ -50,7 +50,7 @@ export class DisplayCreatedTestsPage {
                         console.log("answered: " + data.res.rows.length);
                         console.log("qc: " + this.questionCount);
                         console.log("pertange: " + percentage);
-                        this.createdTests.push(new CreateTest(item.id, item.name, item.date, percentage.toFixed(1)));
+                        this.createdTests.push(new CreateTest(item.id, item.name, item.date, parseInt(percentage.toFixed(1))));
                       }
                     });
                   }
