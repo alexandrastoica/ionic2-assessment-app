@@ -22,8 +22,8 @@ export class CreateTest {
   name: string;
   date: string;
   id: number;
-  percentage: number;
-  constructor(id: number, name: string, date: string, percentage: number) {
+  percentage: string;
+  constructor(id: number, name: string, date: string, percentage: string) {
     this.id = id;
     this.name = name;
     this.date = date;
@@ -38,8 +38,14 @@ export class DementiaSqlightService {
   // Init an empty DB if it does not exist by now!
   constructor() {
     this.storage = new Storage(SqlStorage);
-    this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section Text, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER)');
     this.storage.query('CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, date TIMESTAMP)');
+    this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section Text, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER, CONSTRAINT composite_id UNIQUE (section, question_id, test_id))');
+
+  }
+
+  public refreshDataSet()
+  {
+    this.storage = new Storage(SqlStorage);
   }
 
    ////////////////////////// QUERIES FOR TESTS //////////////////////
@@ -76,18 +82,13 @@ export class DementiaSqlightService {
 
   // Save a new note to the DB
   public add(test: Test) {
-   // let sql = 'INSERT INTO test_sections (section, question, score, question_id) VALUES (?, ?, ?, ?)';
-   // return this.storage.query(sql, [test.section, test.question, test.score, test.question_id]);
-    let sql = 'INSERT INTO test_sections (section, question, question_id, score, test_id) VALUES (?, ?, ?, ?, ?)';
+    let sql = 'INSERT OR IGNORE INTO test_sections (section, question, score, question_id, test_id) VALUES (?, ?, ?, ?, ?)';
     return this.storage.query(sql, [test.section, test.question, test.score, test.question_id, test.test_id]);
-
   }
 
   // Update an existing note with a given ID
-  public update(score: number, section: number) {
-    let sql = 'UPDATE test_sections SET score = ? WHERE section = ?';
-    return this.storage.query(sql, [score, section]);
-     //let sql = 'UPDATE test_sections SET score = \"' + test.score + '\"';
-     // this.storage.query(sql);
+  public update(test: Test) {
+    let sql = 'UPDATE test_sections SET score = ? WHERE section = ? AND question_id = ? AND test_id = ?';
+    return this.storage.query(sql, [test.score, test.section, test.question_id, test.test_id]);
   }
 }
