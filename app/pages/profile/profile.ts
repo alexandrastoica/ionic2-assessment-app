@@ -2,6 +2,8 @@ import {Component, NgZone} from "@angular/core";
 import {Modal, NavController, Platform} from 'ionic-angular';
 import {DementiaService} from '../../services/dementia.service';
 import {RegistrationPage} from '../registration/registration';
+import {LoginPage} from '../login/login';
+
 
 @Component({
   templateUrl: 'build/pages/profile/profile.html',
@@ -10,8 +12,6 @@ export class Profile {
 public users = [];
 public user = [];
 public currentUser;
-
-
 
     constructor(private dementiaService: DementiaService,
         private nav: NavController,
@@ -46,5 +46,10 @@ public currentUser;
 
         modal.onDismiss(() => {
         });
+    }
+
+    logout(): void {
+        window.localStorage.removeItem('Email');
+        this.nav.push(LoginPage);
     }
 }

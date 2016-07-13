@@ -13,8 +13,8 @@ export class Tests {
     tests: Test[];
     public id;
 
-  constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, public nav: NavController, private navParams: NavParams, private viewCtrl: ViewController)
-  {
+  constructor(public dementiaSqlService: DementiaSqlightService, private platform: Platform, 
+    public nav: NavController, private navParams: NavParams, private viewCtrl: ViewController){
      this.id = this.navParams.get('id');
   }
 
@@ -38,17 +38,9 @@ export class Tests {
     }
 
      showDetail(section) {
-        let modal = Modal.create(TestquestionsPage, {
+        this.nav.push(TestquestionsPage, {
             section: section,
             id: this.id
         });
-        this.nav.present(modal);
-
-        modal.onDismiss(() => {
-        });
-    }
-
-     dismiss() {
-        this.viewCtrl.dismiss(this.id);
     }
 }

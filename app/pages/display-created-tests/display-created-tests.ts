@@ -62,14 +62,8 @@ export class DisplayCreatedTestsPage {
       //  });
     }
 
-   showDetail(id) {
-        let modal = Modal.create(Tests, {
-            id: id
-        });
-        this.nav.present(modal);
-
-        modal.onDismiss(() => {
-        });
+    showDetail(id){
+      this.nav.push(Tests, {id: id});
     }
 
     showDetailSection(createdtest) {

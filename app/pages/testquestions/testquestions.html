@@ -5,21 +5,14 @@
   Ionic pages and navigation.
 -->
 <ion-navbar *navbar>
-  <ion-title>Assessment Questions Section: {{section.section}}</ion-title>
-  <ion-buttons start>
-      <button (click)="dismiss()">
-          <ion-icon name="ios-arrow-round-back-outline"></ion-icon>
-      </button>
-  </ion-buttons>
+  <ion-title>Section: {{section.section}}</ion-title>
 </ion-navbar>
 
-<ion-content padding class="testquestions">
+<ion-content class="testquestions">
 <ion-list>
-      <ion-item *ngFor="let section of sections">
-         <ion-item-content>
-              <div item-left> <p>{{section.question | truncate:50}}</p> </div>
-              <div item-right><h3>score : {{section.score}} </h3>  </div>
-         </ion-item-content>
-      </ion-item>
-   </ion-list>
+    <ion-item text-wrap *ngFor="let section of sections"> 
+      {{section.question}} 
+      <div><b>score: {{section.score}}</b></div>
+   </ion-item>
+</ion-list>
 </ion-content>

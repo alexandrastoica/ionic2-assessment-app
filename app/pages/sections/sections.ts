@@ -30,15 +30,4 @@ export class Sections {
     navigate(section) {
         this.nav.push(SectionsDetailPage, {testId: this.testId, section: section});
     }
-
-    logout(): void {
-	    window.localStorage.removeItem('username');
-	    window.localStorage.removeItem('password');
-
-	    this.nav.push(LoginPage);
-	  //  this.nav.popToRoot();
-    }
-
-
-
 }

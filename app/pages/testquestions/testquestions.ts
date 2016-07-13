@@ -42,8 +42,4 @@ export class TestquestionsPage {
             });
              //console.log("id for test  is " + JSON.stringify(this.id.id));
     }
-
-    dismiss() {
-        this.viewCtrl.dismiss(this.sections);
-    }
 }
