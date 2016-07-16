@@ -28,13 +28,10 @@ export class SectionsQuestionsPage {
 		this.section = params.data.section;
         this.questions = params.data.questions;
 		this.testId = params.data.testId;
-       // console.log("quess" + this.questions);
 		this.maxN = this.questions.length;
         this.n = params.data.next_question?params.data.next_question:0;
 		this.currentQuestion = this.questions[this.n];
-		//this.question = {};
 
-		//this.platform = platform;
         this.questionForm = fb.group({
             'Validate': ['', Validators.compose([Validators.required])],
         });
@@ -42,7 +39,8 @@ export class SectionsQuestionsPage {
         this.Validate = this.questionForm.controls['Validate'];
 
 	}
-	 onSubmit(value: string): void {
+	
+	onSubmit(value: string): void {
         if(this.questionForm.valid) {
              this.next();
         }
@@ -52,26 +50,28 @@ export class SectionsQuestionsPage {
     {
         this.question = new Test(this.section.id, this.currentQuestion, this.answer, this.n+1, this.testId);
 
-    		this.dementiaSqlService.add(this.question);
-    		this.dementiaSqlService.update(this.question);
-            let toast = Toast.create({
-                message: 'Answer score was saved',
-                duration: 20
-             });
-            this.nav.present(toast);
+		this.dementiaSqlService.add(this.question);
+		this.dementiaSqlService.update(this.question);
+        let toast = Toast.create({
+            message: 'Answer score was saved',
+            duration: 20
+         });
+        this.nav.present(toast);
     }
 
 	next(){
+		//save test and reset answer
+		this.saveTest(true);
+		this.answer = null;
+
+		//if more questions increment n and replace question
 		if(this.n < this.maxN - 1){
-            this.saveTest(true);
             this.n += 1;
 			this.currentQuestion = this.questions[this.n];
-			this.answer = null;
 		} else {
-            this.saveTest(true);
+			//else reset and go to sections page, passing the test id
             this.n = 0;
             this.currentQuestion = null;
-            this.answer = null;
 			this.nav.push(Sections,  {testId: this.testId});
 		}
 	}
@@ -79,25 +79,15 @@ export class SectionsQuestionsPage {
 	//moves to previous section-question
 	previous() {
 		//this the n (start count) is less than the question length
-			if(this.n < this.maxN - 1)
-			{
+			if(this.n > 0) {
 				this.n -= 1; //then decrement the value (moves to previous question)
 				//current question is then equal to the equal question count
 				this.currentQuestion = this.questions[this.n];
+			} else {
 				//if the start count is less than 1 -1 (i.e start question) take user back
 				//to the sections (stops the count going to -1, -2 etc)
-				 if(this.n < 1 - 1)
-				 {
-					this.nav.push(Sections);
-					//console.log("n" + this.n);
-                    //this.answer = this.question.answer;
-				 }
-			} else { //if first conditional statement fails take user back to the sections
-				this.nav.push(Sections);
-		}//END OF PREVIOUS FUNCTION
+				this.nav.pop(Sections);
+			}
 	}
 
-	/* private onPageWillUnload() {
-	    this.saveTest(true);
-	  }*/
 }
