@@ -2,8 +2,21 @@
 	.bar{
 		background: #c8c7cc;
 	}
+	.bar-container{
+		padding: 0;
+		margin: 0;
+		min-height: 0;
+		height: 5px;
+		padding-left: 16px;
+	}
 	.progress{
 		background: color($colors, purple);
-		height: 7px;
+		height: 5px;
+	}
+	ion-list .item-inner{
+		border: 0;
+	}
+	ion-item-group{
+		border-bottom: 1px solid #c8c7cc;
 	}
 }

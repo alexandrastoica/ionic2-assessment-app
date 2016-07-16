@@ -6,31 +6,32 @@
    <ion-list>
 
       <ion-item-group *ngFor="let createdTest of createdTests">
-        <ion-item-divider>
-          <ion-row>
-            <ion-col style="padding: 0" width-80>{{createdTest.name}}</ion-col>
-            <ion-col style="padding: 0; text-align: right">{{createdTest.percentage}}%</ion-col>
-          </ion-row>
+        <ion-item-divider light>
+            {{createdTest.name}}
         </ion-item-divider>
 
-        <ion-row class="bar">
-            <div class="progress" [style.width.%]="createdTest.percentage"> </div>
-        </ion-row>
-
         <ion-item>
-          <ion-icon item-left small name="calendar"></ion-icon>
-          {{createdTest.date | date: "dd/MM/yy"}}
+          <p>
+            {{createdTest.date | date: shortDate}}
+            <span style="float: right">{{createdTest.percentage}}%</span>
+          </p>
+        </ion-item>   
+        
+        <ion-item class="bar-container">
+          <ion-row class="bar">
+            <div class="progress" [style.width.%]="createdTest.percentage"> </div>
+          </ion-row>
         </ion-item>
-
+      
         <ion-row>
           <ion-col>
-            <button primary clear small purple (click)="showDetail(createdTest)">View details</button>
+            <button small clear purple (click)="showDetail(createdTest)">View details</button>
           </ion-col>
           <ion-col>
-            <button primary clear small danger (click)="showDetailSection(createdTest)">Continue assessment</button>
+            <button small clear danger (click)="showDetailSection(createdTest)">Continue assessment</button>
           </ion-col>
         </ion-row>
-        
+
       </ion-item-group>
 
    </ion-list>
