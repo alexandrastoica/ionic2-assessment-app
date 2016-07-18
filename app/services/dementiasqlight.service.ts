@@ -58,7 +58,7 @@ export class DementiaSqlightService {
    }
 
    public getCreatedTests(user_id: string){
-     let sql = 'SELECT * FROM tests WHERE user_id = ? ORDER BY date DESC';
+     let sql = 'SELECT * FROM tests WHERE user_id = ? ORDER BY date, id DESC';
      return this.storage.query(sql, [user_id]);
    }
 
