@@ -1,5 +1,12 @@
 <ion-navbar *navbar>
   <ion-title>Assessments</ion-title>
+
+  <ion-buttons end>
+    <button (click)="createAssesment()">
+      <ion-icon purple name="add"></ion-icon>
+    </button>
+  </ion-buttons>
+
 </ion-navbar>
 
 <ion-content class="display-created-tests">
@@ -11,27 +18,16 @@
           {{createdTest.name}}
       </ion-item-divider>
 
-      <ion-item>
+      <button ion-item (click)="showDetailSection(createdTest)">
         <p>
           {{createdTest.date | date: shortDate}}
           <span style="float: right">{{createdTest.percentage}}%</span>
         </p>
-      </ion-item>   
-      
-      <ion-item class="bar-container">
         <ion-row class="bar">
           <div class="progress" [style.width.%]="createdTest.percentage"> </div>
         </ion-row>
-      </ion-item>
-    
-      <ion-row>
-        <ion-col>
-          <button small clear purple (click)="showDetail(createdTest)">View details</button>
-        </ion-col>
-        <ion-col>
-          <button small clear danger (click)="showDetailSection(createdTest)">Continue assessment</button>
-        </ion-col>
-      </ion-row>
+      </button>   
+      <button block clear red (click)="showDetail(createdTest)">View details</button>
 
     </ion-item-group>
 
