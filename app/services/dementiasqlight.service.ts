@@ -19,13 +19,16 @@ export class Test {
 
 
 export class CreateTest {
-  name: string;
-  date: string;
   id: number;
+  name: string;
+  user_id: string;
+  date: string;
   percentage: string;
-  constructor(id: number, name: string, date: string, percentage: string) {
+
+  constructor(id: number, name: string, user_id: string, date: string, percentage: string) {
     this.id = id;
     this.name = name;
+    this.user_id = user_id;
     this.date = date;
     this.percentage = percentage;
   }
@@ -38,25 +41,25 @@ export class DementiaSqlightService {
   // Init an empty DB if it does not exist by now!
   constructor() {
     this.storage = new Storage(SqlStorage);
-    this.storage.query('CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, date TIMESTAMP)');
+    this.storage.query('CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, user_id Text, date TIMESTAMP)');
     this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section Text, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER, CONSTRAINT composite_id UNIQUE (section, question_id, test_id))');
 
   }
 
-  public refreshDataSet()
-  {
+  public refreshDataSet() {
     this.storage = new Storage(SqlStorage);
   }
 
    ////////////////////////// QUERIES FOR TESTS //////////////////////
 
    public insertCreateTest(createTest: CreateTest) {
-       let sql = 'INSERT INTO tests (name, date) VALUES (?, DATE())';
-       return this.storage.query(sql, [createTest.name]);
+       let sql = 'INSERT INTO tests (name, user_id, date) VALUES (?, ?, DATE())';
+       return this.storage.query(sql, [createTest.name, createTest.user_id]);
    }
 
-   public getCreatedTests(){
-     return this.storage.query('SELECT * FROM tests ORDER BY date ASC');
+   public getCreatedTests(user_id: string){
+     let sql = 'SELECT * FROM tests WHERE user_id = ? ORDER BY date DESC';
+     return this.storage.query(sql, [user_id]);
    }
 
    public getAnsweredQuestions(test_id: number)

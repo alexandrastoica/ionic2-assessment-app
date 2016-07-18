@@ -14,13 +14,16 @@ import {Sections} from "../sections/sections";
 export class CreateTestPage {
     public createTest;
     public name;
+    public user_id;
 
   constructor(public nav: NavController, private dementiaSqlService: DementiaSqlightService) {
+    this.user_id = window.localStorage.getItem('Email');
   }
 
   public saveTest()
   {
-      this.createTest = new CreateTest(0, this.name, '', '');
+      this.createTest = new CreateTest(0, this.name, this.user_id, '', '');
+      
       this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
         let id = data.res.insertId;
         this.nav.push(Sections, {testId: id});

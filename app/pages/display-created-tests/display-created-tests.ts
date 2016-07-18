@@ -21,11 +21,13 @@ export class DisplayCreatedTestsPage {
   public numberofQuestionsAnswered;
   public numberOfQuestionsTheSectionHas;
   public getData;
+  public user_id;
 
 
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
     this.dementiaSqlService.refreshDataSet();
     this.getData = getdata;
+    this.user_id = window.localStorage.getItem('Email');
 
     this.getData.load().then(data => {
       for (var i = 0; i < data.length; i++) {
@@ -39,7 +41,7 @@ export class DisplayCreatedTestsPage {
     //console.log("Loaded content");
        // this.platform.ready().then(() => {
             this.createdTests = [];
-            this.dementiaSqlService.getCreatedTests()
+            this.dementiaSqlService.getCreatedTests(this.user_id)
             .then(
               data => {
                 this.createdTests = [];
@@ -53,7 +55,7 @@ export class DisplayCreatedTestsPage {
                         //console.log("answered: " + data.res.rows.length);
                         // console.log("qc: " + this.questionCount);
                         //console.log("pertange: " + percentage);
-                        this.createdTests.push(new CreateTest(item.id, item.name, item.date, percentage));
+                        this.createdTests.push(new CreateTest(item.id, item.name, item.user_id, item.date, percentage));
                       }
                     });
                   }
