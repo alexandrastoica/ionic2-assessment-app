@@ -17,10 +17,8 @@ export class SectionsQuestionsPage {
 	public question: Test = null;
 	public currentQuestion;
 	public n = 0; maxN;
-    //public id;
 	questionForm: ControlGroup;
     Validate: AbstractControl;
-
     public testId;
 
 	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, private dementiaSqlService: DementiaSqlightService) {

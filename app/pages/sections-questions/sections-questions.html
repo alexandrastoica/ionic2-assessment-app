@@ -41,11 +41,18 @@
         <ion-label>N/A</ion-label>
         <ion-radio value="NA"> </ion-radio>
       </ion-item>
-        <div *ngIf="Validate.hasError('required') && Validate.touched" class="error-box">PLEASE SELECT A SCORE TO CONTINUE</div>
-    <p>1 = Barely met <BR> 5 = Completely met <BR> N/A = non-applicable</p>
-    <button purple type="submit" [disabled]="!questionForm.valid" block>Next</button>
-    <button danger block (click)="previous()">Previous</button>
     </ion-list>
-  </form>
+    
+    <p *ngIf="Validate.hasError('required') && Validate.touched" red>PLEASE SELECT A SCORE TO CONTINUE</p>
+    <p>1 = Barely met <BR> 5 = Completely met <BR> N/A = non-applicable</p>
 
+    
+      <button fab fab-right purple type="submit" [disabled]="!questionForm.valid">
+        <ion-icon name="arrow-forward"></ion-icon>
+      </button>
+      <button fab fab-left red (click)="previous()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+
+  </form>
 </ion-content>
