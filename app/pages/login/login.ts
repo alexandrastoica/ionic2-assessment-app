@@ -1,7 +1,7 @@
 import {Component, NgZone} from '@angular/core';
 import {Modal, NavController, Platform, Toast} from 'ionic-angular';
 import {FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl }  from '@angular/common';
-import {TabsPage} from "../tabs/tabs";
+import {Welcome} from "../welcome/welcome";
 import {DementiaService} from '../../services/dementia.service';
 import {RegistrationPage} from "../registration/registration";
 import { ControlMessages } from '../../components/control-messages component';
@@ -39,7 +39,7 @@ export class LoginPage {
                          // console.log(user);
                           if(this.userForm.value.email == user._id) {
                               window.localStorage.setItem('Email', user._id);
-                              this.nav.push(TabsPage);
+                              this.nav.push(Welcome);
                           } else {
                             let toast = Toast.create({
                                 message: 'Sorry username is isn\'t correct. ',
