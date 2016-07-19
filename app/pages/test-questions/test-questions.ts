@@ -1,19 +1,12 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, ViewController} from 'ionic-angular';
 import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
-import {Truncate} from '../../pipes/truncate';
 
-/*
-  Generated class for the TestquestionsPage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
-  templateUrl: 'build/pages/testquestions/testquestions.html',
-  pipes: [Truncate]
+  templateUrl: 'build/pages/test-questions/test-questions.html'
 })
-export class TestquestionsPage {
+
+export class TestQuestionsPage {
 
     sections: Test[];
     public section;
