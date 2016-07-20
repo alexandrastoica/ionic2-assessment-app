@@ -1,23 +1,20 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {NavController, Storage, LocalStorage} from 'ionic-angular';
 import {TabsPage} from '../tabs/tabs';
 
-/*
-  Generated class for the WelcomePage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   templateUrl: 'build/pages/welcome/welcome.html',
 })
 export class Welcome {
-	isNewTest: any;
+
+	public local;
+
 	constructor(public nav: NavController) {
-			
+		this.local = new Storage(LocalStorage);
 	}
 
 	skip(){
+		this.local.set('tutorialDone', 'true');	
 		this.nav.push(TabsPage);
 	}
 }

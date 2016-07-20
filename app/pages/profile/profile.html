@@ -1,7 +1,10 @@
 <ion-navbar *navbar>
   <ion-title>Profile</ion-title>
   <ion-buttons end>
-    <button block danger (click)="logout()">Logout</button>
+    <!--<button block danger (click)="logout()">Logout</button>-->
+    <button (click)="showDetail(user)">
+      <ion-icon name="settings"></ion-icon>
+    </button>
   </ion-buttons>
 </ion-navbar>
 

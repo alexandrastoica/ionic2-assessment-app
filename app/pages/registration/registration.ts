@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Modal, NavParams, NavController, ViewController, Platform, Toast} from 'ionic-angular';
+import {Modal, NavParams, NavController, ViewController, Platform, Toast, Storage, LocalStorage} from 'ionic-angular';
 import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl } from '@angular/common';
 import {TabsPage} from "../tabs/tabs";
 import {LoginPage} from "../login/login";
@@ -13,6 +13,7 @@ export class RegistrationPage {
     public user;
     public isNew = true;
     public action = 'Add';
+    public local;
 
     authForm: ControlGroup;
    // title: AbstractControl;
@@ -45,6 +46,9 @@ export class RegistrationPage {
         this.FirstName = this.authForm.controls['FirstName'];
         this.LastName = this.authForm.controls['LastName'];
         this.Email = this.authForm.controls['Email'];
+
+        //set localstorage
+        this.local = new Storage(LocalStorage);
     }
 
     ionViewLoaded() {
@@ -65,7 +69,7 @@ export class RegistrationPage {
 
     onSubmit(value): void {
         if(this.authForm.valid) {
-              window.localStorage.setItem('Email', value.Email);
+              this.local.set('email', value.Email);
              // console.log("email is " + window.localStorage.getItem('Email'));
              this.save();
              let toast = Toast.create({

@@ -2,7 +2,6 @@ import {Component} from "@angular/core";
 import {Sections} from '../sections/sections';
 import {Profile} from '../profile/profile';
 import {Tests} from '../tests/tests';
-import {HomePage} from '../home/home';
 import {CreateTestPage} from '../create-test/create-test';
 import {DisplayCreatedTestsPage} from '../display-created-tests/display-created-tests';
 import {Welcome} from '../welcome/welcome';

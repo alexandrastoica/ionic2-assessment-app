@@ -1,7 +1,7 @@
 import {Modal, Page, Platform, NavController, NavParams, ViewController} from 'ionic-angular';
 import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
-import {TestquestionsPage} from "../testquestions/testquestions";
+import {TestQuestionsPage} from "../test-questions/test-questions";
 import {Truncate} from '../../pipes/truncate';
 
 @Page({
@@ -19,26 +19,22 @@ export class Tests {
   }
 
    ionViewLoaded() {
-       // this.platform.ready().then(() => {
-           this.tests = [];
-            this.dementiaSqlService.get(this.id.id)
-            .then(
-              data => {
-                this.tests = [];
-                if (data.res.rows.length > 0) {
-                  for (var i = 0; i < data.res.rows.length; i++) {
-                    let item = data.res.rows.item(i);
-                    this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id));
-                    //this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id,));
-                  }
-                }
-            });
-      //  });
-       // console.log("id is " + JSON.stringify(this.id.id));
+       this.tests = [];
+        this.dementiaSqlService.get(this.id.id)
+        .then(
+          data => {
+            this.tests = [];
+            if (data.res.rows.length > 0) {
+              for (var i = 0; i < data.res.rows.length; i++) {
+                let item = data.res.rows.item(i);
+                this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id));
+              }
+            }
+        });
     }
 
      showDetail(section) {
-        this.nav.push(TestquestionsPage, {
+        this.nav.push(TestQuestionsPage, {
             section: section,
             id: this.id
         });

@@ -1,22 +1,9 @@
 <ion-navbar *navbar>
-<ion-title>Registration</ion-title>
-
-  <ion-buttons start *ngIf="isNew">
-      <button (click)="dismiss()">
-          <ion-icon name="arrow-back"></ion-icon>
-      </button>
-  </ion-buttons>
-
-  <ion-buttons end *ngIf="!isNew">
-      <button (click)="delete()">
-          <ion-icon name="trash"></ion-icon>
-      </button>
-  </ion-buttons>
-
+  <ion-title>Edit</ion-title>
 </ion-navbar>
 
-<ion-content padding class="registration">
-<ion-list inset>
+<ion-content padding class="edit-profile">
+  <ion-list inset>
    <form [ngFormModel]="authForm" (ngSubmit)="onSubmit(authForm.value)">
           <label class="item item-input item-select">
             <div class="input-label">
@@ -69,7 +56,6 @@
             <ion-input type="text" [(ngModel)]="user.department"></ion-input>
       </ion-item>
          <button danger type="submit" [disabled]="!authForm.valid" block>Submit</button>
-  </form>
-</ion-list>
-    <!--<button block (click)="save()">Save</button> -->
+ 	</form>
+  </ion-list>
 </ion-content>
