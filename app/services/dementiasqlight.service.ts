@@ -57,15 +57,19 @@ export class DementiaSqlightService {
        return this.storage.query(sql, [createTest.name, createTest.user_id]);
    }
 
-   public getCreatedTests(user_id: string){
-     let sql = 'SELECT * FROM tests WHERE user_id = ? ORDER BY date, id DESC';
+   public getCreatedTests(user_id: string) {
+     let sql = 'SELECT * FROM tests WHERE user_id = ? ORDER BY id DESC';
      return this.storage.query(sql, [user_id]);
    }
 
-   public getAnsweredQuestions(test_id: number)
-   {
+   public getAnsweredQuestions(test_id: number) {
      let sql = 'SELECT * FROM test_sections WHERE test_id = ?';
      return this.storage.query(sql, [test_id]);
+   }
+
+   public deleteTest(id: number) {
+     let sql = 'DELETE FROM tests WHERE id = ?';
+     return this.storage.query(sql, [id]);
    }
 
   ////////////////////////// QUERIES FOR TEST_SECTIONS //////////////////////

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Modal, NavController} from 'ionic-angular';
+import {Modal, NavController, Storage, LocalStorage, Alert} from 'ionic-angular';
 import {DementiaSqlightService, CreateTest} from '../../services/dementiasqlight.service';
 import {Tests} from '../tests/tests';
 import {Sections} from "../sections/sections";
@@ -7,11 +7,11 @@ import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 import {GetData} from "../../providers/get-data/get-data";
 import {CreateTestPage} from "../create-test/create-test";
 
-
 @Component({
   templateUrl: 'build/pages/display-created-tests/display-created-tests.html',
   providers: [GetData]
 })
+
 export class DisplayCreatedTestsPage {
   createdTests: CreateTest[];
   public questionCount = 0;
@@ -19,12 +19,19 @@ export class DisplayCreatedTestsPage {
   public numberOfQuestionsTheSectionHas;
   public getData;
   public user_id;
+  public local;
+  public createTest;
+  public id;
 
 
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
     this.dementiaSqlService.refreshDataSet();
     this.getData = getdata;
-    this.user_id = window.localStorage.getItem('Email');
+    
+    this.local = new Storage(LocalStorage);
+    this.local.get('email').then((data) => {
+        this.user_id = data;
+    });
 
     this.getData.load().then(data => {
       for (var i = 0; i < data.length; i++) {
@@ -56,8 +63,11 @@ export class DisplayCreatedTestsPage {
   }
 
   createAssesment(){
-      //create modal for assesment creation
-      let modal = Modal.create(CreateTestPage);
+      /*//create modal for assesment creation - old version
+      let modal = Modal.create(CreateTestPage, {
+        user: this.user_id
+      });
+
       this.nav.present(modal);
 
       //on dismiss if data not empty, push Section page to navigation and pass testid
@@ -65,11 +75,88 @@ export class DisplayCreatedTestsPage {
         if(data){
           this.nav.push(Sections, {testId: data});
         }
+      });*/
+
+      //create prompt to allow the user enter the assesment location and create a new assesment
+      let prompt = Alert.create({
+          title: 'Create assesment',
+          message: "Enter a location for the new assesment",
+          inputs: [
+            {
+              name: 'location',
+              placeholder: 'Location'
+            },
+          ],
+          buttons: [
+            {
+              text: 'Cancel',
+              handler: data => {
+                console.log('Cancel clicked');
+              }
+            },
+            {
+              text: 'Save',
+              handler: data => {
+                //if saved, call saveTest function to save the test
+                //console.log('Saved clicked', data.location);
+                this.saveTest(data.location);
+              }
+            }
+          ]
       });
+      this.nav.present(prompt);
+  }
+
+  saveTest(name) {
+      
+      //create new object with data
+      this.createTest = new CreateTest(0, name, this.user_id, '', '');
+      //call the service to insert the new test in by passing the data
+      this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
+        this.id = data.res.insertId;
+        console.log(this.id);
+        //redirect the user to the sections page to begin the test 
+        this.nav.push(Sections, {testId: this.id});  
+      });
+         
   }
 
   showDetail(id){
     this.nav.push(Tests, {id: id});
+  }
+
+  deleteTest(test){
+
+    //create confirm box to prevent the user from accidentally deleting an assestement
+    let confirm = Alert.create({
+      title: 'Delete Assesment',
+      message: 'Are you sure you want to delete this assesment?',
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => {
+            console.log('Disagree clicked');
+          }
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            console.log('Agree clicked');
+            //delete from database
+            this.dementiaSqlService.deleteTest(test.id);
+            //delete from view
+            for(let i = 0; i < this.createdTests.length; i++) {
+              if(this.createdTests[i] == test){
+                this.createdTests.splice(i, 1);
+              }
+            }//end for
+          }//end handler
+        }
+      ]
+    });//end alert
+
+    this.nav.present(confirm);
+
   }
 
   showDetailSection(createdtest) {

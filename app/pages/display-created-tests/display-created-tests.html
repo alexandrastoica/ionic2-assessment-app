@@ -26,8 +26,13 @@
         <ion-row class="bar">
           <div class="progress" [style.width.%]="createdTest.percentage"> </div>
         </ion-row>
-      </button>   
-      <button block clear red (click)="showDetail(createdTest)">View details</button>
+      </button>
+
+      <ion-item>
+        <button small purple outline (click)="showDetail(createdTest)">View details</button>
+        <button small purple outline (click)="showDetail(createdTest)">Export</button>
+        <button small red outline (click)="deleteTest(createdTest)">Delete test</button>
+      </ion-item>
 
     </ion-item-group>
 
