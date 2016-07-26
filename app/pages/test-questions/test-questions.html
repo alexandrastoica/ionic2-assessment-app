@@ -1,0 +1,12 @@
+<ion-navbar *navbar>
+  <ion-title>Section: {{section.section}}</ion-title>
+</ion-navbar>
+
+<ion-content class="testquestions">
+<ion-list>
+    <ion-item text-wrap *ngFor="let section of sections"> 
+      {{section.question}} 
+      <div><b>score: {{section.score}}</b></div>
+   </ion-item>
+</ion-list>
+</ion-content>

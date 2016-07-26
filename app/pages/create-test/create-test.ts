@@ -1,31 +1,40 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {NavController, ViewController} from 'ionic-angular';
 import {DementiaSqlightService, CreateTest} from '../../services/dementiasqlight.service';
 import {Sections} from "../sections/sections";
-/*
-  Generated class for the CreateTestPage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+import {TabsPage} from "../tabs/tabs"
+ 
 @Component({
   templateUrl: 'build/pages/create-test/create-test.html',
 })
+
 export class CreateTestPage {
     public createTest;
     public name;
+    public user_id;
+    public id;
 
-  constructor(public nav: NavController, private dementiaSqlService: DementiaSqlightService) {
+  constructor(public viewCtrl: ViewController, public nav: NavController, private dementiaSqlService: DementiaSqlightService) {
+    this.user_id = window.localStorage.getItem('Email');
   }
 
   public saveTest()
   {
-      this.createTest = new CreateTest(0, this.name, '', '');
+      
+      this.createTest = new CreateTest(0, this.name, this.user_id, '', '');
+      
       this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
-        let id = data.res.insertId;
-        this.nav.push(Sections, {testId: id});
-      });
+        this.id = data.res.insertId;
+        this.viewCtrl.dismiss(this.id);
+       // this.nav.parent.select(1); 
+       // this.nav.push(Sections, {testId: id});
+      });      
+
+      
   }
 
+  close() {
+    this.viewCtrl.dismiss();
+  }
 
 }

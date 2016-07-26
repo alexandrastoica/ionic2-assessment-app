@@ -71,8 +71,7 @@ export class DementiaService {
                     });
 
                     // Listen for changes on the database.
-                    this._db.changes({ live: true, since: 'now', include_docs: true})
-                        .on('change', this.onDatabaseChange);
+                    this._db.changes({ live: true, since: 'now', include_docs: true}).on('change', this.onDatabaseChange);
 
                     return this._userData;
                 });
@@ -90,8 +89,7 @@ export class DementiaService {
             this._currentUserData = data;
 
             // Listen for changes on the database.
-            this._db.changes({ live: true, since: 'now', include_docs: true})
-                                .on('change', this.onDatabaseChange);
+            this._db.changes({live: true, since: 'now', include_docs: true}).on('change', this.onDatabaseChange);
 
             return this._currentUserData;
 
