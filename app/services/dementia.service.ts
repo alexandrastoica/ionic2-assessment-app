@@ -11,14 +11,35 @@ export class DementiaService {
     _userData: any;
     remote: any;
     _currentUserData: any;
+    _remoteDB: any;
 
     initDB() {
         this._db = new PouchDB('dementia-db', { adapter: 'websql' });
+        this._remoteDB =  'https://medialab.cloudant.com/users';
+
+       this._db.changes({
+        since: 'now',
+        live: true
+       }).on('change', this.getUserData);
+
+       if(this._remoteDB) {
+        this.sync();
+       }
 
        // console.log("db is " + this._db);
       //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
         //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
     }
+
+    private syncError() {
+     console.log("error unable to syn to remote database");
+    }
+
+    private sync() {
+        var opts = {live: true};
+        this._db.sync(this._remoteDB, opts, this.syncError);
+   }
+
 
     addUser(userData) {
         let user = {
@@ -171,5 +192,7 @@ export class DementiaService {
         }
         return low;
     }
+
+
 
 }
