@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {Modal, NavController, Platform, Storage, LocalStorage} from 'ionic-angular';
+import {Modal, NavController, Platform, Storage, LocalStorage, NavParams} from 'ionic-angular';
 import {DementiaService} from '../../services/dementia.service';
 import {RegistrationPage} from '../registration/registration';
 import {LoginPage} from '../login/login';
@@ -15,11 +15,13 @@ public user = [];
 public currentUser;
 public local;
 
-    constructor(private dementiaService: DementiaService, private nav: NavController, private platform: Platform, private zone: NgZone) {
+    constructor(private dementiaService: DementiaService, private nav: NavController, private platform: Platform, private zone: NgZone, private navparams: NavParams) {
     	this.local = new Storage(LocalStorage);
         this.local.get('email').then((data) => {
             this.currentUser = data;
         });
+
+        //console.log("current user in profile " + JSON.stringify(this.user));
     }
 
     ionViewLoaded() {

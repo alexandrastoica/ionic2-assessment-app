@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, enableProdMode} from "@angular/core";
 import {Platform, ionicBootstrap} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
@@ -14,6 +14,7 @@ import {DementiaSqlightService} from './services/dementiasqlight.service';
 })
 export class MyApp {
   rootPage: any = LoginPage;
+
   constructor(platform: Platform, public dementiaService: DementiaService, public dementiaSqlService: DementiaSqlightService) {
 	  platform.ready().then(() => {
 		  // Okay, so the platform is ready and our plugins are available.
@@ -24,5 +25,5 @@ export class MyApp {
 	  });
   }
 }
-
+//enableProdMode();
 ionicBootstrap(MyApp);

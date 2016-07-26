@@ -13,6 +13,7 @@ export class RegistrationPage {
     public user;
     public isNew = true;
     public action = 'Add';
+    public title = "Registration";
     public local;
 
     authForm: ControlGroup;
@@ -53,6 +54,7 @@ export class RegistrationPage {
 
     ionViewLoaded() {
         this.user = this.navParams.get('user');
+        console.log("reg / update user is " + JSON.stringify(this.user));
 
         if (!this.user) {
             this.user = {
@@ -64,10 +66,13 @@ export class RegistrationPage {
         else {
             this.isNew = false;
             this.action = 'Edit';
+            this.title = 'Edit Details';
+            //console.log("user exisits");
         }
     }
 
     onSubmit(value): void {
+      if(this.isNew) {
         if(this.authForm.valid) {
               this.local.set('email', value.Email);
              // console.log("email is " + window.localStorage.getItem('Email'));
@@ -78,6 +83,14 @@ export class RegistrationPage {
              });
             this.nav.present(toast);
         }
+      } else {
+         this.save();
+         let toast = Toast.create({
+              message: 'User details updated',
+              duration: 300
+             });
+            this.nav.present(toast);
+      }
     }
 
     save() {
@@ -85,15 +98,21 @@ export class RegistrationPage {
             this.dementiaService.addUser(this.user);
                // .catch(console.error.bind(console));
         } else {
-        this.dementiaService.updateData(this.user)
-            .catch(console.error.bind(console));
+        this.dementiaService.updateData(this.user);
+            //.catch(console.error.bind(console));
         }
         this.dismiss();
     }
 
     delete() {
-        this.dementiaService.removeData(this.user)
-            .catch(console.error.bind(console));
+        this.dementiaService.removeData(this.user);
+        console.log("calllleedd delete");
+          let toast = Toast.create({
+              message: 'Account has been deleted',
+              duration: 300
+             });
+            this.nav.present(toast);
+            this.nav.push(LoginPage);
 
         this.dismiss();
     }
@@ -102,8 +121,4 @@ export class RegistrationPage {
         this.viewCtrl.dismiss(this.user);
     }
 
-    showThing()
-    {
-        this.dementiaService.test();
-    }
 }

@@ -45,8 +45,8 @@ export class DementiaService {
         let user = {
             _id: userData.email,
             title: userData.title,
-            firstname: userData.firstName,
-            lastname: userData.lastName,
+            firstname: userData.firstname,
+            lastname: userData.lastname,
             role: userData.role,
             job: userData.job,
             organisation: userData.organisation,
@@ -156,11 +156,6 @@ export class DementiaService {
             // Return cached data as a promise
             return Promise.resolve(this._data);
         }
-    }
-
-    test()
-    {
-        console.log("fdifdofidofidofi");
     }
 
     private onDatabaseChange = (change) => {
