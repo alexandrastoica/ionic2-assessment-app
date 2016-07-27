@@ -46,6 +46,7 @@ export class SectionsQuestionsPage {
 
     saveTest(showBadge: boolean = false)
     {
+        console.log(this.section.id);
         this.question = new Test(this.section.id, this.currentQuestion, this.answer, this.n+1, this.testId);
 
 		this.dementiaSqlService.add(this.question);

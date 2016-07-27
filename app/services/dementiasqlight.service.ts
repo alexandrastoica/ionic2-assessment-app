@@ -42,7 +42,7 @@ export class DementiaSqlightService {
   constructor() {
     this.storage = new Storage(SqlStorage);
     this.storage.query('CREATE TABLE IF NOT EXISTS tests (id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, user_id Text, date TIMESTAMP)');
-    this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section Text, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER, CONSTRAINT composite_id UNIQUE (section, question_id, test_id))');
+    this.storage.query('CREATE TABLE IF NOT EXISTS test_sections (id INTEGER PRIMARY KEY AUTOINCREMENT, section INTEGER, question TEXT, score TEXT, question_id INTEGER, test_id INTEGER, CONSTRAINT composite_id UNIQUE (section, question_id, test_id))');
 
   }
 
