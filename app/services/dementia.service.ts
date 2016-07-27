@@ -15,7 +15,7 @@ export class DementiaService {
 
     initDB() {
         this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });
-        //this._remoteDB =  'https://medialab.cloudant.com/users';
+        this._remoteDB =  'https://medialab.cloudant.com/users';
 
         this._db.changes({
             since: 'now',
