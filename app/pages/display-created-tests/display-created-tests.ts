@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
 import {Modal, NavController, Storage, LocalStorage, Alert} from 'ionic-angular';
+import {EmailComposer} from 'ionic-native';
 import {DementiaSqlightService, CreateTest} from '../../services/dementiasqlight.service';
 import {Tests} from '../tests/tests';
 import {Sections} from "../sections/sections";
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 import {GetData} from "../../providers/get-data/get-data";
-import {CreateTestPage} from "../create-test/create-test";
 
 @Component({
   templateUrl: 'build/pages/display-created-tests/display-created-tests.html',
@@ -22,29 +22,29 @@ export class DisplayCreatedTestsPage {
   public local;
   public createTest;
   public id;
+  public searchQuery;
 
 
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
     this.dementiaSqlService.refreshDataSet();
     this.getData = getdata;
     
+    //get current user from local storage
     this.local = new Storage(LocalStorage);
     this.local.get('email').then((data) => {
         this.user_id = data;
     });
 
+    //get total number of questions available for the assesment
     this.getData.load().then(data => {
       for (var i = 0; i < data.length; i++) {
         this.questionCount += data[i].questions.length;
       }
     });
+
   }
 
-  getItems(ev) {
-    //TODO: write search function
-  }
-
-  onPageDidEnter() {
+  ionViewDidEnter() {
       this.createdTests = [];
       this.dementiaSqlService.getCreatedTests(this.user_id).then(data => {
           if (data.res.rows.length > 0) {
@@ -58,8 +58,30 @@ export class DisplayCreatedTestsPage {
               });
             }
           }
-      });
-      
+      }); 
+  }
+
+  export(){
+    EmailComposer.isAvailable().then((available) =>{
+     if(available) {
+       //Now we know we can send
+     }
+    });
+
+    let email = {
+      to: 'alexandra.stoica95@yahoo.com',
+      cc: '',
+      bcc: '',
+      attachments: [
+        'file://img/logo.png'
+      ],
+      subject: 'Cordova Icons',
+      body: 'How are you? Nice greetings from Leipzig',
+      isHtml: true
+    };
+
+    // Send a text message using default options
+    EmailComposer.open(email);
   }
 
   createAssesment(){
@@ -77,10 +99,10 @@ export class DisplayCreatedTestsPage {
         }
       });*/
 
-      //create prompt to allow the user enter the assesment location and create a new assesment
+      //create prompt to allow the user enter the assessment location and create a new assesment
       let prompt = Alert.create({
-          title: 'Create assesment',
-          message: "Enter a location for the new assesment",
+          title: 'Create assessment',
+          message: "Enter a location for the new assessment",
           inputs: [
             {
               name: 'location',
@@ -127,10 +149,10 @@ export class DisplayCreatedTestsPage {
 
   deleteTest(test){
 
-    //create confirm box to prevent the user from accidentally deleting an assestement
+    //create confirm box to prevent the user from accidentally deleting an assessment
     let confirm = Alert.create({
-      title: 'Delete Assesment',
-      message: 'Are you sure you want to delete this assesment?',
+      title: 'Delete Assessment',
+      message: 'Are you sure you want to delete this assessment?',
       buttons: [
         {
           text: 'Cancel',
@@ -143,7 +165,8 @@ export class DisplayCreatedTestsPage {
           handler: () => {
             console.log('Agree clicked');
             //delete from database
-            this.dementiaSqlService.deleteTest(test.id);
+            this.dementiaSqlService.deleteTest(test.id); //delete the test
+            this.dementiaSqlService.deleteAnswers(test.id); //delete all the answers for that test
             //delete from view
             for(let i = 0; i < this.createdTests.length; i++) {
               if(this.createdTests[i] == test){

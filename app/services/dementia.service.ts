@@ -13,7 +13,7 @@ export class DementiaService {
     _currentUserData: any;
 
     initDB() {
-        this._db = new PouchDB('dementia-db', { adapter: 'websql' });
+        this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });
 
        // console.log("db is " + this._db);
       //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
@@ -31,7 +31,6 @@ export class DementiaService {
             organisation: userData.organisation,
             department: userData.department
         }
-        console.log(user);
         this._db.put(user);
     }
 
@@ -64,7 +63,7 @@ export class DementiaService {
     getCurrentUserData(currentUser){
         return this._db.get(currentUser).then(data => {
 
-            console.log(data);
+            //console.log(data);
             this._currentUserData = data;
 
             // Listen for changes on the database.

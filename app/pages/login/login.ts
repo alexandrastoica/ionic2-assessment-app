@@ -8,11 +8,11 @@ import {RegistrationPage} from "../registration/registration";
 import {ControlMessages} from '../../components/control-messages component';
 import {ValidationService} from '../../services/validation.service';
 
-
 @Component({
   templateUrl: 'build/pages/login/login.html',
   directives: [ControlMessages]
 })
+
 export class LoginPage {
   userForm: any;
   public email;

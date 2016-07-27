@@ -84,7 +84,7 @@ export class SectionsQuestionsPage {
 			} else {
 				//if the start count is less than 1 -1 (i.e start question) take user back
 				//to the sections (stops the count going to -1, -2 etc)
-				this.nav.pop(Sections);
+				this.nav.push(Sections,  {testId: this.testId});
 			}
 	}
 

@@ -23,12 +23,10 @@ public local;
     }
 
     ionViewLoaded() {
-        console.log(this.currentUser);
         this.dementiaService.getCurrentUserData(this.currentUser)
             .then(data => {
                 this.zone.run(() => {
                     this.user = data;
-                    //console.log(data);
                 });
             }).catch(console.error.bind(console));
     }
@@ -37,10 +35,5 @@ public local;
         this.nav.push(ProfileSettings, {
             user: user
         });
-    }
-
-    logout(): void {
-        this.local.remove('email');
-        this.nav.push(LoginPage);
     }
 }

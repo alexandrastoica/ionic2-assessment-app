@@ -98,4 +98,9 @@ export class DementiaSqlightService {
     let sql = 'UPDATE test_sections SET score = ? WHERE section = ? AND question_id = ? AND test_id = ?';
     return this.storage.query(sql, [test.score, test.section, test.question_id, test.test_id]);
   }
+
+  public deleteAnswers(id: number){
+    let sql = 'DELETE FROM test_sections WHERE test_id = ?';
+    return this.storage.query(sql, [id]);
+  }
 }
