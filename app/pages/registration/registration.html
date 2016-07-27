@@ -43,7 +43,7 @@
              <div *ngIf="LastName.hasError('required') && LastName.touched" class="error-box">* Last Name is required</div>
             <div *ngIf="LastName.hasError('minlength') && LastName.touched" class="error-box">* Minimum length is 2</div>
 
-            <ion-item>
+            <ion-item *ngIf="isNew">
              <ion-label>Email</ion-label>
                <ion-input type="text"  [(ngModel)]="user.email"  [ngFormControl]="Email"></ion-input>
              </ion-item>
@@ -61,14 +61,14 @@
           </ion-item>
 
           <ion-item>
-            <ion-label fixed>Organization</ion-label>
+            <ion-label fixed>Organisation</ion-label>
             <ion-input type="text" [(ngModel)]="user.organisation"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label fixed>Department</ion-label>
             <ion-input type="text" [(ngModel)]="user.department"></ion-input>
       </ion-item>
-         <button danger type="submit" [disabled]="!authForm.valid" block>Submit</button>
+         <button danger type="submit" [disabled]="!authForm.valid && isNew" block>Submit</button>
   </form>
 </ion-list>
     <!--<button block (click)="save()">Save</button> -->

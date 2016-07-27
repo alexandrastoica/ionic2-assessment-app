@@ -42,8 +42,7 @@ export class RegistrationPage {
             'Email': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
 
         });
-
-       // this.title = this.authForm.controls['title'];
+        
         this.FirstName = this.authForm.controls['FirstName'];
         this.LastName = this.authForm.controls['LastName'];
         this.Email = this.authForm.controls['Email'];
