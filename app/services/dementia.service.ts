@@ -11,21 +11,42 @@ export class DementiaService {
     _userData: any;
     remote: any;
     _currentUserData: any;
+    _remoteDB: any;
 
     initDB() {
         this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });
+        //this._remoteDB =  'https://medialab.cloudant.com/users';
 
-       // console.log("db is " + this._db);
-      //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
+        this._db.changes({
+            since: 'now',
+            live: true
+        }).on('change', this.getUserData);
+
+        if(this._remoteDB) {
+            this.sync();
+        }
+
+          // console.log("db is " + this._db);
+         //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
         //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
     }
+
+    private syncError() {
+     console.log("error unable to syn to remote database");
+    }
+
+    private sync() {
+        var opts = {live: true};
+        this._db.sync(this._remoteDB, opts, this.syncError);
+   }
+
 
     addUser(userData) {
         let user = {
             _id: userData.email,
             title: userData.title,
-            firstname: userData.firstName,
-            lastname: userData.lastName,
+            firstname: userData.firstname,
+            lastname: userData.lastname,
             role: userData.role,
             job: userData.job,
             organisation: userData.organisation,
@@ -136,11 +157,6 @@ export class DementiaService {
         }
     }
 
-    test()
-    {
-        console.log("fdifdofidofidofi");
-    }
-
     private onDatabaseChange = (change) => {
         var index = this.findIndex(this._data, change.id);
         var data = this._data[index];
@@ -168,5 +184,7 @@ export class DementiaService {
         }
         return low;
     }
+
+
 
 }

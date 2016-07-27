@@ -85,20 +85,6 @@ export class DisplayCreatedTestsPage {
   }
 
   createAssesment(){
-      /*//create modal for assesment creation - old version
-      let modal = Modal.create(CreateTestPage, {
-        user: this.user_id
-      });
-
-      this.nav.present(modal);
-
-      //on dismiss if data not empty, push Section page to navigation and pass testid
-      modal.onDismiss(data => {
-        if(data){
-          this.nav.push(Sections, {testId: data});
-        }
-      });*/
-
       //create prompt to allow the user enter the assessment location and create a new assesment
       let prompt = Alert.create({
           title: 'Create assessment',

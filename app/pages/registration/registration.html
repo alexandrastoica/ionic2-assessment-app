@@ -1,5 +1,5 @@
 <ion-navbar *navbar>
-<ion-title>Registration</ion-title>
+<ion-title>{{title}}</ion-title>
 
   <ion-buttons start *ngIf="isNew">
       <button (click)="dismiss()">
@@ -31,14 +31,14 @@
 
           <ion-item>
               <ion-label>First name</ion-label>
-              <ion-input type="text"  [(ngModel)]="user.firstName" [ngFormControl]="FirstName"></ion-input>
+              <ion-input type="text"  [(ngModel)]="user.firstname" [ngFormControl]="FirstName"></ion-input>
           </ion-item>
             <div *ngIf="FirstName.hasError('required') && FirstName.touched" class="error-box">* First Name is required</div>
             <div *ngIf="FirstName.hasError('minlength') && FirstName.touched" class="error-box">* Minimum length is 2</div>
 
            <ion-item>
               <ion-label>Last name</ion-label>
-             <ion-input type="text"  [(ngModel)]="user.lastName" [ngFormControl]="LastName"></ion-input>
+             <ion-input type="text"  [(ngModel)]="user.lastname" [ngFormControl]="LastName"></ion-input>
           </ion-item>
              <div *ngIf="LastName.hasError('required') && LastName.touched" class="error-box">* Last Name is required</div>
             <div *ngIf="LastName.hasError('minlength') && LastName.touched" class="error-box">* Minimum length is 2</div>

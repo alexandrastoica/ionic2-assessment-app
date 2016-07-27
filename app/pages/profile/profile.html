@@ -9,7 +9,7 @@
 </ion-navbar>
 
 <ion-content class="profile">
-    <ion-list>
+   <ion-list>
     		<ion-item> {{ user.title }} {{ user.firstname }} {{ user.lastname }}</ion-item>
         <ion-item> {{ user._id }}</ion-item>
         <ion-item [hidden]="!user.role"> {{ user.role }}</ion-item>
