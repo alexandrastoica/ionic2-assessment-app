@@ -4,10 +4,11 @@ import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractContro
 import {TabsPage} from "../tabs/tabs";
 import {LoginPage} from "../login/login";
 import {DementiaService} from '../../services/dementia.service';
+import {ValidationService} from '../../services/validation.service';
 
 
 @Component({
-  templateUrl: 'build/pages/registration/registration.html',
+  templateUrl: 'build/pages/registration/registration.html'
 })
 export class RegistrationPage {
     public user;
@@ -22,13 +23,6 @@ export class RegistrationPage {
     LastName: AbstractControl;
     Email: AbstractControl;
 
-   /* authForm: ControlGroup;
-    name: AbstractControl;
-    email: AbstractControl;
-    role: AbstractControl;
-    jobTitle: AbstractControl;
-    Organization: AbstractControl;
-    Department: AbstractControl; */
 
     constructor(fb: FormBuilder, private viewCtrl: ViewController,
         private navParams: NavParams, platform: Platform,
@@ -39,10 +33,9 @@ export class RegistrationPage {
            // 'title': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
             'FirstName': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
             'LastName': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-            'Email': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-
+            'Email': ['', Validators.compose([Validators.required, Validators.minLength(2), ValidationService.invalidEmailAddressTwo])]
         });
-        
+
         this.FirstName = this.authForm.controls['FirstName'];
         this.LastName = this.authForm.controls['LastName'];
         this.Email = this.authForm.controls['Email'];
@@ -53,7 +46,6 @@ export class RegistrationPage {
 
     ionViewLoaded() {
         this.user = this.navParams.get('user');
-        console.log("reg / update user is " + JSON.stringify(this.user));
 
         if (!this.user) {
             this.user = {

@@ -45,10 +45,11 @@
 
             <ion-item *ngIf="isNew">
              <ion-label>Email</ion-label>
-               <ion-input type="text"  [(ngModel)]="user.email"  [ngFormControl]="Email"></ion-input>
+               <ion-input type="text"  [(ngModel)]="user.email" ngControl="Email"></ion-input>
              </ion-item>
              <div *ngIf="Email.hasError('required') && Email.touched" class="error-box">* Email is required</div>
              <div *ngIf="Email.hasError('minlength') && Email.touched" class="error-box">* Minimum length is 2</div>
+             <div *ngIf="Email.hasError('invalidEmailAddressTwo') && Email.touched" class="error-box">Must be an valid email address</div>
 
            <ion-item>
             <ion-label fixed>Role</ion-label>

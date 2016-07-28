@@ -28,7 +28,7 @@ export class DisplayCreatedTestsPage {
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
     this.dementiaSqlService.refreshDataSet();
     this.getData = getdata;
-    
+
     //get current user from local storage
     this.local = new Storage(LocalStorage);
     this.local.get('email').then((data) => {
@@ -58,7 +58,7 @@ export class DisplayCreatedTestsPage {
               });
             }
           }
-      }); 
+      });
   }
 
   export(){
@@ -116,17 +116,17 @@ export class DisplayCreatedTestsPage {
   }
 
   saveTest(name) {
-      
+
       //create new object with data
       this.createTest = new CreateTest(0, name, this.user_id, '', '');
       //call the service to insert the new test in by passing the data
       this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
         this.id = data.res.insertId;
         console.log(this.id);
-        //redirect the user to the sections page to begin the test 
-        this.nav.push(Sections, {testId: this.id});  
+        //redirect the user to the sections page to begin the test
+        this.nav.push(Sections, {testId: this.id});
       });
-         
+
   }
 
   showDetail(id){
@@ -169,10 +169,12 @@ export class DisplayCreatedTestsPage {
   }
 
   showDetailSection(createdtest) {
+    console.log("called showdetailsection");
     let id = createdtest.id;
     this.dementiaSqlService.getAnsweredQuestions(id).then(
       data => {
         let item = data.res.rows[data.res.rows.length-1];
+        console.log("item is " + JSON.stringify(item));
         if (!item) {
           this.nav.push(Sections, {
             testId: id

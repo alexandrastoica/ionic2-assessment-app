@@ -8,6 +8,7 @@ import {RegistrationPage} from "../registration/registration";
 import {ControlMessages} from '../../components/control-messages component';
 import {ValidationService} from '../../services/validation.service';
 
+
 @Component({
   templateUrl: 'build/pages/login/login.html',
   directives: [ControlMessages]
@@ -33,54 +34,37 @@ export class LoginPage {
        this.local.get('tutorialDone').then((data) => {
           if (data != null) this.done = JSON.parse(data);
        });
-  
+
   }
 
    submit() {
     if (this.userForm.dirty && this.userForm.valid) {
-
       this.dementiaService.getUserData().then(data => {
-                    this.zone.run(() => {
-                        this.users = data;
+              this.zone.run(() => {
+                  this.users = data;
+                for(let user of this.users){
+                   // console.log(user);
+                    if(this.userForm.value.email == user._id){
+                        this.local.set('email', user._id);
+                        if(this.done == true){
+                          this.nav.push(TabsPage);
+                        } else {
+                          this.nav.push(Welcome);
+                        }
+                    } else if (this.userForm.value.email == 1) {
+                      console.log("called else");
+                      let toast = Toast.create({
+                          message: 'Sorry username isn\'t correct. ',
+                        duration: 300
+                      });
+                       this.nav.present(toast);
+                    }
+                }
+              });
+          }).catch(console.error.bind(console));
+        }
+     }
 
-                      for(let user of this.users){
-                         // console.log(user);
-                          if(this.userForm.value.email == user._id) {
-                              this.local.set('email', user._id);
-                              if(this.done == true){
-                                this.nav.push(TabsPage);
-                              } else {
-                                this.nav.push(Welcome);
-                              }
-                          } else {
-                            let toast = Toast.create({
-                                message: 'Sorry username is isn\'t correct. ',
-                                duration: 500
-                             });
-                            this.nav.present(toast);
-                          }
-                      }
-                    });
-                }).catch(console.error.bind(console));
-
-
-      //console.log(`Email: ${this.userForm.value.email}`);
-
-     // console.log("email is " + JSON.stringify(this.dementiaService.getAllData()));
-        //DO pouchDB email validation here
-        //if email from JSON stored data is equal to the email enter
-        //push users to tabs page
-        //else
-        //stay on login page and state email address is invalid
-
-
-    }
-  }
-
-
-   enterRegisterPage() {
-       this.nav.push(RegistrationPage);
-   }
 
     register() {
       let modal = Modal.create(RegistrationPage);
