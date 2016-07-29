@@ -20,6 +20,7 @@ export class LoginPage {
   public users = [];
   public local;
   public done;
+  public matches;
 
   constructor(private _formBuilder: FormBuilder, public nav: NavController,
               private dementiaService: DementiaService,  private platform: Platform, private zone:NgZone)
@@ -34,36 +35,39 @@ export class LoginPage {
        this.local.get('tutorialDone').then((data) => {
           if (data != null) this.done = JSON.parse(data);
        });
-
   }
 
-   submit() {
+  submit() {
     if (this.userForm.dirty && this.userForm.valid) {
+      let found = false;
       this.dementiaService.getUserData().then(data => {
               this.zone.run(() => {
                   this.users = data;
                 for(let user of this.users){
-                   // console.log(user);
-                    if(this.userForm.value.email == user._id){
-                        this.local.set('email', user._id);
-                        if(this.done == true){
-                          this.nav.push(TabsPage);
-                        } else {
-                          this.nav.push(Welcome);
-                        }
-                    } else if (this.userForm.value.email == 1) {
-                      console.log("called else");
-                      let toast = Toast.create({
-                          message: 'Sorry username isn\'t correct. ',
-                        duration: 300
-                      });
-                       this.nav.present(toast);
-                    }
+                  if(this.userForm.value.email == user._id){
+                     found = true;
+                      this.local.set('email', user._id);
+                     //console.log(found);
+                  }
                 }
               });
+              if (found == true) {//User was found
+                if(this.done == true){
+                    this.nav.push(TabsPage);
+                } else {
+                    this.nav.push(Welcome);
+                }
+              } else {
+               // console.log('User not found!');
+                  let toast = Toast.create({
+                    message: 'Sorry email doesn\'t exist, please try again',
+                    duration: 350
+                 });
+               this.nav.present(toast);
+              }
           }).catch(console.error.bind(console));
         }
-     }
+      }
 
 
     register() {
