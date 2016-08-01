@@ -1,4 +1,18 @@
+import { Control, ControlGroup } from "@angular/common";
+
+interface ValidationResult {
+    [key: string]: boolean;
+}
+
 export class ValidationService {
+
+   public static invalidEmailAddressTwo(control: Control): ValidationResult {
+          var valid = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(control.value);
+        if (!valid) {
+            return {invalidEmailAddressTwo: true};
+        }
+        return null;
+    }
 
   static getValidatorErrorMessage(code: string) {
     let config = {
@@ -25,7 +39,6 @@ export class ValidationService {
       (?=.*[0-9])  # At least a numeral
       .{10,}       # Any character 10 or more times
       $s
-
       */
     if (control.value.match(/^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,100}$/)) {
       return null;
