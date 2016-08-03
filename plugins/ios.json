@@ -13,9 +13,6 @@
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
         },
-        "cordova-plugin-email-composer": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
-        },
         "cordova-plugin-file": {
             "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
         },

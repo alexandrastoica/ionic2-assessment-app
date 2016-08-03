@@ -23,6 +23,7 @@ export class DisplayCreatedTestsPage {
   public createTest;
   public id;
   public searchQuery;
+  public item;
 
 
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
@@ -106,7 +107,7 @@ export class DisplayCreatedTestsPage {
               text: 'Save',
               handler: data => {
                 //if saved, call saveTest function to save the test
-                //console.log('Saved clicked', data.location);
+                console.log('Saved clicked', data.location);
                 this.saveTest(data.location);
               }
             }
@@ -116,11 +117,13 @@ export class DisplayCreatedTestsPage {
   }
 
   saveTest(name) {
-
+  console.log("called save test");
       //create new object with data
       this.createTest = new CreateTest(0, name, this.user_id, '', '');
+      console.log("created test" + JSON.stringify(this.createTest));
       //call the service to insert the new test in by passing the data
       this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
+        console.log("insertedCreateTest");
         this.id = data.res.insertId;
         console.log(this.id);
         //redirect the user to the sections page to begin the test
@@ -149,7 +152,7 @@ export class DisplayCreatedTestsPage {
         {
           text: 'Confirm',
           handler: () => {
-            console.log('Agree clicked');
+            //console.log('Agree clicked');
             //delete from database
             this.dementiaSqlService.deleteTest(test.id); //delete the test
             this.dementiaSqlService.deleteAnswers(test.id); //delete all the answers for that test
@@ -165,7 +168,6 @@ export class DisplayCreatedTestsPage {
     });//end alert
 
     this.nav.present(confirm);
-
   }
 
   showDetailSection(createdtest) {
@@ -173,31 +175,35 @@ export class DisplayCreatedTestsPage {
     let id = createdtest.id;
     this.dementiaSqlService.getAnsweredQuestions(id).then(
       data => {
-        let item = data.res.rows[data.res.rows.length-1];
-        console.log("item is " + JSON.stringify(item));
-        if (!item) {
+         console.log("called getAnsweredQuestioms" + (JSON.stringify(data)));
+        this.item = data.res.rows[data.res.rows.length-1];
+        console.log("item is " + JSON.stringify(this.item));
+        console.log("item res rows " + JSON.stringify(data.res.rows[data.res.rows.length-1]));
+        console.log("rows " + JSON.stringify(data.res.rows));
+        if (!this.item) {
+          console.log("not item");
           this.nav.push(Sections, {
             testId: id
           });
         } else {
-        this.getData.getBySectionId(item.section)
+        this.getData.getBySectionId(this.item.section)
           .then(data => {
-           // console.log(data.questions);
-            if(data.questions.length >= (item.question_id + 1)) {
+            console.log("questions " + data.questions);
+            if(data.questions.length >= (this.item.question_id + 1)) {
               this.nav.push(SectionsQuestionsPage, {
                 section: data,
                 questions: data.questions,
-                testId: item.test_id,
-                next_question: item.question_id
+                testId: this.item.test_id,
+                next_question: this.item.question_id
               });
             } else {
+              console.log("not item.test_id");
               this.nav.push(Sections, {
-                testId: item.test_id
-              });
+                testId: this.item.test_id
+              })
             }
           });
         }
       });
   }
-
 }

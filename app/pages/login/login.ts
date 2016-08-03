@@ -47,7 +47,7 @@ export class LoginPage {
                   if(this.userForm.value.email == user._id){
                      found = true;
                       this.local.set('email', user._id);
-                     //console.log(found);
+                     console.log("found " + found);
                   }
                 }
               });
@@ -67,7 +67,8 @@ export class LoginPage {
               }
           }).catch(console.error.bind(console));
         }
-      }
+   }
+
 
 
     register() {
