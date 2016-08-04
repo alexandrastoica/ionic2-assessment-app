@@ -24,7 +24,6 @@ export class DisplayCreatedTestsPage {
   public createTest;
   public id;
   public searchQuery;
-  //public sections;
   public item;
 
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
@@ -158,8 +157,10 @@ export class DisplayCreatedTestsPage {
       console.log('called saveTest');
       //create new object with data
       this.createTest = new CreateTest(0, name, this.user_id, '', '');
+      console.log("created test" + JSON.stringify(this.createTest));
       //call the service to insert the new test in by passing the data
       this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
+        console.log("insertedCreateTest");
         this.id = data.res.insertId;
         //console.log(this.id);
         //redirect the user to the sections page to begin the test
@@ -187,7 +188,7 @@ export class DisplayCreatedTestsPage {
         {
           text: 'Confirm',
           handler: () => {
-            console.log('Agree clicked');
+            //console.log('Agree clicked');
             //delete from database
             this.dementiaSqlService.deleteTest(test.id); //delete the test
             this.dementiaSqlService.deleteAnswers(test.id); //delete all the answers for that test
@@ -203,10 +204,10 @@ export class DisplayCreatedTestsPage {
     });//end alert
 
     this.nav.present(confirm);
-
   }
 
 showDetailSection(createdtest) {
+  
     console.log("called showdetailsection");
     let id = createdtest.id;
     this.dementiaSqlService.getAnsweredQuestions(id).then(
@@ -241,6 +242,5 @@ showDetailSection(createdtest) {
           });
         }
       });
-}
-
+  }
 }
