@@ -1,7 +1,8 @@
+import {Component} from "@angular/core";
 import {Page, NavController, NavParams} from 'ionic-angular';
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 
-@Page({
+@Component({
 	templateUrl: 'build/pages/sections-detail/sections-detail.html',
 })
 

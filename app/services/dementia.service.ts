@@ -14,7 +14,11 @@ export class DementiaService {
     _remoteDB: any;
 
     initDB() {
+<<<<<<< HEAD
         this._db = new PouchDB('dementia-db', { adapter: 'websql', location:'default'});
+=======
+        this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });//location needs to be set for it to work on ios
+>>>>>>> e31c6df0293b95ef12357ab6cd4def116e6bb9f5
         this._remoteDB =  'https://medialab:e77871838@medialab.cloudant.com/users';
 
        this._db.changes({
@@ -39,8 +43,6 @@ export class DementiaService {
         var opts = {live: true};
         this._db.sync(this._remoteDB, opts, this.syncError);
    }
-
-
 
     addUser(userData) {
         let user = {
@@ -110,7 +112,6 @@ export class DementiaService {
             insertData: {},
             complete: false
         };
-
          this._db.put(insert, function callback(err, result) {
             if (!err) {
               console.log('Successfully posted');

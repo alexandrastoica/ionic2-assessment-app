@@ -4,7 +4,7 @@ import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractContro
 import {Sections} from "../sections/sections";
 import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
 
-@Page({
+@Component({
   templateUrl: 'build/pages/sections-questions/sections-questions.html',
   directives: [FORM_DIRECTIVES]
 })
@@ -46,7 +46,6 @@ export class SectionsQuestionsPage {
 
     saveTest(showBadge: boolean = false)
     {
-        console.log(this.section.id);
         this.question = new Test(this.section.id, this.currentQuestion, this.answer, this.n+1, this.testId);
 
 		this.dementiaSqlService.add(this.question);
