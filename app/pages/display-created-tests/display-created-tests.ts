@@ -53,8 +53,8 @@ export class DisplayCreatedTestsPage {
     let loading = Loading.create({
       dismissOnPageChange: true
     });
-    //this.nav.present(loading); //show loading
-    
+    this.nav.present(loading); //show loading
+
       this.createdTests = [];
       this.dementiaSqlService.getCreatedTests(this.user_id).then(data => {
           if (data.res.rows.length > 0) {
@@ -74,7 +74,7 @@ export class DisplayCreatedTestsPage {
 
   export(test){
     /*console.log(test);
-    
+
 
     this.dementiaSqlService.get(test.id).then(data => {
         this.tests = [];
@@ -88,8 +88,8 @@ export class DisplayCreatedTestsPage {
 
     console.log(this.tests);*/
 
-    let body = "<h1>Assesment Details:</h1> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR>"; 
-    
+    let body = "<h1>Assesment Details:</h1> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR>";
+
     EmailComposer.isAvailable().then((available) =>{
      if(available) {
        //Now we know we can send
@@ -142,9 +142,9 @@ export class DisplayCreatedTestsPage {
                   prompt.dismiss().then(() => {
                     this.saveTest(data.location);
                   });
-                } else { 
+                } else {
                   //dismiss the prompt
-                  prompt.dismiss(); 
+                  prompt.dismiss();
                 }
               }
             }
@@ -207,7 +207,7 @@ export class DisplayCreatedTestsPage {
   }
 
 showDetailSection(createdtest) {
-  
+
     console.log("called showdetailsection");
     let id = createdtest.id;
     this.dementiaSqlService.getAnsweredQuestions(id).then(

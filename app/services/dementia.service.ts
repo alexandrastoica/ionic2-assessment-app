@@ -14,11 +14,8 @@ export class DementiaService {
     _remoteDB: any;
 
     initDB() {
-<<<<<<< HEAD
-        this._db = new PouchDB('dementia-db', { adapter: 'websql', location:'default'});
-=======
+
         this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });//location needs to be set for it to work on ios
->>>>>>> e31c6df0293b95ef12357ab6cd4def116e6bb9f5
         this._remoteDB =  'https://medialab:e77871838@medialab.cloudant.com/users';
 
        this._db.changes({
