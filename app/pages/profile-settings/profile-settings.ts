@@ -3,10 +3,10 @@ import {NavController, NavParams, Storage, LocalStorage} from 'ionic-angular';
 import {LoginPage} from '../login/login';
 import {RegistrationPage} from '../registration/registration';
 
-
 @Component({
   templateUrl: 'build/pages/profile-settings/profile-settings.html',
 })
+
 export class ProfileSettings {
   	public user;
     public local;

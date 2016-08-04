@@ -4,7 +4,7 @@ import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractContro
 import {Sections} from "../sections/sections";
 import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
 
-@Page({
+@Component({
   templateUrl: 'build/pages/sections-questions/sections-questions.html',
   directives: [FORM_DIRECTIVES]
 })

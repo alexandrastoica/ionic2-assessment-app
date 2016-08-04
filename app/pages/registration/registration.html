@@ -1,22 +1,24 @@
-<ion-navbar *navbar>
-<ion-title>{{title}}</ion-title>
+<ion-header>
+  <ion-navbar>
+  <ion-title>{{title}}</ion-title>
 
-  <ion-buttons start *ngIf="isNew">
-      <button (click)="dismiss()">
-          <ion-icon name="arrow-back"></ion-icon>
-      </button>
-  </ion-buttons>
+    <ion-buttons start *ngIf="isNew">
+        <button (click)="dismiss()">
+            <ion-icon name="arrow-back"></ion-icon>
+        </button>
+    </ion-buttons>
 
-  <ion-buttons end *ngIf="!isNew">
-      <button (click)="delete()">
-          <ion-icon name="trash"></ion-icon>
-      </button>
-  </ion-buttons>
+    <ion-buttons end *ngIf="!isNew">
+        <button (click)="delete()">
+            <ion-icon name="trash"></ion-icon>
+        </button>
+    </ion-buttons>
 
-</ion-navbar>
+  </ion-navbar>
+</ion-header>
 
 <ion-content padding class="registration">
-<ion-list inset>
+<ion-list>
    <form [ngFormModel]="authForm" (ngSubmit)="onSubmit(authForm.value)">
           <label class="item item-input item-select">
             <div class="input-label">
@@ -27,7 +29,7 @@
               <ion-option>Mrs</ion-option>
               <ion-option>Miss</ion-option>
             </ion-select>
-        </label>
+          </label>
 
           <ion-item>
               <ion-label>First name</ion-label>
@@ -52,21 +54,21 @@
              <div *ngIf="Email.hasError('invalidEmailAddressTwo') && Email.touched" class="error-box">Must be a valid email address</div>
 
            <ion-item>
-            <ion-label fixed>Role</ion-label>
+            <ion-label>Role</ion-label>
             <ion-input type="text" [(ngModel)]="user.role"></ion-input>
            </ion-item>
 
           <ion-item>
-            <ion-label fixed>Job Title</ion-label>
+            <ion-label>Job Title</ion-label>
             <ion-input type="text" [(ngModel)]="user.job"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label fixed>Organisation</ion-label>
+            <ion-label>Organisation</ion-label>
             <ion-input type="text" [(ngModel)]="user.organisation"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label fixed>Department</ion-label>
+            <ion-label>Department</ion-label>
             <ion-input type="text" [(ngModel)]="user.department"></ion-input>
       </ion-item>
          <button danger type="submit" [disabled]="!authForm.valid && isNew" block>Submit</button>

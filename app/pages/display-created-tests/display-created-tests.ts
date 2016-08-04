@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {Modal, NavController, Storage, LocalStorage, Alert} from 'ionic-angular';
+import {Modal, NavController, Storage, LocalStorage, Alert, Loading} from 'ionic-angular';
 import {EmailComposer} from 'ionic-native';
-import {DementiaSqlightService, CreateTest} from '../../services/dementiasqlight.service';
+import {DementiaSqlightService, CreateTest, Test} from '../../services/dementiasqlight.service';
 import {Tests} from '../tests/tests';
 import {Sections} from "../sections/sections";
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
@@ -14,6 +14,7 @@ import {GetData} from "../../providers/get-data/get-data";
 
 export class DisplayCreatedTestsPage {
   createdTests: CreateTest[];
+  tests: Test[];
   public questionCount = 0;
   public numberofQuestionsAnswered;
   public numberOfQuestionsTheSectionHas;
@@ -23,7 +24,8 @@ export class DisplayCreatedTestsPage {
   public createTest;
   public id;
   public searchQuery;
-
+  //public sections;
+  public item;
 
   constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
     this.dementiaSqlService.refreshDataSet();
@@ -45,6 +47,15 @@ export class DisplayCreatedTestsPage {
   }
 
   ionViewDidEnter() {
+    this.initTests();
+  }
+
+  private initTests(){
+    let loading = Loading.create({
+      dismissOnPageChange: true
+    });
+    //this.nav.present(loading); //show loading
+    
       this.createdTests = [];
       this.dementiaSqlService.getCreatedTests(this.user_id).then(data => {
           if (data.res.rows.length > 0) {
@@ -58,10 +69,28 @@ export class DisplayCreatedTestsPage {
               });
             }
           }
+          //loading.dismiss(); //dismiss loading after loading the data
       });
   }
 
-  export(){
+  export(test){
+    /*console.log(test);
+    
+
+    this.dementiaSqlService.get(test.id).then(data => {
+        this.tests = [];
+        if (data.res.rows.length > 0) {
+          for (var i = 0; i < data.res.rows.length; i++) {
+            let item = data.res.rows.item(i);
+            this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id));
+          }
+        }
+    });
+
+    console.log(this.tests);*/
+
+    let body = "<h1>Assesment Details:</h1> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR>"; 
+    
     EmailComposer.isAvailable().then((available) =>{
      if(available) {
        //Now we know we can send
@@ -70,13 +99,13 @@ export class DisplayCreatedTestsPage {
 
     let email = {
       to: 'alexandra.stoica95@yahoo.com',
-      cc: '',
+      /*cc: '',
       bcc: '',
       attachments: [
         'file://img/logo.png'
-      ],
-      subject: 'Cordova Icons',
-      body: 'How are you? Nice greetings from Leipzig',
+      ],*/
+      subject: 'Assesment Details',
+      body: body,
       isHtml: true
     };
 
@@ -98,6 +127,7 @@ export class DisplayCreatedTestsPage {
           buttons: [
             {
               text: 'Cancel',
+              role: 'cancel',
               handler: data => {
                 console.log('Cancel clicked');
               }
@@ -106,8 +136,17 @@ export class DisplayCreatedTestsPage {
               text: 'Save',
               handler: data => {
                 //if saved, call saveTest function to save the test
-                //console.log('Saved clicked', data.location);
-                this.saveTest(data.location);
+                console.log('Saved clicked', data.location);
+                // check if location has been submitted first
+                if(data.location){
+                  //dismiss and saveTest
+                  prompt.dismiss().then(() => {
+                    this.saveTest(data.location);
+                  });
+                } else { 
+                  //dismiss the prompt
+                  prompt.dismiss(); 
+                }
               }
             }
           ]
@@ -116,13 +155,13 @@ export class DisplayCreatedTestsPage {
   }
 
   saveTest(name) {
-
+      console.log('called saveTest');
       //create new object with data
       this.createTest = new CreateTest(0, name, this.user_id, '', '');
       //call the service to insert the new test in by passing the data
       this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
         this.id = data.res.insertId;
-        console.log(this.id);
+        //console.log(this.id);
         //redirect the user to the sections page to begin the test
         this.nav.push(Sections, {testId: this.id});
       });
@@ -134,7 +173,6 @@ export class DisplayCreatedTestsPage {
   }
 
   deleteTest(test){
-
     //create confirm box to prevent the user from accidentally deleting an assessment
     let confirm = Alert.create({
       title: 'Delete Assessment',
@@ -168,36 +206,41 @@ export class DisplayCreatedTestsPage {
 
   }
 
-  showDetailSection(createdtest) {
+showDetailSection(createdtest) {
     console.log("called showdetailsection");
     let id = createdtest.id;
     this.dementiaSqlService.getAnsweredQuestions(id).then(
       data => {
-        let item = data.res.rows[data.res.rows.length-1];
-        console.log("item is " + JSON.stringify(item));
-        if (!item) {
+        console.log("called getAnsweredQuestioms" + (JSON.stringify(data)));
+        this.item = data.res.rows[data.res.rows.length-1];
+        console.log("item is " + JSON.stringify(this.item));
+        console.log("item res rows " + JSON.stringify(data.res.rows[data.res.rows.length-1]));
+        console.log("rows " + JSON.stringify(data.res.rows));
+        if (!this.item) {
+          console.log("not item");
           this.nav.push(Sections, {
             testId: id
           });
         } else {
-        this.getData.getBySectionId(item.section)
+        this.getData.getBySectionId(this.item.section)
           .then(data => {
-           // console.log(data.questions);
-            if(data.questions.length >= (item.question_id + 1)) {
+            console.log("questions " + data.questions);
+            if(data.questions.length >= (this.item.question_id + 1)) {
               this.nav.push(SectionsQuestionsPage, {
                 section: data,
                 questions: data.questions,
-                testId: item.test_id,
-                next_question: item.question_id
+                testId: this.item.test_id,
+                next_question: this.item.question_id
               });
             } else {
+              console.log("not item.test_id");
               this.nav.push(Sections, {
-                testId: item.test_id
-              });
+                testId: this.item.test_id
+              })
             }
           });
         }
       });
-  }
+}
 
 }

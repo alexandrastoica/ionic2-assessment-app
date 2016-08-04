@@ -1,15 +1,15 @@
-<ion-navbar *navbar hideBackButton="true" hideTabs="true">
-  <ion-title>Login</ion-title>
-</ion-navbar>
+<ion-header>
+	<ion-navbar hideBackButton="true" swipeBackEnabled="false">
+	  <ion-title>Login</ion-title>
+	</ion-navbar>
+</ion-header>
 
-<ion-content padding class="login">
-<form [ngFormModel]="userForm" (submit)="submit()">
-    <ion-label for="email" class="item-floating-label">Email</ion-label>
-    <ion-input type="text" value="" ngControl="email"></ion-input>
-    <control-messages control="email"></control-messages>
-
-    <button danger type="submit" [disabled]="!userForm.valid" block>Login</button>
-</form>
-  <button block clear (click)="register()">Register</button>
-
+<ion-content padding swipeBackEnabled="false" class="login">
+	<form [ngFormModel]="userForm" (submit)="submit()">
+	    <ion-label for="email" class="item-floating-label">Email</ion-label>
+	    <ion-input type="text" value="" ngControl="email"></ion-input>
+	    <control-messages control="email"></control-messages>
+	    <button danger type="submit" [disabled]="!userForm.valid" block>Login</button>
+	</form>
+  	<button block clear (click)="register()">Register</button>
 </ion-content>

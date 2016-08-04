@@ -5,32 +5,28 @@ import {RegistrationPage} from '../registration/registration';
 import {LoginPage} from '../login/login';
 import {ProfileSettings} from '../profile-settings/profile-settings';
 
-
 @Component({
   templateUrl: 'build/pages/profile/profile.html',
 })
+
 export class Profile {
-public users = [];
-public user = [];
-public currentUser;
-public local;
+    public user = [];
+    public local;
 
     constructor(private dementiaService: DementiaService, private nav: NavController, private platform: Platform, private zone: NgZone, private navparams: NavParams) {
     	this.local = new Storage(LocalStorage);
-        this.local.get('email').then((data) => {
-            this.currentUser = data;
-        });
 
-        //console.log("current user in profile " + JSON.stringify(this.user));
+        //console.log("current user in profile " + JSON.stringify(this.currentUser));
     }
 
     ionViewLoaded() {
-        this.dementiaService.getCurrentUserData(this.currentUser)
-            .then(data => {
+        this.local.get('email').then((currentUser) => {
+            this.dementiaService.getCurrentUserData(currentUser).then(data => {
                 this.zone.run(() => {
                     this.user = data;
                 });
             }).catch(console.error.bind(console));
+        });
     }
 
     showDetail(user) {

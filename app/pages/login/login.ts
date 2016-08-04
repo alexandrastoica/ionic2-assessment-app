@@ -8,7 +8,6 @@ import {RegistrationPage} from "../registration/registration";
 import {ControlMessages} from '../../components/control-messages component';
 import {ValidationService} from '../../services/validation.service';
 
-
 @Component({
   templateUrl: 'build/pages/login/login.html',
   directives: [ControlMessages]
@@ -47,7 +46,7 @@ export class LoginPage {
                   if(this.userForm.value.email == user._id){
                      found = true;
                       this.local.set('email', user._id);
-                     //console.log(found);
+                     console.log("found " + found);
                   }
                 }
               });
@@ -67,7 +66,8 @@ export class LoginPage {
               }
           }).catch(console.error.bind(console));
         }
-      }
+   }
+
 
 
     register() {

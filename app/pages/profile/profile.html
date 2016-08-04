@@ -1,12 +1,14 @@
-<ion-navbar *navbar>
-  <ion-title>Profile</ion-title>
-  <ion-buttons end>
-    <!--<button block danger (click)="logout()">Logout</button>-->
-    <button (click)="showDetail(user)">
-      <ion-icon name="settings"></ion-icon>
-    </button>
-  </ion-buttons>
-</ion-navbar>
+<ion-header>
+  <ion-navbar>
+    <ion-title>Profile</ion-title>
+    
+    <ion-buttons end>
+      <button (click)="showDetail(user)">
+        <ion-icon name="settings"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
 
 <ion-content class="profile">
    <ion-list>
@@ -16,5 +18,5 @@
         <ion-item [hidden]="!user.job"> {{ user.job }}</ion-item>
         <ion-item [hidden]="!user.organisation"> {{ user.organisation }}</ion-item>
         <ion-item [hidden]="!user.department"> {{ user.department }}</ion-item>
-     </ion-list>
+    </ion-list>
 </ion-content>

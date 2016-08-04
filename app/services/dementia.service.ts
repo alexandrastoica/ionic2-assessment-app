@@ -12,30 +12,22 @@ export class DementiaService {
     remote: any;
     _currentUserData: any;
     _remoteDB: any;
-    opts: any;
 
     initDB() {
         this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });
         this._remoteDB =  'https://medialab:e77871838@medialab.cloudant.com/users';
-        
-        this.opts = {
-           continuous: true
-        };
 
-        this._db.replicate.to(this._remoteDB, this.opts);
-        this._db.replicate.from(this._remoteDB, this.opts);
-        
-        this._db.changes({
-            since: 'now',
-            live: true
-        }).on('change', this.getUserData);
+       this._db.changes({
+        since: 'now',
+        live: true
+       }).on('change', this.getUserData);
 
-        if(this._remoteDB) {
-            this.sync();
-        }
+       if(this._remoteDB) {
+        this.sync();
+       }
 
-          // console.log("db is " + this._db);
-         //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
+       // console.log("db is " + this._db);
+      //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
         //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
     }
 
@@ -48,18 +40,18 @@ export class DementiaService {
         this._db.sync(this._remoteDB, opts, this.syncError);
    }
 
-
     addUser(userData) {
         let user = {
             _id: userData.email,
             title: userData.title,
-            firstname: userData.firstname,
-            lastname: userData.lastname,
+            firstname: userData.firstName,
+            lastname: userData.lastName,
             role: userData.role,
             job: userData.job,
             organisation: userData.organisation,
             department: userData.department
         }
+        console.log(user);
         this._db.put(user);
     }
 
@@ -78,7 +70,8 @@ export class DementiaService {
                     });
 
                     // Listen for changes on the database.
-                    this._db.changes({ live: true, since: 'now', include_docs: true}).on('change', this.onDatabaseChange);
+                    this._db.changes({ live: true, since: 'now', include_docs: true})
+                        .on('change', this.onDatabaseChange);
 
                     return this._userData;
                 });
@@ -92,11 +85,12 @@ export class DementiaService {
     getCurrentUserData(currentUser){
         return this._db.get(currentUser).then(data => {
 
-            //console.log(data);
+            console.log(data);
             this._currentUserData = data;
 
             // Listen for changes on the database.
-            this._db.changes({live: true, since: 'now', include_docs: true}).on('change', this.onDatabaseChange);
+            this._db.changes({ live: true, since: 'now', include_docs: true})
+                                .on('change', this.onDatabaseChange);
 
             return this._currentUserData;
 
@@ -114,7 +108,6 @@ export class DementiaService {
             insertData: {},
             complete: false
         };
-
          this._db.put(insert, function callback(err, result) {
             if (!err) {
               console.log('Successfully posted');
@@ -165,6 +158,11 @@ export class DementiaService {
         }
     }
 
+    test()
+    {
+        console.log("fdifdofidofidofi");
+    }
+
     private onDatabaseChange = (change) => {
         var index = this.findIndex(this._data, change.id);
         var data = this._data[index];
@@ -192,7 +190,4 @@ export class DementiaService {
         }
         return low;
     }
-
-
-
 }
