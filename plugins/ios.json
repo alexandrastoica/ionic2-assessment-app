@@ -8,31 +8,34 @@
     },
     "installed_plugins": {
         "cordova-plugin-console": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
+        },
+        "cordova-plugin-email-composer": {
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "cordova-plugin-x-toast": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "cordova-sqlite-storage": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         },
         "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "com.ionicframework.ionic2-dementia-test-app"
+            "PACKAGE_NAME": "com.ionicframework.ionic2_dementia_test_app"
         }
     },
     "dependent_plugins": {}
