@@ -20,6 +20,7 @@ export class SectionsQuestionsPage {
 	questionForm: ControlGroup;
     Validate: AbstractControl;
     public testId;
+    public local;
 
 	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, private dementiaSqlService: DementiaSqlightService) {
 		this.nav = nav;
@@ -35,7 +36,6 @@ export class SectionsQuestionsPage {
         });
 
         this.Validate = this.questionForm.controls['Validate'];
-
 	}
 	
 	onSubmit(value: string): void {
@@ -77,15 +77,15 @@ export class SectionsQuestionsPage {
 	//moves to previous section-question
 	previous() {
 		//this the n (start count) is less than the question length
-			if(this.n > 0) {
-				this.n -= 1; //then decrement the value (moves to previous question)
-				//current question is then equal to the equal question count
-				this.currentQuestion = this.questions[this.n];
-			} else {
-				//if the start count is less than 1 -1 (i.e start question) take user back
-				//to the sections (stops the count going to -1, -2 etc)
-				this.nav.push(Sections,  {testId: this.testId});
-			}
+		if(this.n > 0) {
+			this.n -= 1; //then decrement the value (moves to previous question)
+			//current question is then equal to the equal question count
+			this.currentQuestion = this.questions[this.n];
+		} else {
+			//if the start count is less than 0 (i.e start question) 
+			//take user back to the sections
+			this.nav.push(Sections,  {testId: this.testId});
+		}
 	}
 
 }

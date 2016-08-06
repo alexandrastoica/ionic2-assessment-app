@@ -63,7 +63,13 @@ export class DementiaSqlightService {
 
    public getAnsweredQuestions(test_id: number) {
       console.log("platform ready in getansweredquestions");
-      let sql = 'SELECT * FROM test_sections WHERE test_id = ?';
+      let sql = 'SELECT * FROM test_sections WHERE test_id = ? ORDER BY id ASC';
+      return this.storage.query(sql, [test_id]);
+   }
+
+    public getLast(test_id: number) {
+      console.log("platform ready in getansweredquestions");
+      let sql = 'SELECT * FROM test_sections WHERE id = (SELECT MAX(id) FROM test_sections WHERE test_id = ?);';
       return this.storage.query(sql, [test_id]);
    }
 

@@ -26,6 +26,8 @@ export class DisplayCreatedTestsPage {
   public searchQuery;
   public item;
 
+  public app_data;
+
   constructor(public platform: Platform, public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
     
     //init database
@@ -43,6 +45,7 @@ export class DisplayCreatedTestsPage {
 
     //get total number of questions available for the assesment
     this.getData.load().then(data => {
+      this.app_data = data; //save all the data
       for (var i = 0; i < data.length; i++) {
         this.questionCount += data[i].questions.length;
       }
@@ -70,7 +73,6 @@ export class DisplayCreatedTestsPage {
             this.dementiaSqlService.getAnsweredQuestions(item.id).then(data => {
               if (item) {
                 let percentage = ((data.res.rows.length / this.questionCount) * 100).toFixed(1);
-                console.log(percentage);
                 this.createdTests.push(new CreateTest(item.id, item.name, item.user_id, item.date, percentage));
               }
             });
@@ -81,22 +83,6 @@ export class DisplayCreatedTestsPage {
   }
 
   export(test){
-    /*console.log(test);
-    
-
-    this.dementiaSqlService.get(test.id).then(data => {
-        this.tests = [];
-        if (data.res.rows.length > 0) {
-          for (var i = 0; i < data.res.rows.length; i++) {
-            let item = data.res.rows.item(i);
-            this.tests.push(new Test(item.section, item.question, item.score, item.question_id, item.id));
-          }
-        }
-    });
-
-    console.log(this.tests);*/
-
-    let body = "<h1>Assesment Details:</h1> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR>"; 
     
     EmailComposer.isAvailable().then((available) =>{
      if(available) {
@@ -112,7 +98,7 @@ export class DisplayCreatedTestsPage {
         'file://img/logo.png'
       ],*/
       subject: 'Assesment Details',
-      body: body,
+      body: "",
       isHtml: true
     };
 
@@ -214,41 +200,34 @@ export class DisplayCreatedTestsPage {
     this.nav.present(confirm);
   }
 
-showDetailSection(createdtest) {
-  
-    console.log("called showdetailsection");
-    let id = createdtest.id;
-    this.dementiaSqlService.getAnsweredQuestions(id).then(
-      data => {
-        console.log("called getAnsweredQuestioms" + (JSON.stringify(data)));
-        this.item = data.res.rows[data.res.rows.length-1];
-        console.log("item is " + JSON.stringify(this.item));
-        console.log("item res rows " + JSON.stringify(data.res.rows[data.res.rows.length-1]));
-        console.log("rows " + JSON.stringify(data.res.rows));
-        if (!this.item) {
-          console.log("not item");
-          this.nav.push(Sections, {
-            testId: id
-          });
-        } else {
-        this.getData.getBySectionId(this.item.section)
-          .then(data => {
-            console.log("questions " + data.questions);
-            if(data.questions.length >= (this.item.question_id + 1)) {
+resume(createdtest) {
+    let testId = createdtest.id; //get test id
+
+    this.dementiaSqlService.getLast(testId).then(data => {
+        // Get last record of test
+        if(data.res.rows.length > 0){
+            let item = data.res.rows.item(0);
+            let section = this.app_data[item.section-1]; //get the section from app data
+            // If not the last question from the section, go to next question
+            if(section.questions.length >= (item.question_id + 1)) {
               this.nav.push(SectionsQuestionsPage, {
-                section: data,
-                questions: data.questions,
-                testId: this.item.test_id,
-                next_question: this.item.question_id
+                  section: section,
+                  questions: section.questions,
+                  testId: item.test_id,
+                  next_question: item.question_id
               });
             } else {
-              console.log("not item.test_id");
+              // Go to sections menu
               this.nav.push(Sections, {
-                testId: this.item.test_id
-              })
+                testId: testId
+              });  
             }
-          });
+        } else {
+            // No answered questions for this test, go to sections menu
+            this.nav.push(Sections, {
+              testId: testId
+            });  
         }
-      });
+    });
   }
 }
