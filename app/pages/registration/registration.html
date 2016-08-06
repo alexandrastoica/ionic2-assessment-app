@@ -19,7 +19,7 @@
 
 <ion-content padding class="registration">
 <ion-list>
-   <form [ngFormModel]="authForm" (ngSubmit)="onSubmit(authForm.value)">
+   <form [ngFormModel]="authForm" (submit)="onSubmit(authForm.value)">
           <label class="item item-input item-select">
             <div class="input-label">
               Title

@@ -26,6 +26,8 @@ export class ProfileSettings {
 
   	logout(): void {
     	this.local.remove('email');
+      //this.local.set('tutorialDone', false);
+      
     	this.nav.rootNav.push(LoginPage);
 	}
 }

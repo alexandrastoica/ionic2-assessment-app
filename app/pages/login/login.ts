@@ -22,8 +22,7 @@ export class LoginPage {
   public matches;
 
   constructor(private _formBuilder: FormBuilder, public nav: NavController,
-              private dementiaService: DementiaService,  private platform: Platform, private zone:NgZone)
-  {
+              private dementiaService: DementiaService,  private platform: Platform, private zone:NgZone) {
        this.nav = nav;
        this.local = new Storage(LocalStorage);
 
@@ -39,14 +38,15 @@ export class LoginPage {
   submit() {
     if (this.userForm.dirty && this.userForm.valid) {
       let found = false;
+      
       this.dementiaService.getUserData().then(data => {
               this.zone.run(() => {
                   this.users = data;
                 for(let user of this.users){
                   if(this.userForm.value.email == user._id){
-                     found = true;
-                      this.local.set('email', user._id);
-                     console.log("found " + found);
+                    found = true;
+                    this.local.set('email', user._id);
+                    console.log("found " + found);
                   }
                 }
               });
@@ -68,16 +68,9 @@ export class LoginPage {
         }
    }
 
-
-
     register() {
       let modal = Modal.create(RegistrationPage);
       this.nav.present(modal);
-
-      modal.onDismiss(() => {
-        //goto login
-        //his.nav.push(TabsPage);
-     });
     }
 
 }

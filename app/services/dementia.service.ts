@@ -26,7 +26,7 @@ export class DementiaService {
         this.sync();
        }
 
-       // console.log("db is " + this._db);
+       //console.log("db is " + this._db);
       //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
         //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
     }
@@ -59,7 +59,6 @@ export class DementiaService {
         if (!this._userData) {
             return this._db.allDocs({ include_docs: true})
                 .then(data => {
-
                     // Each row has a .doc object and we just want to send an
                     // array of  objects back to the calling controller,
                     // so let's map the array to contain just the .doc objects.
@@ -89,9 +88,9 @@ export class DementiaService {
             this._currentUserData = data;
 
             // Listen for changes on the database.
-            this._db.changes({ live: true, since: 'now', include_docs: true})
+           /* this._db.changes({ live: true, since: 'now', include_docs: true})
                                 .on('change', this.onDatabaseChange);
-
+*/
             return this._currentUserData;
 
         }).catch(function (err) {

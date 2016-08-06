@@ -13,7 +13,7 @@ export class Profile {
     public user = [];
     public local;
 
-    constructor(private dementiaService: DementiaService, private nav: NavController, private platform: Platform, private zone: NgZone, private navparams: NavParams) {
+    constructor(public dementiaService: DementiaService, private nav: NavController, private platform: Platform, private zone: NgZone, private navparams: NavParams) {
     	this.local = new Storage(LocalStorage);
 
         //console.log("current user in profile " + JSON.stringify(this.currentUser));

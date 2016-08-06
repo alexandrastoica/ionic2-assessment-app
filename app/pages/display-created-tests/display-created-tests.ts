@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Modal, NavController, Storage, LocalStorage, Alert, Loading} from 'ionic-angular';
+import {Platform, Modal, NavController, Storage, LocalStorage, Alert, Loading} from 'ionic-angular';
 import {EmailComposer} from 'ionic-native';
 import {DementiaSqlightService, CreateTest, Test} from '../../services/dementiasqlight.service';
 import {Tests} from '../tests/tests';
@@ -26,8 +26,13 @@ export class DisplayCreatedTestsPage {
   public searchQuery;
   public item;
 
-  constructor(public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
-    this.dementiaSqlService.refreshDataSet();
+  constructor(public platform: Platform, public getdata: GetData, public nav: NavController, public dementiaSqlService: DementiaSqlightService) {
+    
+    //init database
+    this.platform.ready().then(() => {
+      this.dementiaSqlService.refreshDataSet();
+    });
+    
     this.getData = getdata;
 
     //get current user from local storage
@@ -50,26 +55,29 @@ export class DisplayCreatedTestsPage {
   }
 
   private initTests(){
+    //declare loading spinner
     let loading = Loading.create({
       dismissOnPageChange: true
     });
-    //this.nav.present(loading); //show loading
+    this.nav.present(loading); //show loading
     
-      this.createdTests = [];
-      this.dementiaSqlService.getCreatedTests(this.user_id).then(data => {
-          if (data.res.rows.length > 0) {
-            for (var i = 0; i < data.res.rows.length; i++) {
-              let item = data.res.rows.item(i);
-              this.dementiaSqlService.getAnsweredQuestions(item.id).then(data => {
-                if (item) {
-                  let percentage = ((data.res.rows.length / this.questionCount) * 100).toFixed(1);
-                  this.createdTests.push(new CreateTest(item.id, item.name, item.user_id, item.date, percentage));
-                }
-              });
-            }
+    //initialise created tests and get them from SQL service
+    this.createdTests = [];
+    this.dementiaSqlService.getCreatedTests(this.user_id).then(data => {
+        if (data.res.rows.length > 0) {
+          for (var i = 0; i < data.res.rows.length; i++) {
+            let item = data.res.rows.item(i);
+            this.dementiaSqlService.getAnsweredQuestions(item.id).then(data => {
+              if (item) {
+                let percentage = ((data.res.rows.length / this.questionCount) * 100).toFixed(1);
+                console.log(percentage);
+                this.createdTests.push(new CreateTest(item.id, item.name, item.user_id, item.date, percentage));
+              }
+            });
           }
-          //loading.dismiss(); //dismiss loading after loading the data
-      });
+        }
+        loading.dismiss(); //dismiss loading after loading the data
+    });
   }
 
   export(test){

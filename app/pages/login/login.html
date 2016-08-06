@@ -1,10 +1,10 @@
 <ion-header>
-	<ion-navbar hideBackButton="true" swipeBackEnabled="false">
+	<ion-navbar hideBackButton="true">
 	  <ion-title>Login</ion-title>
 	</ion-navbar>
 </ion-header>
 
-<ion-content padding swipeBackEnabled="false" class="login">
+<ion-content padding class="login">
 	<form [ngFormModel]="userForm" (submit)="submit()">
 	    <ion-label for="email" class="item-floating-label">Email</ion-label>
 	    <ion-input type="text" value="" ngControl="email"></ion-input>
