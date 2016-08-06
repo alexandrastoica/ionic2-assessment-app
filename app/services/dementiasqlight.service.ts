@@ -84,8 +84,14 @@ export class DementiaSqlightService {
   // Get all notes of our DB
   // Possibly change to getSections
   public get(id: number) {
-      console.log("platform ready in get");
+      //console.log("platform ready in get");
       let sql = 'SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC';
+      return this.storage.query(sql, [id]);
+  }
+
+  public getResults(id: number) {
+      //console.log("platform ready in get");
+      let sql = 'SELECT * FROM test_sections WHERE test_id = ? ORDER BY section ASC';
       return this.storage.query(sql, [id]);
   }
 

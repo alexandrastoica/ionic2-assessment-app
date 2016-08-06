@@ -83,27 +83,36 @@ export class DisplayCreatedTestsPage {
   }
 
   export(test){
+    this.tests = []; 
+    let body = "<h3>Assesment Details:</h3> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR><BR>";
+
+    this.dementiaSqlService.getResults(test.id).then(data => {   
+        if (data.res.rows.length > 0) {
+          for (let i = 0; i < data.res.rows.length; i++) {
+            let item = data.res.rows.item(i);
+            body += "Section: "  + item.section + " | Question: " + item.question_id + " | Score: " + item.score + "<BR>";
+          }
+        }
+
+
+      this.platform.ready().then(() => {
+          EmailComposer.isAvailable().then((available) =>{
+               if(available) {
+                 //Now we know we can send
+               }
+
+              let email = {
+                to: '',
+                subject: 'Assesment Details',
+                body: body,
+                isHtml: true
+              };
+              // Send a text message using default options
+              EmailComposer.open(email); 
+          });
+      }); //end platform
     
-    EmailComposer.isAvailable().then((available) =>{
-     if(available) {
-       //Now we know we can send
-     }
-    });
-
-    let email = {
-      to: 'alexandra.stoica95@yahoo.com',
-      /*cc: '',
-      bcc: '',
-      attachments: [
-        'file://img/logo.png'
-      ],*/
-      subject: 'Assesment Details',
-      body: "",
-      isHtml: true
-    };
-
-    // Send a text message using default options
-    EmailComposer.open(email);
+    }); //end getResults
   }
 
   createAssesment(){
