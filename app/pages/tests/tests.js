@@ -8,55 +8,109 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var core_1 = require('@angular/core');
 var ionic_angular_1 = require('ionic-angular');
 var dementiasqlight_service_1 = require('../../services/dementiasqlight.service');
-var testquestions_1 = require("../testquestions/testquestions");
-var truncate_1 = require('../../pipes/truncate');
-var Tests = (function () {
-    function Tests(dementiaSqlService, platform, nav, navParams, viewCtrl) {
-        this.dementiaSqlService = dementiaSqlService;
-        this.platform = platform;
+var tests_1 = require('../tests/tests');
+var sections_1 = require("../sections/sections");
+var sections_questions_1 = require("../sections-questions/sections-questions");
+var get_data_1 = require("../../providers/get-data/get-data");
+/*
+  Generated class for the DisplayCreatedTestsPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+*/
+var DisplayCreatedTestsPage = (function () {
+    function DisplayCreatedTestsPage(getdata, nav, dementiaSqlService) {
+        var _this = this;
+        this.getdata = getdata;
         this.nav = nav;
-        this.navParams = navParams;
-        this.viewCtrl = viewCtrl;
-        this.id = this.navParams.get('id');
+        this.dementiaSqlService = dementiaSqlService;
+        this.questionCount = 0;
+        this.getData = getdata;
+        this.getData.load().then(function (data) {
+            for (var i = 0; i < data; i++) {
+                _this.questionCount += data[i].questions.length;
+            }
+        });
+        console.log("question count: " + this.questionCount);
     }
-    Tests.prototype.ionViewLoaded = function () {
+    DisplayCreatedTestsPage.prototype.ionViewLoaded = function () {
         var _this = this;
         // this.platform.ready().then(() => {
-        this.tests = [];
-        this.dementiaSqlService.get(this.id.id)
+        this.createdTests = [];
+        this.dementiaSqlService.getCreatedTests()
             .then(function (data) {
-            _this.tests = [];
+            _this.createdTests = [];
             if (data.res.rows.length > 0) {
-                for (var i = 0; i < data.res.rows.length; i++) {
+                var _loop_1 = function() {
                     var item = data.res.rows.item(i);
-                    _this.tests.push(new dementiasqlight_service_1.Test(item.section, item.question, item.score, item.question_id, item.id));
+                    var answered = 0;
+                    _this.dementiaSqlService.getAnsweredQuestions(item.id).then(function (data) {
+                        if (item) {
+                            answered = data.res.rows.length;
+                        }
+                    });
+                    var percentage = ((answered / _this.questionCount) * 100);
+                    console.log("pertange" + percentage);
+                    console.log("answered" + answered);
+                    console.log("qc" + _this.questionCount);
+                    _this.createdTests.push(new dementiasqlight_service_1.CreateTest(item.id, item.name, item.date, percentage));
+                };
+                for (var i = 0; i < data.res.rows.length; i++) {
+                    _loop_1();
                 }
             }
         });
         //  });
-        // console.log("id is " + JSON.stringify(this.id.id));
     };
-    Tests.prototype.showDetail = function (section) {
-        var modal = ionic_angular_1.Modal.create(testquestions_1.TestquestionsPage, {
-            section: section,
-            id: this.id
+    DisplayCreatedTestsPage.prototype.showDetail = function (id) {
+        var modal = ionic_angular_1.Modal.create(tests_1.Tests, {
+            id: id
         });
         this.nav.present(modal);
         modal.onDismiss(function () {
         });
     };
-    Tests.prototype.dismiss = function () {
-        this.viewCtrl.dismiss(this.id);
+    DisplayCreatedTestsPage.prototype.showDetailSection = function (createdtest) {
+        var _this = this;
+        var id = createdtest.id;
+        this.dementiaSqlService.getAnsweredQuestions(id).then(function (data) {
+            var item = data.res.rows[data.res.rows.length - 1];
+            if (!item) {
+                _this.nav.push(sections_1.Sections, {
+                    testId: id
+                });
+            }
+            else {
+                _this.getData.getBySectionId(item.section)
+                    .then(function (data) {
+                    // console.log(data.questions);
+                    if (data.questions.length >= (item.question_id + 1)) {
+                        _this.nav.push(sections_questions_1.SectionsQuestionsPage, {
+                            section: data,
+                            questions: data.questions,
+                            testId: item.test_id,
+                            next_question: item.question_id
+                        });
+                    }
+                    else {
+                        _this.nav.push(sections_1.Sections, {
+                            testId: item.test_id
+                        });
+                    }
+                });
+            }
+        });
     };
-    Tests = __decorate([
-        ionic_angular_1.Page({
-            templateUrl: 'build/pages/tests/tests.html',
-            pipes: [truncate_1.Truncate]
+    DisplayCreatedTestsPage = __decorate([
+        core_1.Component({
+            templateUrl: 'build/pages/display-created-tests/display-created-tests.html',
+            providers: [get_data_1.GetData]
         }), 
-        __metadata('design:paramtypes', [dementiasqlight_service_1.DementiaSqlightService, ionic_angular_1.Platform, ionic_angular_1.NavController, ionic_angular_1.NavParams, ionic_angular_1.ViewController])
-    ], Tests);
-    return Tests;
+        __metadata('design:paramtypes', [get_data_1.GetData, ionic_angular_1.NavController, dementiasqlight_service_1.DementiaSqlightService])
+    ], DisplayCreatedTestsPage);
+    return DisplayCreatedTestsPage;
 }());
-exports.Tests = Tests;
+exports.DisplayCreatedTestsPage = DisplayCreatedTestsPage;

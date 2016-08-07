@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
-import {Modal, NavParams, NavController, ViewController, Platform, Toast, Storage, LocalStorage} from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl } from '@angular/common';
+import {Component, forwardRef} from '@angular/core';
+import {Modal, NavParams, NavController, ViewController, Platform, ToastController, Storage, LocalStorage} from 'ionic-angular';
+import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormControl, FormGroup, FormBuilder, Validators, NG_VALIDATORS} from '@angular/forms';
 import {TabsPage} from "../tabs/tabs";
 import {LoginPage} from "../login/login";
 import {DementiaService} from '../../services/dementia.service';
@@ -8,8 +8,11 @@ import {ValidationService} from '../../services/validation.service';
 
 
 @Component({
-  templateUrl: 'build/pages/registration/registration.html'
+  templateUrl: 'build/pages/registration/registration.html',
+  directives: [REACTIVE_FORM_DIRECTIVES],
+  providers: [DementiaService]
 })
+
 export class RegistrationPage {
     public user;
     public isNew = true;
@@ -17,28 +20,23 @@ export class RegistrationPage {
     public title = "Registration";
     public local;
 
-    authForm: ControlGroup;
-   // title: AbstractControl;
-    FirstName: AbstractControl;
-    LastName: AbstractControl;
-    Email: AbstractControl;
+    authForm: FormGroup;
 
-
-    constructor(fb: FormBuilder, private viewCtrl: ViewController,
+    constructor(private fb: FormBuilder, private viewCtrl: ViewController,
         private navParams: NavParams, platform: Platform,
-        private dementiaService: DementiaService, public nav: NavController) {
+        private dementiaService: DementiaService, public nav: NavController,
+        private toastCtrl: ToastController) {
 
-        //this.platform = platform;
         this.authForm = fb.group({
-           // 'title': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-            'FirstName': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-            'LastName': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-            'Email': ['', Validators.compose([Validators.required, Validators.minLength(2), ValidationService.invalidEmailAddressTwo])]
+            'title': [['Mr', 'Mrs', 'Miss']],
+            'firstname': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
+            'lastname': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
+            'email': ['', Validators.compose([Validators.required, ValidationService.validateEmail])],
+            'role': [''],
+            'job': [''],
+            'organisation': [''],
+            'department': ['']
         });
-
-        this.FirstName = this.authForm.controls['FirstName'];
-        this.LastName = this.authForm.controls['LastName'];
-        this.Email = this.authForm.controls['Email'];
 
         //set localstorage
         this.local = new Storage(LocalStorage);
@@ -53,6 +51,7 @@ export class RegistrationPage {
               //object: use this to append properties in the view (registration.html) for adding to the database
               //example [(ngMODEL)]="user.number"
             };
+            this.user.title = "Mr"; //default
         }
         else {
             this.isNew = false;
@@ -64,45 +63,40 @@ export class RegistrationPage {
 
     onSubmit(value): void {
       if(this.isNew) {
-        if(this.authForm.valid) {
-              this.local.set('email', value.Email);
-             // console.log("email is " + window.localStorage.getItem('Email'));
-             this.save();
-             let toast = Toast.create({
+          this.local.set('email', value.email);
+          this.save();
+          let toast = this.toastCtrl.create({
               message: 'Thank you for registering. You are now able to login',
-              duration: 300
-             });
-            this.nav.present(toast);
-        }
+              duration: 600
+          });
+          toast.present();
       } else {
-         this.save();
-         let toast = Toast.create({
+          this.save();
+          let toast = this.toastCtrl.create({
               message: 'User details updated',
-              duration: 300
+              duration: 600
              });
-            this.nav.present(toast);
+          toast.present();
       }
     }
 
-    save() {
+    save() {  
        if (this.isNew) {
-            this.dementiaService.addUser(this.user);
-               // .catch(console.error.bind(console));
+            this.dementiaService.addUser(this.user);//.catch(console.error.bind(console));
         } else {
-        this.dementiaService.updateData(this.user);
-            //.catch(console.error.bind(console));
+            this.dementiaService.updateData(this.user);//.catch(console.error.bind(console));
         }
         this.dismiss();
     }
 
     delete() {
         this.dementiaService.removeData(this.user);
-        console.log("calllleedd delete");
-          let toast = Toast.create({
+        //console.log("calllleedd delete");
+          let toast = this.toastCtrl.create({
               message: 'Account has been deleted',
-              duration: 300
+              duration: 600
              });
-            this.nav.present(toast);
+            toast.present();
             this.nav.push(LoginPage);
 
         this.dismiss();

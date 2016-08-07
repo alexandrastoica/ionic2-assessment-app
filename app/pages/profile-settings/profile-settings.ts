@@ -28,6 +28,6 @@ export class ProfileSettings {
     	this.local.remove('email');
       //this.local.set('tutorialDone', false);
       
-    	this.nav.rootNav.push(LoginPage);
+    	this.nav.pop(LoginPage);
 	}
 }

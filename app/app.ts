@@ -1,15 +1,16 @@
 import {Component, enableProdMode} from "@angular/core";
 import {App, Platform, ionicBootstrap, SqlStorage, Storage} from 'ionic-angular';
+import {disableDeprecatedForms, provideForms} from '@angular/forms';
 import {StatusBar, SQLite} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
 import {RegistrationPage} from './pages/registration/registration';
 import {LoginPage} from './pages/login/login';
 import {DementiaService} from './services/dementia.service';
-import {DementiaSqlightService} from './services/dementiasqlight.service';
+import {DementiaSQLiteService} from './services/dementiasqlite.service';
 
 @Component({
-  template: '<ion-nav [root]="rootPage"></ion-nav>',
-  providers: [DementiaService, DementiaSqlightService]
+  template: '<ion-nav [root]="rootPage" swipeBackEnabled="false"></ion-nav>',
+  providers: [DementiaService, DementiaSQLiteService]
 })
 export class MyApp {
   rootPage: any = LoginPage;
@@ -50,6 +51,9 @@ export class MyApp {
 
 }//export
 
-ionicBootstrap(MyApp, [], {
-  tabSubPages: false //allow tabs to show up on child page on android
+ionicBootstrap(MyApp, [
+    disableDeprecatedForms(),
+    provideForms()
+  ], {
+   // tabSubPages: false //allow tabs to show up on child page on android
 });

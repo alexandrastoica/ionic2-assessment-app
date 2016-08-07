@@ -1,33 +1,32 @@
 import {Component, NgZone} from '@angular/core';
-import {Modal, NavController, Platform, Toast, Storage, LocalStorage} from 'ionic-angular';
-import {FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl}  from '@angular/common';
+import {ModalController, NavController, Platform, ToastController, Storage, LocalStorage} from 'ionic-angular';
+import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormControl, FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Welcome} from "../welcome/welcome";
 import {TabsPage} from "../tabs/tabs";
 import {DementiaService} from '../../services/dementia.service';
 import {RegistrationPage} from "../registration/registration";
-import {ControlMessages} from '../../components/control-messages component';
 import {ValidationService} from '../../services/validation.service';
 
 @Component({
   templateUrl: 'build/pages/login/login.html',
-  directives: [ControlMessages]
+  directives: [REACTIVE_FORM_DIRECTIVES]
 })
 
 export class LoginPage {
-  userForm: any;
+  userForm: FormGroup;
   public email;
   public users = [];
   public local;
   public done;
-  public matches;
 
   constructor(private _formBuilder: FormBuilder, public nav: NavController,
-              private dementiaService: DementiaService,  private platform: Platform, private zone:NgZone) {
+              private dementiaService: DementiaService,  private platform: Platform, 
+              private zone:NgZone, private toastCtrl: ToastController, private modalCtrl: ModalController) {
        this.nav = nav;
        this.local = new Storage(LocalStorage);
 
        this.userForm = this._formBuilder.group({
-          'email': ['', Validators.compose([Validators.required,  Validators.minLength(1), ValidationService.emailValidator])]
+          'email': ['', Validators.compose([Validators.required, ValidationService.validateEmail])]
        });
 
        this.local.get('tutorialDone').then((data) => {
@@ -58,19 +57,19 @@ export class LoginPage {
                 }
               } else {
                // console.log('User not found!');
-                  let toast = Toast.create({
+                  let toast = this.toastCtrl.create({
                     message: 'Sorry email doesn\'t exist, please try again',
-                    duration: 350
+                    duration: 600
                  });
-               this.nav.present(toast);
+               toast.present();
               }
           }).catch(console.error.bind(console));
         }
    }
 
     register() {
-      let modal = Modal.create(RegistrationPage);
-      this.nav.present(modal);
+      let modal = this.modalCtrl.create(RegistrationPage);
+      modal.present();
     }
 
 }

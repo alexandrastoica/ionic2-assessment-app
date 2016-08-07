@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
-import {Page, NavController, NavParams, Toast} from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder,  ControlGroup, Validators, AbstractControl } from '@angular/common';
+import {Page, NavController, NavParams, ToastController} from 'ionic-angular';
+import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormControl, FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Sections} from "../sections/sections";
-import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
+import {DementiaSQLiteService, Test} from '../../services/dementiasqlite.service';
 
 @Component({
   templateUrl: 'build/pages/sections-questions/sections-questions.html',
-  directives: [FORM_DIRECTIVES]
+  directives: [REACTIVE_FORM_DIRECTIVES]
 })
 
 export class SectionsQuestionsPage {
@@ -16,13 +16,14 @@ export class SectionsQuestionsPage {
     public total;
 	public question: Test = null;
 	public currentQuestion;
-	public n = 0; maxN;
-	questionForm: ControlGroup;
-    Validate: AbstractControl;
+	public n; maxN;
+	questionForm: FormGroup;
     public testId;
     public local;
+    public score;
 
-	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, private dementiaSqlService: DementiaSqlightService) {
+	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, 
+		private dementiaSqlService: DementiaSQLiteService, private toastCtrl: ToastController) {
 		this.nav = nav;
 		this.section = params.data.section;
         this.questions = params.data.questions;
@@ -32,35 +33,32 @@ export class SectionsQuestionsPage {
 		this.currentQuestion = this.questions[this.n];
 
         this.questionForm = fb.group({
-            'Validate': ['', Validators.compose([Validators.required])],
-        });
-
-        this.Validate = this.questionForm.controls['Validate'];
+            'score': ['', Validators.required]
+        }); 
 	}
 	
 	onSubmit(value: string): void {
-        if(this.questionForm.valid) {
-             this.next();
-        }
+		console.log(this.score);
+        this.next();
     }
 
     saveTest(showBadge: boolean = false)
     {
-        this.question = new Test(this.section.id, this.currentQuestion, this.answer, this.n+1, this.testId);
+        this.question = new Test(this.section.id, this.currentQuestion, this.score, this.n+1, this.testId);
 
 		this.dementiaSqlService.add(this.question);
 		this.dementiaSqlService.update(this.question);
-        let toast = Toast.create({
+        let toast = this.toastCtrl.create({
             message: 'Answer score was saved',
             duration: 20
          });
-        this.nav.present(toast);
+        toast.present();
     }
 
 	next(){
 		//save test and reset answer
 		this.saveTest(true);
-		this.answer = null;
+		this.score = null;
 
 		//if more questions increment n and replace question
 		if(this.n < this.maxN - 1){

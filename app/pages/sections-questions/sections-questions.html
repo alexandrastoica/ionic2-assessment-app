@@ -6,8 +6,8 @@
 
 <ion-content padding class="sections-questions">
   <h3>{{currentQuestion}}</h3>
-   <form [ngFormModel]="questionForm" (ngSubmit)="onSubmit(questionForm.value)">
-    <ion-list radio-group [(ngModel)]="answer" [ngFormControl]="Validate">
+   <form [formGroup]="questionForm" (ngSubmit)="onSubmit(questionForm.value)">
+    <ion-list radio-group [(ngModel)]="score" name="score" formControlName="score">
       <ion-item>
         <ion-label>1</ion-label>
         <ion-radio value="1"></ion-radio>
@@ -39,16 +39,14 @@
       </ion-item>
     </ion-list>
     
-    <p *ngIf="Validate.hasError('required') && Validate.touched" red>PLEASE SELECT A SCORE TO CONTINUE</p>
+    <p *ngIf="questionForm.controls.score.errors && questionForm.controls.score.touched" red>Must select a score to continue</p>
     <p>1 = Barely met <BR> 5 = Completely met <BR> N/A = non-applicable</p>
-
-    
-      <button fab fab-right purple type="submit" [disabled]="!questionForm.valid">
-        <ion-icon name="arrow-forward"></ion-icon>
-      </button>
-      <button fab fab-left red (click)="previous()">
-        <ion-icon name="arrow-back"></ion-icon>
-      </button>
-
+  
+    <button fab fab-right purple type="submit" [disabled]="!questionForm.valid">
+      <ion-icon name="arrow-forward"></ion-icon>
+    </button>
   </form>
+      <button fab fab-left red (click)="previous()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </button>
 </ion-content>

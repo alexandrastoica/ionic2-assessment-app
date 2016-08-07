@@ -19,60 +19,57 @@
 
 <ion-content padding class="registration">
 <ion-list>
-   <form [ngFormModel]="authForm" (submit)="onSubmit(authForm.value)">
-          <label class="item item-input item-select">
-            <div class="input-label">
-              Title
-            </div>
-            <ion-select [(ngModel)]="user.title">
-              <ion-option selected>Mr</ion-option>
-              <ion-option>Mrs</ion-option>
-              <ion-option>Miss</ion-option>
-            </ion-select>
-          </label>
-
-          <ion-item>
-              <ion-label>First name</ion-label>
-              <ion-input type="text"  [(ngModel)]="user.firstname" [ngFormControl]="FirstName"></ion-input>
-          </ion-item>
-            <div *ngIf="FirstName.hasError('required') && FirstName.touched" class="error-box">* First Name is required</div>
-            <div *ngIf="FirstName.hasError('minlength') && FirstName.touched" class="error-box">* Minimum length is 2</div>
-
-           <ion-item>
-              <ion-label>Last name</ion-label>
-             <ion-input type="text"  [(ngModel)]="user.lastname" [ngFormControl]="LastName"></ion-input>
-          </ion-item>
-             <div *ngIf="LastName.hasError('required') && LastName.touched" class="error-box">* Last Name is required</div>
-            <div *ngIf="LastName.hasError('minlength') && LastName.touched" class="error-box">* Minimum length is 2</div>
-
-            <ion-item *ngIf="isNew">
-             <ion-label>Email</ion-label>
-               <ion-input type="text"  [(ngModel)]="user.email" ngControl="Email"></ion-input>
-             </ion-item>
-             <div *ngIf="Email.hasError('required') && Email.touched" class="error-box">* Email is required</div>
-             <div *ngIf="Email.hasError('minlength') && Email.touched" class="error-box">* Minimum length is 2</div>
-             <div *ngIf="Email.hasError('invalidEmailAddressTwo') && Email.touched" class="error-box">Must be a valid email address</div>
-
-           <ion-item>
-            <ion-label>Role</ion-label>
-            <ion-input type="text" [(ngModel)]="user.role"></ion-input>
-           </ion-item>
-
-          <ion-item>
-            <ion-label>Job Title</ion-label>
-            <ion-input type="text" [(ngModel)]="user.job"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label>Organisation</ion-label>
-            <ion-input type="text" [(ngModel)]="user.organisation"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label>Department</ion-label>
-            <ion-input type="text" [(ngModel)]="user.department"></ion-input>
+   <form [formGroup]="authForm" (ngSubmit)="onSubmit(authForm.value)">
+      <ion-item>
+          <ion-label>Title</ion-label>
+          <ion-select [(ngModel)]="user.title" name="title" formControlName="title">
+              <ion-option value="Mr" selected="true">Mr</ion-option>
+              <ion-option value="Mrs">Mrs</ion-option>
+              <ion-option value="Miss">Miss</ion-option>
+          </ion-select>
       </ion-item>
-         <button danger type="submit" [disabled]="!authForm.valid && isNew" block>Submit</button>
+      <p *ngIf="authForm.controls.title.errors && authForm.controls.title.touched" class="error-box">Title is required</p>
+
+      <ion-item>
+          <ion-label>First name</ion-label>
+          <ion-input type="text"  [(ngModel)]="user.firstname" name="firstname" formControlName="firstname"></ion-input>
+      </ion-item>
+      <p *ngIf="authForm.controls.firstname.errors && authForm.controls.firstname.touched" class="error-box">First Name is required</p>
+
+      <ion-item>
+          <ion-label>Last name</ion-label>
+          <ion-input type="text"  [(ngModel)]="user.lastname" name="lastname" formControlName="lastname"></ion-input>
+      </ion-item>
+      <p *ngIf="authForm.controls.lastname.errors && authForm.controls.lastname.touched" class="error-box">Last Name is required</p>
+
+      <ion-item *ngIf="isNew">
+          <ion-label>Email</ion-label>
+          <ion-input type="email" [(ngModel)]="user.email" name="email" formControlName="email"></ion-input>
+      </ion-item>
+      <p *ngIf="authForm.controls.email.errors && authForm.controls.email.touched" class="error-box">Must be a valid email address</p>
+
+      <ion-item>
+          <ion-label>Role</ion-label>
+          <ion-input type="text" [(ngModel)]="user.role" name="role" formControlName="role"></ion-input>
+      </ion-item>
+
+      <ion-item>
+          <ion-label>Job Title</ion-label>
+          <ion-input type="text" [(ngModel)]="user.job" name="job" formControlName="job"></ion-input>
+      </ion-item>
+
+      <ion-item>
+          <ion-label>Organisation</ion-label>
+          <ion-input type="text" [(ngModel)]="user.organisation" name="organisation" formControlName="organisation"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Department</ion-label>
+        <ion-input type="text" [(ngModel)]="user.department" name="department" formControlName="department"></ion-input>
+      </ion-item>
+
+      <button danger type="submit" [disabled]="!authForm.valid && isNew" block>Submit</button>
   </form>
 </ion-list>
-    <!--<button block (click)="save()">Save</button> -->
+
 </ion-content>

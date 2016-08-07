@@ -1,0 +1,14 @@
+<ion-header>
+	<ion-navbar>
+	  <ion-title>Assessment Details</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content class="tests-detail">
+  <ion-list>
+      <h6 *ngIf="tests.length==0" padding>No results yet.</h6> 
+      <button ion-item *ngFor="let test of tests" text-wrap (click)="showDetail(test)">
+        Section {{test.section}}
+      </button>
+  </ion-list>
+</ion-content>

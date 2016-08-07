@@ -1,18 +1,17 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
-import {DementiaSqlightService, Test} from '../../services/dementiasqlight.service';
+import {DementiaSQLiteService, Test} from '../../services/dementiasqlite.service';
 
 @Component({
-  templateUrl: 'build/pages/test-questions/test-questions.html'
+  templateUrl: 'build/pages/tests-questions/tests-questions.html'
 })
 
-export class TestQuestionsPage {
-
+export class TestsQuestionsPage {
     sections: Test[];
     public section;
     public id;
 
-  constructor(public nav: NavController, private navParams: NavParams, public dementiaSqlService: DementiaSqlightService){
+  constructor(public nav: NavController, private navParams: NavParams, public dementiaSqlService: DementiaSQLiteService){
       this.section = this.navParams.get('section');
       this.id = this.navParams.get('id');
   }

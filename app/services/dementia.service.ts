@@ -41,17 +41,17 @@ export class DementiaService {
    }
 
     addUser(userData) {
+        //console.log(userData);
         let user = {
             _id: userData.email,
             title: userData.title,
-            firstname: userData.firstName,
-            lastname: userData.lastName,
+            firstname: userData.firstname,
+            lastname: userData.lastname,
             role: userData.role,
             job: userData.job,
             organisation: userData.organisation,
             department: userData.department
-        }
-        console.log(user);
+        }       
         this._db.put(user);
     }
 
@@ -84,7 +84,6 @@ export class DementiaService {
     getCurrentUserData(currentUser){
         return this._db.get(currentUser).then(data => {
 
-            console.log(data);
             this._currentUserData = data;
 
             // Listen for changes on the database.

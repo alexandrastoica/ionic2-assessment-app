@@ -5,11 +5,14 @@
 </ion-header>
 
 <ion-content padding class="login">
-	<form [ngFormModel]="userForm" (submit)="submit()">
+	<form [formGroup]="userForm" (ngSubmit)="submit()">
+	    
 	    <ion-label for="email" class="item-floating-label">Email</ion-label>
-	    <ion-input type="text" value="" ngControl="email"></ion-input>
-	    <control-messages control="email"></control-messages>
-	    <button danger type="submit" [disabled]="!userForm.valid" block>Login</button>
+	    <ion-input type="email" formControlName="email"></ion-input>
+	    
+	    <p *ngIf="userForm.controls.email.touched && userForm.controls.email.errors">This field must be an email address</p>
+
+	    <button red type="submit" [disabled]="!userForm.valid" block>Login</button>
 	</form>
   	<button block clear (click)="register()">Register</button>
 </ion-content>
