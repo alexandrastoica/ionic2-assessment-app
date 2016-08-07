@@ -57,3 +57,4 @@ ionicBootstrap(MyApp, [
   ], {
    // tabSubPages: false //allow tabs to show up on child page on android
 });
+
