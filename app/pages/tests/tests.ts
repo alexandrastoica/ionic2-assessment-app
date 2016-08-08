@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Platform, Modal, ViewController, NavController, Storage, LocalStorage, AlertController, LoadingController} from 'ionic-angular';
+import {Platform, Modal, ViewController, NavController, Storage, LocalStorage, AlertController} from 'ionic-angular';
 import {EmailComposer} from 'ionic-native';
 import {DementiaSQLiteService, CreateTest, Test} from '../../services/dementiasqlite.service';
 import {TestsDetailPage} from '../tests-detail/tests-detail';
@@ -16,7 +16,6 @@ export class Tests {
   createdTests: CreateTest[];
   tests: Test[];
   public questionCount = 0;
-  //public getData;
   public user_id;
   public local;
   public createTest;
@@ -25,11 +24,12 @@ export class Tests {
 
   constructor(public platform: Platform, public getData: GetData, public nav: NavController, 
           public view: ViewController, public dementiaSqlService: DementiaSQLiteService,
-          public alertCtrl: AlertController, public loadingCtrl: LoadingController) {
+          public alertCtrl: AlertController) {
  
     //init database
     this.platform.ready().then(() => {
       this.dementiaSqlService.refreshDataSet();
+      console.log("platform");
     });
 
     //get current user from local storage
@@ -46,24 +46,10 @@ export class Tests {
       }
     });
 
+    this.createdTests = [];
   }
 
- /* ionViewWillEnter(){
-    //prevent the user to go back to login page by swiping
-    this.view.showBackButton(false);
-  }*/
-
-  ionViewDidEnter() {
-    this.initTests();
-  }
-
-  private initTests(){
-    //declare loading spinner
-    let loading = this.loadingCtrl.create({
-      dismissOnPageChange: true
-    });
-    loading.present(); //show loading
-    
+  ionViewDidEnter(){
     //initialise created tests and get them from SQL service
     this.createdTests = [];
     this.dementiaSqlService.getCreatedTests(this.user_id).then(data => {
@@ -78,7 +64,6 @@ export class Tests {
             });
           }
         }
-        loading.dismiss(); //dismiss loading after loading the data
     });
   }
 

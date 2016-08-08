@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Page, NavController, NavParams, ToastController} from 'ionic-angular';
+import {Page, ViewController, NavController, NavParams, ToastController} from 'ionic-angular';
 import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormControl, FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Sections} from "../sections/sections";
 import {DementiaSQLiteService, Test} from '../../services/dementiasqlite.service';
@@ -22,7 +22,7 @@ export class SectionsQuestionsPage {
     public local;
     public score;
 
-	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, 
+	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, public view: ViewController,
 		private dementiaSqlService: DementiaSQLiteService, private toastCtrl: ToastController) {
 		this.nav = nav;
 		this.section = params.data.section;
@@ -38,7 +38,6 @@ export class SectionsQuestionsPage {
 	}
 	
 	onSubmit(value: string): void {
-		console.log(this.score);
         this.next();
     }
 
