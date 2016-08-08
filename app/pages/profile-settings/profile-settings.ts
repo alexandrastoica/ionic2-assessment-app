@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, Storage, LocalStorage} from 'ionic-angular';
+import {NavController, ViewController, NavParams, Storage, LocalStorage, App} from 'ionic-angular';
 import {LoginPage} from '../login/login';
 import {RegistrationPage} from '../registration/registration';
+import {TabsPage} from '../tabs/tabs';
 
 @Component({
   templateUrl: 'build/pages/profile-settings/profile-settings.html',
@@ -11,11 +12,9 @@ export class ProfileSettings {
   	public user;
     public local;
 
-  	constructor(public nav: NavController, public params: NavParams) {
+  	constructor(public nav: NavController, public params: NavParams, public view: ViewController, public app: App) {
         this.local = new Storage(LocalStorage);
         this.user = params.data.user;
-
-       //console.log("selected user is " + JSON.stringify(this.user));
   	}
 
   	edit(): void {
@@ -24,10 +23,10 @@ export class ProfileSettings {
   		});
   	}
 
-  	logout(): void {
+  	logout() {
     	this.local.remove('email');
-      //this.local.set('tutorialDone', false);
+      this.local.set('tutorialDone', false);
       
-    	this.nav.pop(LoginPage);
+      this.app.getRootNav().push(LoginPage);
 	}
 }
