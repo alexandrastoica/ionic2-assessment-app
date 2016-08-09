@@ -81,6 +81,13 @@ export class DementiaSQLiteService {
         return this.storage.query(sql, [id]);
     }
 
+    // Get score for test, section and question to display on page if already submitted
+    public getScore(test_id: number, question_id: number, section: number) {
+        let sql = 'SELECT score FROM test_sections WHERE test_id = ? AND question_id = ? AND section = ?';
+        return this.storage.query(sql, [test_id, question_id, section]);
+    }
+
+    // Get results of test to attach to the email
     public getResults(id: number) {
         let sql = 'SELECT * FROM test_sections WHERE test_id = ? ORDER BY section ASC';
         return this.storage.query(sql, [id]);

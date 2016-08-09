@@ -35,9 +35,14 @@ export class SectionsQuestionsPage {
             'score': ['', Validators.required]
         }); 
 	}
+
+	ionViewDidEnter(){
+		// In case the user has already completed this question of this test, let them know what they answered
+		this.getScore();
+	}
 	
 	onSubmit(value: string): void {
-		//prevent user fro submittin the form without an answer
+		//prevent user from submitting the form without an answer
 		if(this.questionForm.valid){
 			//save test then skip to next page
 			this.saveTest(true);
@@ -62,15 +67,27 @@ export class SectionsQuestionsPage {
         });        
     }
 
+    getScore(){
+    	this.dementiaSqlService.getScore(this.testId, this.n+1, this.section.id).then(data => {
+			if(data.res.rows.length > 0){
+          		this.score = data.res.rows.item(0).score;
+			} else {
+				this.score = null;
+			}
+		}).catch(console.error.bind(console));
+    }
+
 	//move to next sections-questions page
 	next(){
 		//reset answer		
-		this.score = null;
+		//this.score = null;
 
 		//if more questions increment n and replace question
 		if(this.n < this.maxN - 1){
             this.n += 1;
 			this.currentQuestion = this.questions[this.n];
+			// In case the user has already completed this question of this test, let them know what they answered
+			this.getScore();
 		} else {
 			//sections page, passing the test id and reset values
 			this.nav.push(Sections,  {testId: this.testId}).then(() => {				
@@ -87,6 +104,8 @@ export class SectionsQuestionsPage {
 			this.n -= 1; //then decrement the value (moves to previous question)
 			//current question is then equal to the equal question count
 			this.currentQuestion = this.questions[this.n];
+			// In case the user has already completed this question of this test, let them know what they answered
+			this.getScore();
 		} else {
 			//if the start count is less than 0 (i.e start question) 
 			//take user back to the sections
