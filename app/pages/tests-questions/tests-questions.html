@@ -7,7 +7,7 @@
 <ion-content class="tests-questions">
 <ion-list>
     <ion-item text-wrap *ngFor="let section of sections"> 
-      {{section.question}}
+      {{section.question_id}}. {{section.question}}
       <span item-right><b>{{section.score}}</b></span>
    </ion-item>
 </ion-list>
