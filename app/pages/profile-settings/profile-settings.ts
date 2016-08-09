@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NavController, ViewController, NavParams, Storage, LocalStorage, App} from 'ionic-angular';
 import {LoginPage} from '../login/login';
 import {RegistrationPage} from '../registration/registration';
+import {Welcome} from '../welcome/welcome';
 import {TabsPage} from '../tabs/tabs';
 
 @Component({
@@ -22,6 +23,10 @@ export class ProfileSettings {
   			user: this.user
   		});
   	}
+
+    tutorial() {
+      this.app.getRootNav().push(Welcome);
+    }
 
   	logout() {
     	this.local.remove('email');
