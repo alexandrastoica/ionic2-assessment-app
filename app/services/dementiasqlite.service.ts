@@ -70,7 +70,17 @@ export class DementiaSQLiteService {
      public deleteTest(id: number) {
         let sql = 'DELETE FROM tests WHERE id = ?';
         return this.storage.query(sql, [id]);
-    }
+     }
+
+     public deleteTestByUser(user_id: number) {
+        let sql = 'DELETE FROM tests WHERE user_id = ?';
+        return this.storage.query(sql, [user_id]);
+     }
+
+     public deleteData(user_id: number) {
+        let sql = 'DELETE FROM test_sections WHERE test_id = (SELECT test_id FROM tests WHERE user_id = ?)';
+        return this.storage.query(sql, [user_id]);
+     }
 
     ////////////////////////// QUERIES FOR TEST_SECTIONS //////////////////////
 

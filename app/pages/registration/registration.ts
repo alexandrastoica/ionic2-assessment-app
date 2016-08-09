@@ -1,16 +1,17 @@
 import {Component, forwardRef} from '@angular/core';
-import {Modal, NavParams, NavController, ViewController, Platform, ToastController, Storage, LocalStorage} from 'ionic-angular';
+import {App, NavParams, NavController, ViewController, Platform, ToastController, AlertController, Storage, LocalStorage} from 'ionic-angular';
 import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormControl, FormGroup, FormBuilder, Validators, NG_VALIDATORS} from '@angular/forms';
 import {TabsPage} from "../tabs/tabs";
 import {LoginPage} from "../login/login";
 import {DementiaService} from '../../services/dementia.service';
+import {DementiaSQLiteService} from '../../services/dementiasqlite.service';
 import {ValidationService} from '../../services/validation.service';
 
 
 @Component({
   templateUrl: 'build/pages/registration/registration.html',
   directives: [REACTIVE_FORM_DIRECTIVES],
-  providers: [DementiaService]
+  providers: [DementiaService, DementiaSQLiteService]
 })
 
 export class RegistrationPage {
@@ -23,9 +24,9 @@ export class RegistrationPage {
     authForm: FormGroup;
 
     constructor(private fb: FormBuilder, private viewCtrl: ViewController,
-        private navParams: NavParams, platform: Platform,
-        private dementiaService: DementiaService, public nav: NavController,
-        private toastCtrl: ToastController) {
+        private navParams: NavParams, platform: Platform, public app: App,
+        private dementiaService: DementiaService, public sqlite: DementiaSQLiteService, public nav: NavController,
+        private toastCtrl: ToastController, private alertCtrl: AlertController) {
 
         this.authForm = fb.group({
             'title': [['Mr', 'Mrs', 'Miss']],
@@ -44,7 +45,7 @@ export class RegistrationPage {
 
     ionViewLoaded() {
         this.user = this.navParams.get('user');
-
+        
         if (!this.user) {
             this.user = {
               //leave this scope empty and just:
@@ -57,11 +58,11 @@ export class RegistrationPage {
             this.isNew = false;
             this.action = 'Edit';
             this.title = 'Edit Details';
-            //console.log("user exisits");
         }
     }
 
     onSubmit(value): void {
+      console.log(value);
       if(this.isNew) {
           this.local.set('email', value.email);
           this.save();
@@ -90,16 +91,45 @@ export class RegistrationPage {
     }
 
     delete() {
-        this.dementiaService.removeData(this.user);
-        //console.log("calllleedd delete");
-          let toast = this.toastCtrl.create({
-              message: 'Account has been deleted',
-              duration: 600
-             });
-            toast.present();
-            this.nav.push(LoginPage);
-
-        this.dismiss();
+      //create confirm box to prevent the user from accidentally deleting teir account
+      let confirm = this.alertCtrl.create({
+        title: 'Delete Account',
+        message: 'Are you sure you want to delete ypur account? All data will be erased',
+        buttons: [
+          {
+            text: 'Cancel',
+            handler: () => {
+              console.log('Disagree clicked');
+              confirm.dismiss();
+            }
+          },
+          {
+            text: 'Confirm',
+            handler: () => {
+              //console.log('Agree clicked');
+              //delete from database
+              this.dementiaService.removeData(this.user); //delete the account
+              
+              this.sqlite.deleteData(this.user._id); // delete data of tests by user
+              this.sqlite.deleteTestByUser(this.user._id); // delete tests by user
+              
+              let toast = this.toastCtrl.create({
+                  message: 'Account has been deleted',
+                  duration: 600
+              });
+              toast.present().then(() => {
+                  this.local.remove('email');
+                  this.local.set('tutorialDone', false);
+                  //go back to login page
+                  this.app.getRootNav().push(LoginPage);
+              });
+            }//end handler
+          }
+        ]
+      });//end alert
+      
+      //show alert
+      confirm.present();
     }
 
     dismiss() {
