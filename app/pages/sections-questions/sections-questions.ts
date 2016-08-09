@@ -12,7 +12,6 @@ import {DementiaSQLiteService, Test} from '../../services/dementiasqlite.service
 export class SectionsQuestionsPage {
 	public questions;
 	public section;
-	public answer;
     public total;
 	public question: Test = null;
 	public currentQuestion;
@@ -38,7 +37,11 @@ export class SectionsQuestionsPage {
 	}
 	
 	onSubmit(value: string): void {
-        this.next();
+		//prevent user fro submittin the form without an answer
+		if(this.questionForm.valid){
+			//save test then skip to next page
+			this.saveTest(true);
+		}
     }
 
     saveTest(showBadge: boolean = false)
@@ -47,16 +50,21 @@ export class SectionsQuestionsPage {
 
 		this.dementiaSqlService.add(this.question);
 		this.dementiaSqlService.update(this.question);
+
         let toast = this.toastCtrl.create({
             message: 'Answer score was saved',
-            duration: 20
+            duration: 600
          });
-        toast.present();
+
+        //skip to next page after saving
+        toast.present().then(() => {
+        	this.next();
+        });        
     }
 
+	//move to next sections-questions page
 	next(){
-		//save test and reset answer
-		this.saveTest(true);
+		//reset answer		
 		this.score = null;
 
 		//if more questions increment n and replace question
@@ -64,14 +72,15 @@ export class SectionsQuestionsPage {
             this.n += 1;
 			this.currentQuestion = this.questions[this.n];
 		} else {
-			//else reset and go to sections page, passing the test id
-            this.n = 0;
-            this.currentQuestion = null;
-			this.nav.push(Sections,  {testId: this.testId});
+			//sections page, passing the test id and reset values
+			this.nav.push(Sections,  {testId: this.testId}).then(() => {				
+				this.n = 0;
+	            this.currentQuestion = null;
+			});
 		}
 	}
 
-	//moves to previous section-question
+	//moves to previous sections-questions page
 	previous() {
 		//this the n (start count) is less than the question length
 		if(this.n > 0) {
