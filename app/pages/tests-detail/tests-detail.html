@@ -6,7 +6,7 @@
 
 <ion-content class="tests-detail">
   <ion-list>
-      <h6 *ngIf="tests.length==0" padding>No results yet.</h6> 
+      <p *ngIf="tests.length==0" class="empty">No results for this assessment yet.</p> 
       <button ion-item *ngFor="let test of tests" text-wrap (click)="showDetail(test)">
         Section {{test.section}}
       </button>

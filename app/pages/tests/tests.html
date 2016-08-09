@@ -13,7 +13,7 @@
 
 <ion-content class="tests">
   <ion-list>
-    <h6 *ngIf="createdTests.length==0" padding>No assessments yet.</h6> 
+    <p *ngIf="createdTests.length==0" class="empty">No assessments yet.</p> 
     
     <ion-item-group *ngFor="let createdTest of createdTests">
       <ion-item-divider light>

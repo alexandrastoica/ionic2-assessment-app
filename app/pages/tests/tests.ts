@@ -29,7 +29,6 @@ export class Tests {
     //init database
     this.platform.ready().then(() => {
       this.dementiaSqlService.refreshDataSet();
-      console.log("platform");
     });
 
     //get current user from local storage
@@ -47,6 +46,7 @@ export class Tests {
     });
 
     this.createdTests = [];
+
   }
 
   ionViewDidEnter(){
