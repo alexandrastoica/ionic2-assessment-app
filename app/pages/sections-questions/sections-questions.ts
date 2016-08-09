@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {Page, ViewController, NavController, NavParams, ToastController} from 'ionic-angular';
+import {Component, ViewChild} from '@angular/core';
+import {Content, ViewController, NavController, NavParams, ToastController} from 'ionic-angular';
 import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormControl, FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Sections} from "../sections/sections";
 import {DementiaSQLiteService, Test} from '../../services/dementiasqlite.service';
@@ -20,6 +20,8 @@ export class SectionsQuestionsPage {
     public testId;
     public local;
     public score;
+
+    @ViewChild(Content) content: Content;
 
 	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, public view: ViewController,
 		private dementiaSqlService: DementiaSQLiteService, private toastCtrl: ToastController) {
@@ -79,8 +81,8 @@ export class SectionsQuestionsPage {
 
 	//move to next sections-questions page
 	next(){
-		//reset answer		
-		//this.score = null;
+		// Scroll to top to make easier and faster for the user to view the question
+		this.content.scrollToTop();
 
 		//if more questions increment n and replace question
 		if(this.n < this.maxN - 1){
@@ -99,6 +101,9 @@ export class SectionsQuestionsPage {
 
 	//moves to previous sections-questions page
 	previous() {
+		// Scroll to top to make easier and faster for the user to view the question
+		this.content.scrollToTop();
+
 		//this the n (start count) is less than the question length
 		if(this.n > 0) {
 			this.n -= 1; //then decrement the value (moves to previous question)
