@@ -46,12 +46,13 @@ export class LoginPage {
                     found = true;
                     this.local.set('email', user._id);
                     console.log("found " + found);
+                    return;
                   }
                 }
               });
               if (found == true) {//User was found
                 if(this.done == true){
-                    this.nav.push(TabsPage);
+                    this.nav.setRoot(TabsPage);
                 } else {
                     this.nav.push(Welcome);
                 }
@@ -61,7 +62,7 @@ export class LoginPage {
                     message: 'Sorry email doesn\'t exist, please try again',
                     duration: 600
                  });
-               toast.present();
+                 toast.present();
               }
           }).catch(console.error.bind(console));
         }
