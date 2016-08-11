@@ -1,11 +1,14 @@
 import {Component} from '@angular/core';
 import {Platform, Modal, ViewController, NavController, Storage, LocalStorage, AlertController} from 'ionic-angular';
-import {EmailComposer} from 'ionic-native';
+import {EmailComposer, File} from 'ionic-native';
 import {DementiaSQLiteService, CreateTest, Test} from '../../services/dementiasqlite.service';
 import {TestsDetailPage} from '../tests-detail/tests-detail';
 import {Sections} from "../sections/sections";
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 import {GetData} from "../../providers/get-data/get-data";
+
+declare var window;
+declare var cordova: any;
 
 @Component({
   templateUrl: 'build/pages/tests/tests.html',
@@ -66,39 +69,57 @@ export class Tests {
         }
     });
   }
-
+  
   export(test){
-    this.tests = []; 
-    let body = "<h3>Assesment Details:</h3> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR><BR>";
+
+    let body = "Assesment Date: " + test.date + "<BR> Assessment Location: " + test.name + "<BR><BR> Please see the attached file.";
+    let attachment = "Assesment Details: \n Assesment Date: " + test.date + "\n Assessment Location: " + test.name + "\n\n";
 
     this.dementiaSqlService.getResults(test.id).then(data => {   
         if (data.res.rows.length > 0) {
           for (let i = 0; i < data.res.rows.length; i++) {
             let item = data.res.rows.item(i);
-            body += "Section: "  + item.section + " | Question: " + item.question_id + " | Score: " + item.score + "<BR>";
+            attachment += "Section: "  + item.section + " | Question: " + item.question_id + " | Score: " + item.score + "\n";
           }
         }
+    });
 
+    this.platform.ready().then(() => {
+      let pathToFile = cordova.file.dataDirectory;
+      window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dir) {
+        dir.getFile("assessment_details.txt", {create:true}, function(file) {
+            var logOb = file;  
+            logOb.createWriter(function(fileWriter) {
+                //fileWriter.seek(fileWriter.length);
+                var blob = new Blob([attachment], {type:'text/plain'});
+                fileWriter.write(blob); 
+                pathToFile += 'assessment_details.txt';
 
-      this.platform.ready().then(() => {
-          EmailComposer.isAvailable().then((available) =>{
-               if(available) {
-                 //Now we know we can send
-               }
+                EmailComposer.isAvailable().then((available) =>{
+                    if(available) {
+                     //Now we know we can send
+                    }
 
-              let email = {
-                to: '',
-                subject: 'Assesment Details',
-                body: body,
-                isHtml: true
-              };
-              // Send a text message using default options
-              EmailComposer.open(email); 
-          });
-      }); //end platform
+                    let email = {
+                      to: '',
+                      attachments: [
+                        pathToFile
+                      ],
+                      subject: 'Assesment Details',
+                      body: body,
+                      isHtml: true
+                    };
+                    // Send a text message using default options
+                    EmailComposer.open(email); 
+                }); 
+
+            }, function(e){console.error(e);});
+        });
+      });
+
     
-    }); //end getResults
-  }
+    }); //platform
+  } //export
 
   createAssesment(){
       //create prompt to allow the user enter the assessment location and create a new assesment
