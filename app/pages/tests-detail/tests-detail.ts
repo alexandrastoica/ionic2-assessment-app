@@ -2,18 +2,16 @@ import {Modal, Page, Platform, NavController, NavParams, ViewController} from 'i
 import {DementiaSQLiteService, Test} from '../../services/dementiasqlite.service';
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 import {TestsQuestionsPage} from "../tests-questions/tests-questions";
-import {Truncate} from '../../pipes/truncate';
 
 @Page({
-  templateUrl: 'build/pages/tests-detail/tests-detail.html',
-  pipes: [Truncate]
+  templateUrl: 'build/pages/tests-detail/tests-detail.html'
 })
 
 export class TestsDetailPage {
     tests: Test[];
     public id;
 
-  constructor(public dementiaSqlService: DementiaSQLiteService, private platform: Platform, 
+  constructor(public dementiaSqlService: DementiaSQLiteService, private platform: Platform,
     public nav: NavController, private navParams: NavParams, private viewCtrl: ViewController){
      this.id = this.navParams.get('id');
   }

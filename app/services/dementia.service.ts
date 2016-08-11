@@ -13,6 +13,12 @@ export class DementiaService {
     _currentUserData: any;
     _remoteDB: any;
 
+    constructor()
+    {
+        this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });//location needs to be set for it to work on ios
+        this._remoteDB =  'https://medialab:e77871838@medialab.cloudant.com/users';
+    }
+
     initDB() {
 
         this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });//location needs to be set for it to work on ios
@@ -41,7 +47,7 @@ export class DementiaService {
         this._db.sync(this._remoteDB, opts, this.syncError);
    }
 
-    addUser(userData) {
+    public addUser(userData) {
         //console.log(userData);
         let user = {
             _id: userData.email,
@@ -52,11 +58,12 @@ export class DementiaService {
             job: userData.job,
             organisation: userData.organisation,
             department: userData.department
-        }       
-        this._db.put(user);
+        }
+        //console.log("db  "  +this._db.put() + this._db.put("ddfsfsf") + this._db);
+         this._db.put(user);
     }
 
-    getUserData(){
+    public getUserData(){
         if (!this._userData) {
             return this._db.allDocs({ include_docs: true})
                 .then(data => {
@@ -79,10 +86,9 @@ export class DementiaService {
             // Return cached data as a promise
             return Promise.resolve(this._userData);
         }
-
     }
 
-    getCurrentUserData(currentUser){
+    public getCurrentUserData(currentUser){
         return this._db.get(currentUser).then(data => {
 
             this._currentUserData = data;
@@ -98,30 +104,14 @@ export class DementiaService {
         });
     }
 
-    //responsible for inserting data:
-    //object is simply serialized into JSON and stored in the database
-   /* addData(insertData)
-    {
-        var insert = {
-            _id: new Date().toISOString(),
-            insertData: {},
-            complete: false
-        };
-         this._db.put(insert, function callback(err, result) {
-            if (!err) {
-              console.log('Successfully posted');
-            }
-          });
-    } */
 
-
-    addData(insertData)
+    public addData(insertData)
     {
         return this._db.post(insertData);
     }
 
     //inserts data and automatically generates a unique id
-    updateData(updateData)
+    public updateData(updateData)
     {
         return this._db.put(updateData);
     }
@@ -157,10 +147,6 @@ export class DementiaService {
         }
     }
 
-    test()
-    {
-        console.log("fdifdofidofidofi");
-    }
 
     private onDatabaseChange = (change) => {
         var index = this.findIndex(this._data, change.id);
