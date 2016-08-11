@@ -11,7 +11,7 @@ export class TestsDetailPage {
     tests: Test[];
     public id;
 
-  constructor(public dementiaSqlService: DementiaSQLiteService, private platform: Platform, 
+  constructor(public dementiaSqlService: DementiaSQLiteService, private platform: Platform,
     public nav: NavController, private navParams: NavParams, private viewCtrl: ViewController){
      this.id = this.navParams.get('id');
   }

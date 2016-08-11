@@ -53,7 +53,7 @@ export class DementiaService {
         this._db.sync(this._remoteDB, opts, this.syncError);
    }
 
-    addUser(userData) {
+    public addUser(userData) {
         let user = {
             _id: userData.email,
             _rev: userData._rev,
@@ -64,12 +64,11 @@ export class DementiaService {
             job: userData.job,
             organisation: userData.organisation,
             department: userData.department
-        }
-        console.log(user);    
+        }  
         this._db.put(user);
     }
 
-    getUserData(){
+    public getUserData(){
         if (!this._userData) {
             return this._db.allDocs({ include_docs: true }).then(data => {
                     // Each row has a .doc object and we just want to send an
@@ -92,10 +91,9 @@ export class DementiaService {
             // Return cached data as a promise
             return Promise.resolve(this._userData);
         }
-
     }
 
-    getCurrentUserData(currentUser){
+    public getCurrentUserData(currentUser){
         return this._db.get(currentUser).then(data => {
 
             this._currentUserData = data;
@@ -111,8 +109,13 @@ export class DementiaService {
         });
     }
 
+    public addData(insertData)
+    {
+        return this._db.post(insertData);
+    }
+
     //inserts data and automatically generates a unique id
-    updateData(updateData)
+    public updateData(updateData)
     {
         return this._db.put(updateData).catch((err) => {
                   console.log(err);
@@ -143,7 +146,9 @@ export class DementiaService {
 
                     // Listen for changes on the database.
                     this._db.changes({ live: true, since: 'now', include_docs: true})
-                        .on('change', this.onDatabaseChange);
+                        .on('change', function (change) {
+                            this.onDatabaseChange(change.id);
+                        }).on('error', console.log.bind(console));
                     return this._data;
 
                 });
@@ -153,26 +158,21 @@ export class DementiaService {
         }
     }
 
-    test()
-    {
-        console.log("fdifdofidofidofi");
-    }
 
     private onDatabaseChange = (change) => {
-        console.log("caled change");
         var index = this.findIndex(this._data, change.id);
         var data = this._data[index];
 
         if (change.deleted) {
             if (data) {
-                this._data.splice(index, 1); // delete
+                this._userData.splice(index, 1); // delete
             }
         } else {
             //change.doc.Date = new Date(change.doc.Date);
             if (data && data._id === change.id) {
-                this._data[index] = change.doc; // update
+                this._userData[index] = change.doc; // update
             } else {
-                this._data.splice(index, 0, change.doc) // insert
+                this._userData.splice(index, 0, change.doc) // insert
             }
         }
     }
