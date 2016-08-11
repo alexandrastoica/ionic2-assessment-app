@@ -13,15 +13,15 @@
 
 <ion-content class="tests">
   <ion-list>
-    <p *ngIf="createdTests.length==0" class="empty">No assessments yet.</p> 
-    
+    <p *ngIf="createdTests.length==0" class="empty">No assessments yet.</p>
+
     <ion-item-group *ngFor="let createdTest of createdTests">
       <ion-item-divider light>
           {{createdTest.name}}
       </ion-item-divider>
 
       <button ion-item (click)="resume(createdTest)">
-        <p>{{createdTest.date | date: shortDate}} 
+        <p>{{createdTest.date}}
           <span style="float: right">{{createdTest.percentage}}%</span>
         </p>
         <ion-row class="bar">

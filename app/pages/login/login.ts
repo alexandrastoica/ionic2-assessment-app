@@ -20,7 +20,7 @@ export class LoginPage {
   public done;
 
   constructor(private _formBuilder: FormBuilder, public nav: NavController,
-              private dementiaService: DementiaService,  private platform: Platform, 
+              private dementiaService: DementiaService,  private platform: Platform,
               private zone:NgZone, private toastCtrl: ToastController, private modalCtrl: ModalController) {
        this.nav = nav;
        this.local = new Storage(LocalStorage);
@@ -32,12 +32,14 @@ export class LoginPage {
        this.local.get('tutorialDone').then((data) => {
           if (data != null) this.done = JSON.parse(data);
        });
+
+       this.dementiaService.initDB();
   }
 
   submit() {
     if (this.userForm.dirty && this.userForm.valid) {
       let found = false;
-      
+
       this.dementiaService.getUserData().then(data => {
               this.zone.run(() => {
                   this.users = data;

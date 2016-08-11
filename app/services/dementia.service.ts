@@ -137,7 +137,9 @@ export class DementiaService {
 
                     // Listen for changes on the database.
                     this._db.changes({ live: true, since: 'now', include_docs: true})
-                        .on('change', this.onDatabaseChange);
+                        .on('change', function (change) {
+                            this.onDatabaseChange(change.id);
+                        }).on('error', console.log.bind(console));
                     return this._data;
 
                 });
@@ -149,19 +151,19 @@ export class DementiaService {
 
 
     private onDatabaseChange = (change) => {
-        var index = this.findIndex(this._data, change.id);
-        var data = this._data[index];
+        var index = this.findIndex(this._userData, change.id);
+        var data = this._userData[index];
 
         if (change.deleted) {
             if (data) {
-                this._data.splice(index, 1); // delete
+                this._userData.splice(index, 1); // delete
             }
         } else {
             //change.doc.Date = new Date(change.doc.Date);
             if (data && data._id === change.id) {
-                this._data[index] = change.doc; // update
+                this._userData[index] = change.doc; // update
             } else {
-                this._data.splice(index, 0, change.doc) // insert
+                this._userData.splice(index, 0, change.doc) // insert
             }
         }
     }
