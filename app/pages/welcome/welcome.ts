@@ -15,6 +15,6 @@ export class Welcome {
 
 	skip(){
 		this.local.set('tutorialDone', 'true');	
-		this.nav.push(TabsPage);
+		this.nav.setRoot(TabsPage);
 	}
 }
