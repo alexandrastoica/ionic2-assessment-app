@@ -24,6 +24,7 @@ export class Tests {
   public createTest;
   public id;
   public app_data;
+  public x;
 
   constructor(public platform: Platform, public getData: GetData, public nav: NavController, 
           public view: ViewController, public dementiaSqlService: DementiaSQLiteService,
@@ -72,53 +73,55 @@ export class Tests {
   
   export(test){
 
-    let body = "Assesment Date: " + test.date + "<BR> Assessment Location: " + test.name + "<BR><BR> Please see the attached file.";
-    let attachment = "Assesment Details: \n Assesment Date: " + test.date + "\n Assessment Location: " + test.name + "\n\n";
+    let body = "Assesment Date: " + test.date + "<BR> Assessment Location: " + test.name + "<BR><BR>";
+
+    let table = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'><head></head><body><table style='width: 100%; border: 1px solid black; border-collapse: collapse;'><thead><tr><th style='border: 1px solid black; border-collapse: collapse;'>Section</th><th style='border: 1px solid black; border-collapse: collapse;'>Question</th><th style='border: 1px solid black; border-collapse: collapse;'>Score</th></tr></thead><tbody>";
 
     this.dementiaSqlService.getResults(test.id).then(data => {   
         if (data.res.rows.length > 0) {
           for (let i = 0; i < data.res.rows.length; i++) {
             let item = data.res.rows.item(i);
-            attachment += "Section: "  + item.section + " | Question: " + item.question_id + " | Score: " + item.score + "\n";
+            table += "<tr><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.section + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.question_id + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.score + '</td></tr>';
           }
         }
-    });
 
-    this.platform.ready().then(() => {
-      let pathToFile = cordova.file.dataDirectory;
-      window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dir) {
-        dir.getFile("assessment_details.txt", {create:true}, function(file) {
-            var logOb = file;  
-            logOb.createWriter(function(fileWriter) {
-                //fileWriter.seek(fileWriter.length);
-                var blob = new Blob([attachment], {type:'text/plain'});
-                fileWriter.write(blob); 
-                pathToFile += 'assessment_details.txt';
+        table += '</tbody></table></body></html>';
+        //console.log(table);
 
-                EmailComposer.isAvailable().then((available) =>{
-                    if(available) {
-                     //Now we know we can send
-                    }
+        this.platform.ready().then(() => {
 
-                    let email = {
-                      to: '',
-                      attachments: [
-                        pathToFile
-                      ],
-                      subject: 'Assesment Details',
-                      body: body,
-                      isHtml: true
-                    };
-                    // Send a text message using default options
-                    EmailComposer.open(email); 
-                }); 
+              let pathToFile = cordova.file.dataDirectory;
+              window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dir) {
+                dir.getFile("assessment_details.xls", {create:true}, function(file) {
+                    var logOb = file;  
+                    logOb.createWriter(function(fileWriter) {
+                        var blob = new Blob([table], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                        fileWriter.write(blob); 
+                        pathToFile += 'assessment_details.xls';
 
-            }, function(e){console.error(e);});
-        });
-      });
+                        EmailComposer.isAvailable().then((available) => {
+                            if(EmailComposer.isAvailable){
+                                let email = {
+                                  to: '',
+                                  attachments: [
+                                    pathToFile
+                                  ],
+                                  subject: 'Assessment Details',
+                                  body: body + table,
+                                  isHtml: true
+                                };
+                                // Send a text message using default options
+                                EmailComposer.open(email); 
+                            } else { console.log("EMAIL NOT AVAILABLE"); }
 
-    
-    }); //platform
+                        }); 
+
+                    }, function(e){console.error(e);});
+                });
+              });
+
+            }); //platform
+      }); //sql service
   } //export
 
   createAssesment(){
