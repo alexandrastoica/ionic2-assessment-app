@@ -22,10 +22,10 @@ export class Tests {
   public id;
   public app_data;
 
-  constructor(public platform: Platform, public getData: GetData, public nav: NavController, 
+  constructor(public platform: Platform, public getData: GetData, public nav: NavController,
           public view: ViewController, public dementiaSqlService: DementiaSQLiteService,
           public alertCtrl: AlertController) {
- 
+
     //init database
     this.platform.ready().then(() => {
       this.dementiaSqlService.refreshDataSet();
@@ -68,35 +68,37 @@ export class Tests {
   }
 
   export(test){
-    this.tests = []; 
+    console.log("clicked export");
+    this.tests = [];
     let body = "<h3>Assesment Details:</h3> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR><BR>";
 
-    this.dementiaSqlService.getResults(test.id).then(data => {   
+    this.dementiaSqlService.getResults(test.id).then(data => {
         if (data.res.rows.length > 0) {
           for (let i = 0; i < data.res.rows.length; i++) {
             let item = data.res.rows.item(i);
+            console.log("item in export is " + JSON.stringify(item));
             body += "Section: "  + item.section + " | Question: " + item.question_id + " | Score: " + item.score + "<BR>";
           }
         }
 
-
       this.platform.ready().then(() => {
-          EmailComposer.isAvailable().then((available) =>{
-               if(available) {
-                 //Now we know we can send
-               }
-
+          // EmailComposer.isAvailable().then((available) =>{
+          //      if(available) {
+          //        //Now we know we can send
+          //        console.log("called within available")
+          //      }
+          //      console.log("called outside of the available");
               let email = {
-                to: '',
+                to: 'joshuajordancallis@gmail.com',
                 subject: 'Assesment Details',
                 body: body,
                 isHtml: true
               };
               // Send a text message using default options
-              EmailComposer.open(email); 
-          });
+              EmailComposer.open(email);
+         // });
       }); //end platform
-    
+
     }); //end getResults
   }
 
@@ -117,7 +119,7 @@ export class Tests {
               role: 'cancel',
               handler: data => {
                 console.log('Cancel clicked');
-                prompt.dismiss(); 
+                prompt.dismiss();
               }
             },
             {
@@ -131,9 +133,9 @@ export class Tests {
                   prompt.dismiss().then(() => {
                     this.saveTest(data.location);
                   });
-                } else { 
+                } else {
                   //dismiss the prompt
-                  prompt.dismiss(); 
+                  prompt.dismiss();
                 }
               }
             }
@@ -216,13 +218,13 @@ export class Tests {
                 // Go to sections menu
                 this.nav.push(Sections, {
                   testId: testId
-                });  
+                });
               }
           } else {
               // No answered questions for this test, go to sections menu
               this.nav.push(Sections, {
                 testId: testId
-              });  
+              });
           }
       });
   }
