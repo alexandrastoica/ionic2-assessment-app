@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+//import {Storage, SqlStorage} from 'ionic-angular';
 
 declare var require: any
 let PouchDB = require('pouchdb');
@@ -13,29 +14,29 @@ export class DementiaService {
     _currentUserData: any;
     _remoteDB: any;
 
-    constructor()
-    {
-        this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });//location needs to be set for it to work on ios
-        this._remoteDB =  'https://medialab:e77871838@medialab.cloudant.com/users';
+    constructor(){
+        this._db = new PouchDB('dementia-db', { adapter: 'websql', iosDatabaseLocation: 'default' });//location needs to be set for it to work on ios
+        this._remoteDB = 'https://medialab:e77871838@medialab.cloudant.com/users';
     }
 
     initDB() {
+        this._db = new PouchDB('dementia-db', { adapter: 'websql', iosDatabaseLocation: 'default' });//location needs to be set for it to work on ios
+        this._remoteDB = 'https://medialab:e77871838@medialab.cloudant.com/users';
 
-        this._db = new PouchDB('dementia-db', { adapter: 'websql', location: 'default' });//location needs to be set for it to work on ios
-        this._remoteDB =  'https://medialab:e77871838@medialab.cloudant.com/users';
+        this._db.changes({
+            since: 'now',
+            live: true
+        }).on('change', this.getUserData);
 
-       this._db.changes({
-        since: 'now',
-        live: true
-       }).on('change', this.getUserData);
+        if(this._remoteDB) {
+            this.sync();
+        }
 
-       if(this._remoteDB) {
-        this.sync();
-       }
+        PouchDB.debug.disable();
 
        //console.log("db is " + this._db);
       //console.log("ADAPTER: " + this._db.adapter); //to check  which adapter is used by PouchDB
-        //this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
+      // this._db.info().then(console.log.bind(console)); //n a mobile device the adapter will be displayed as websql even if it is using SQLite, so to confirm that it is actually using SQLite we have to do this
     }
 
     private syncError() {
@@ -43,14 +44,19 @@ export class DementiaService {
     }
 
     private sync() {
-        var opts = {live: true};
+        var opts = {
+            live: true,
+            retry: true,
+            continuous: true
+        };
+        
         this._db.sync(this._remoteDB, opts, this.syncError);
    }
 
     public addUser(userData) {
-        //console.log(userData);
         let user = {
             _id: userData.email,
+            _rev: userData._rev,
             title: userData.title,
             firstname: userData.firstname,
             lastname: userData.lastname,
@@ -58,21 +64,20 @@ export class DementiaService {
             job: userData.job,
             organisation: userData.organisation,
             department: userData.department
-        }
-        //console.log("db  "  +this._db.put() + this._db.put("ddfsfsf") + this._db);
-         this._db.put(user);
+        }  
+        this._db.put(user);
     }
 
     public getUserData(){
         if (!this._userData) {
-            return this._db.allDocs({ include_docs: true})
-                .then(data => {
+            return this._db.allDocs({ include_docs: true }).then(data => {
                     // Each row has a .doc object and we just want to send an
                     // array of  objects back to the calling controller,
                     // so let's map the array to contain just the .doc objects.
                     this._userData = data.rows.map(row => {
                         // Dates are not automatically converted from a string.
                        // row.doc.Date = new Date(row.doc.Date);
+                       //console.log(row.doc);
                         return row.doc;
                     });
 
@@ -104,7 +109,6 @@ export class DementiaService {
         });
     }
 
-
     public addData(insertData)
     {
         return this._db.post(insertData);
@@ -113,11 +117,16 @@ export class DementiaService {
     //inserts data and automatically generates a unique id
     public updateData(updateData)
     {
-        return this._db.put(updateData);
+        return this._db.put(updateData).catch((err) => {
+                  console.log(err);
+               });
     }
     //doesn't generate a unique id, however will update data with matching id's
     removeData(removeData) {
-        return this._db.remove(removeData);
+        console.log(this._db);
+        this._db.get(removeData).then(function (doc) {
+          return this._db.remove(doc);
+        });
     }
 
     getAllData()
@@ -151,8 +160,8 @@ export class DementiaService {
 
 
     private onDatabaseChange = (change) => {
-        var index = this.findIndex(this._userData, change.id);
-        var data = this._userData[index];
+        var index = this.findIndex(this._data, change.id);
+        var data = this._data[index];
 
         if (change.deleted) {
             if (data) {

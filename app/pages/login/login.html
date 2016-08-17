@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content padding class="login">
-	<form [formGroup]="userForm" (ngSubmit)="submit()">
+	<form [formGroup]="userForm" (ngSubmit)="onSubmit(userForm.value)">
 	    
 	    <ion-label for="email" class="item-floating-label">Email</ion-label>
 	    <ion-input type="email" formControlName="email"></ion-input>

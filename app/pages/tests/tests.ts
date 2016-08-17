@@ -1,11 +1,14 @@
 import {Component} from '@angular/core';
 import {Platform, Modal, ViewController, NavController, Storage, LocalStorage, AlertController} from 'ionic-angular';
-import {EmailComposer} from 'ionic-native';
+import {EmailComposer, File} from 'ionic-native';
 import {DementiaSQLiteService, CreateTest, Test} from '../../services/dementiasqlite.service';
 import {TestsDetailPage} from '../tests-detail/tests-detail';
 import {Sections} from "../sections/sections";
 import {SectionsQuestionsPage} from "../sections-questions/sections-questions";
 import {GetData} from "../../providers/get-data/get-data";
+
+declare var window;
+declare var cordova: any;
 
 @Component({
   templateUrl: 'build/pages/tests/tests.html',
@@ -21,6 +24,7 @@ export class Tests {
   public createTest;
   public id;
   public app_data;
+  public x;
 
   constructor(public platform: Platform, public getData: GetData, public nav: NavController,
           public view: ViewController, public dementiaSqlService: DementiaSQLiteService,
@@ -68,39 +72,57 @@ export class Tests {
   }
 
   export(test){
-    console.log("clicked export");
-    this.tests = [];
-    let body = "<h3>Assesment Details:</h3> <BR> Assesment Date: " + test.date + "<BR> Assessment Name: " + test.name + "<BR><BR>";
+
+    let body = "Assesment Date: " + test.date + "<BR> Assessment Location: " + test.name + "<BR><BR>";
+
+    let table = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'><head></head><body><table style='width: 100%; border: 1px solid black; border-collapse: collapse;'><thead><tr><th style='border: 1px solid black; border-collapse: collapse;'>Section</th><th style='border: 1px solid black; border-collapse: collapse;'>Question</th><th style='border: 1px solid black; border-collapse: collapse;'>Score</th></tr></thead><tbody>";
 
     this.dementiaSqlService.getResults(test.id).then(data => {
         if (data.res.rows.length > 0) {
           for (let i = 0; i < data.res.rows.length; i++) {
             let item = data.res.rows.item(i);
-            console.log("item in export is " + JSON.stringify(item));
-            body += "Section: "  + item.section + " | Question: " + item.question_id + " | Score: " + item.score + "<BR>";
+            table += "<tr><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.section + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.question_id + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.score + '</td></tr>';
           }
         }
 
-      this.platform.ready().then(() => {
-          // EmailComposer.isAvailable().then((available) =>{
-          //      if(available) {
-          //        //Now we know we can send
-          //        console.log("called within available")
-          //      }
-          //      console.log("called outside of the available");
-              let email = {
-                to: 'joshuajordancallis@gmail.com',
-                subject: 'Assesment Details',
-                body: body,
-                isHtml: true
-              };
-              // Send a text message using default options
-              EmailComposer.open(email);
-         // });
-      }); //end platform
+        table += '</tbody></table></body></html>';
+        //console.log(table);
 
-    }); //end getResults
-  }
+        this.platform.ready().then(() => {
+
+              let pathToFile = cordova.file.dataDirectory;
+              window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dir) {
+                dir.getFile("assessment_details.xls", {create:true}, function(file) {
+                    var logOb = file;
+                    logOb.createWriter(function(fileWriter) {
+                        var blob = new Blob([table], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                        fileWriter.write(blob);
+                        pathToFile += 'assessment_details.xls';
+
+                        EmailComposer.isAvailable().then((available) => {
+                            if(EmailComposer.isAvailable){
+                                let email = {
+                                  to: '',
+                                  attachments: [
+                                    pathToFile
+                                  ],
+                                  subject: 'Assessment Details',
+                                  body: body + table,
+                                  isHtml: true
+                                };
+                                // Send a text message using default options
+                                EmailComposer.open(email);
+                            } else { console.log("EMAIL NOT AVAILABLE"); }
+
+                        });
+
+                    }, function(e){console.error(e);});
+                });
+              });
+
+            }); //platform
+      }); //sql service
+  } //export
 
   createAssesment(){
       //create prompt to allow the user enter the assessment location and create a new assesment

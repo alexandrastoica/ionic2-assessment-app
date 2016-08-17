@@ -36,15 +36,14 @@ export class LoginPage {
        this.dementiaService.initDB();
   }
 
-  submit() {
-    if (this.userForm.dirty && this.userForm.valid) {
+  onSubmit(value): void {
       let found = false;
 
       this.dementiaService.getUserData().then(data => {
               this.zone.run(() => {
                   this.users = data;
                 for(let user of this.users){
-                  if(this.userForm.value.email == user._id){
+                  if(value.email == user._id){
                     found = true;
                     this.local.set('email', user._id);
                     console.log("found " + found);
@@ -67,7 +66,6 @@ export class LoginPage {
                  toast.present();
               }
           }).catch(console.error.bind(console));
-        }
    }
 
     register() {

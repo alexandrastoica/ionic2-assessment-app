@@ -16,13 +16,15 @@ export class MyApp {
   rootPage: any = LoginPage;
   public storage;
 
-  constructor(public platform: Platform, public dementiaService: DementiaService) {
+  constructor(public platform: Platform, public dementiaService: DementiaService, public app: App) {
 
     //prepare platform
     this.platform.ready().then(() => {
 
       StatusBar.styleDefault();
-      console.log("platform ready");
+
+      //initialise pouchdb
+      this.dementiaService.initDB();
 
       //initialise sql storage
       this.storage = new Storage(SqlStorage);
@@ -40,21 +42,17 @@ export class MyApp {
         console.log("Error creating tests table", JSON.stringify(error.err));
       });
 
-      //initialise pouchdb
-      this.dementiaService.initDB();
-
       //enableProdMode();
     
     });//platform
 
   }//constructor
 
+
 }//export
 
 ionicBootstrap(MyApp, [
     disableDeprecatedForms(),
     provideForms()
-  ], {
-   // tabSubPages: false //allow tabs to show up on child page on android
-});
+  ], {});
 

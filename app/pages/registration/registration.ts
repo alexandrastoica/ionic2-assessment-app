@@ -25,7 +25,7 @@ export class RegistrationPage {
     authForm: FormGroup;
 
     constructor(private fb: FormBuilder, private viewCtrl: ViewController,
-        private navParams: NavParams, platform: Platform, public app: App,
+        private navParams: NavParams, public platform: Platform, public app: App,
         private dementiaService: DementiaService, public sqlite: DementiaSQLiteService, public nav: NavController,
         private toastCtrl: ToastController, private alertCtrl: AlertController, private zone:NgZone) {
 
@@ -38,6 +38,11 @@ export class RegistrationPage {
             'job': [''],
             'organisation': [''],
             'department': ['']
+        });
+
+        //init database
+        this.platform.ready().then(() => {
+          this.sqlite.refreshDataSet();
         });
 
         //set localstorage
@@ -119,7 +124,7 @@ export class RegistrationPage {
       //create confirm box to prevent the user from accidentally deleting teir account
       let confirm = this.alertCtrl.create({
         title: 'Delete Account',
-        message: 'Are you sure you want to delete ypur account? All data will be erased',
+        message: 'Are you sure you want to delete your account? All data will be erased.',
         buttons: [
           {
             text: 'Cancel',
@@ -131,22 +136,8 @@ export class RegistrationPage {
           {
             text: 'Confirm',
             handler: () => {
-              //console.log('Agree clicked');
-              //delete from database
-              this.dementiaService.removeData(this.user); //delete the account
-
-              this.sqlite.deleteData(this.user._id); // delete data of tests by user
-              this.sqlite.deleteTestByUser(this.user._id); // delete tests by user
-
-              let toast = this.toastCtrl.create({
-                  message: 'Account has been deleted',
-                  duration: 600
-              });
-              toast.present().then(() => {
-                  this.local.remove('email');
-                  this.local.set('tutorialDone', false);
-                  //go back to login page
-                  this.app.getRootNav().push(LoginPage);
+              confirm.dismiss().then(() => {
+                this.deleteUser();
               });
             }//end handler
           }
@@ -155,6 +146,26 @@ export class RegistrationPage {
 
       //show alert
       confirm.present();
+    }
+
+    deleteUser(){        
+        let toast = this.toastCtrl.create({
+            message: 'Account has been deleted',
+            duration: 600
+        });
+        toast.present().then(() => {
+            this.local.remove('email');
+            this.local.set('tutorialDone', false);
+            //go back to login page
+            this.app.setRootNav(LoginPage);
+
+            //delete from database
+            this.sqlite.deleteData(this.user._id); // delete data of tests by user
+            this.sqlite.deleteTestByUser(this.user._id); // delete tests by user
+
+            this.dementiaService.removeData(this.user._id); //delete the account
+            
+        });
     }
 
     dismiss() {
