@@ -48,7 +48,7 @@ export class DementiaService {
             retry: true,
             continuous: true
         };
-        
+
         this._db.sync(this._remoteDB, opts, this.syncError);
    }
 
@@ -63,7 +63,7 @@ export class DementiaService {
             job: userData.job,
             organisation: userData.organisation,
             department: userData.department
-        }  
+        }
         this._db.put(user);
     }
 
@@ -159,8 +159,8 @@ export class DementiaService {
 
 
     private onDatabaseChange = (change) => {
-        var index = this.findIndex(this._data, change.id);
-        var data = this._data[index];
+        var index = this.findIndex(this._userData, change.id);
+        var data = this._userData[index];
 
         if (change.deleted) {
             if (data) {

@@ -26,10 +26,10 @@ export class Tests {
   public app_data;
   public x;
 
-  constructor(public platform: Platform, public getData: GetData, public nav: NavController, 
+  constructor(public platform: Platform, public getData: GetData, public nav: NavController,
           public view: ViewController, public dementiaSqlService: DementiaSQLiteService,
           public alertCtrl: AlertController) {
- 
+
     //init database
     this.platform.ready().then(() => {
       this.dementiaSqlService.refreshDataSet();
@@ -99,7 +99,7 @@ export class Tests {
     tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook>';
     tab_text = tab_text + '</xml><![endif]--></head><body>';
 
-    this.dementiaSqlService.getResults(test.id).then(data => {   
+    this.dementiaSqlService.getResults(test.id).then(data => {
         if (data.res.rows.length > 0) {
           for (let i = 0; i < data.res.rows.length; i++) {
             let item = data.res.rows.item(i);
@@ -136,7 +136,7 @@ export class Tests {
                                 EmailComposer.open(email); 
                             } else { console.log("EMAIL NOT AVAILABLE"); this.showError(); }
 
-                        }); 
+                        });
 
                     }, function(e){ console.error(e); this.showError(); });
                 });
@@ -163,7 +163,7 @@ export class Tests {
               role: 'cancel',
               handler: data => {
                 console.log('Cancel clicked');
-                prompt.dismiss(); 
+                prompt.dismiss();
               }
             },
             {
@@ -177,9 +177,9 @@ export class Tests {
                   prompt.dismiss().then(() => {
                     this.saveTest(data.location);
                   });
-                } else { 
+                } else {
                   //dismiss the prompt
-                  prompt.dismiss(); 
+                  prompt.dismiss();
                 }
               }
             }
@@ -261,13 +261,13 @@ export class Tests {
                 // Go to sections menu
                 this.nav.push(Sections, {
                   testId: testId
-                });  
+                });
               }
           } else {
               // No answered questions for this test, go to sections menu
               this.nav.push(Sections, {
                 testId: testId
-              });  
+              });
           }
       });
   }
