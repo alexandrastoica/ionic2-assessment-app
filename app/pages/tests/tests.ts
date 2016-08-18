@@ -70,57 +70,79 @@ export class Tests {
         }
     });
   }
+
+  showError() {
+    let alert = this.alertCtrl.create({
+      title: 'Something went wrong.',
+      subTitle: 'The app is unable to export at the moment, please try again.',
+      buttons: ['OK']
+    });
+    alert.present();
+  }
   
   export(test){
 
     let body = "Assesment Date: " + test.date + "<BR> Assessment Location: " + test.name + "<BR><BR>";
+    let table = "<table style='font-size: 12pt'><tr><th>Section</th><th>Question</th><th>Score</th></tr>";
+    let tableHTML = "<table width='100%' style='width: 100% !important; min-width: 100%; border: 1px solid black; border-collapse: collapse;'><tr><th style='border: 1px solid black; border-collapse: collapse;'>Section</th><th style='border: 1px solid black; border-collapse: collapse;'>Question</th><th style='border: 1px solid black; border-collapse: collapse;'>Score</th></tr>";
 
-    let table = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'><head></head><body><table style='width: 100%; border: 1px solid black; border-collapse: collapse;'><thead><tr><th style='border: 1px solid black; border-collapse: collapse;'>Section</th><th style='border: 1px solid black; border-collapse: collapse;'>Question</th><th style='border: 1px solid black; border-collapse: collapse;'>Score</th></tr></thead><tbody>";
+    var tab_text = '\uFEFF';
+    tab_text = tab_text + '<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+    tab_text = tab_text + '<head>';
+    tab_text = tab_text + '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+    tab_text = tab_text + '<meta name="ProgId" content="Excel.Sheet" />';
+    tab_text = tab_text + '<meta name="Generator" content="Microsoft Excel 11" />';
+    tab_text = tab_text + '<title>Assessment_details_' + test.date + '</title>';
+    tab_text = tab_text +'<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+    tab_text = tab_text + '<x:Name>Assessment_details_' + test.date + '</x:Name>';
+    tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+    tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook>';
+    tab_text = tab_text + '</xml><![endif]--></head><body>';
 
     this.dementiaSqlService.getResults(test.id).then(data => {   
         if (data.res.rows.length > 0) {
           for (let i = 0; i < data.res.rows.length; i++) {
             let item = data.res.rows.item(i);
-            table += "<tr><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.section + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.question_id + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: left;'>" + item.score + '</td></tr>';
+            table += '<tr><td>' + item.section + '</td><td>' + item.question_id + '</td><td style="text-align: right;">' + item.score + '</td></tr>';
+            tableHTML += "<tr><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: center;'>" + item.section + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: center;'>" + item.question_id + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: center;'>" + item.score + '</td></tr>';
           }
-        }
+        } // if
 
-        table += '</tbody></table></body></html>';
-        //console.log(table);
+        let emailbody = body + tableHTML + '</table>';
+        let template = tab_text + table + '</table></body></html>';
 
         this.platform.ready().then(() => {
-
               let pathToFile = cordova.file.dataDirectory;
-              window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dir) {
+      
+              window.resolveLocalFileSystemURL(pathToFile, function(dir) {
                 dir.getFile("assessment_details.xls", {create:true}, function(file) {
-                    var logOb = file;  
-                    logOb.createWriter(function(fileWriter) {
-                        var blob = new Blob([table], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                    file.createWriter(function(fileWriter) {
+                        
+                        let blob = new Blob([template], { type: 'application/vnd.ms-excel' });
                         fileWriter.write(blob); 
                         pathToFile += 'assessment_details.xls';
 
                         EmailComposer.isAvailable().then((available) => {
                             if(EmailComposer.isAvailable){
                                 let email = {
-                                  to: '',
                                   attachments: [
                                     pathToFile
                                   ],
                                   subject: 'Assessment Details',
-                                  body: body + table,
+                                  body: emailbody,
                                   isHtml: true
                                 };
                                 // Send a text message using default options
                                 EmailComposer.open(email); 
-                            } else { console.log("EMAIL NOT AVAILABLE"); }
+                            } else { console.log("EMAIL NOT AVAILABLE"); this.showError(); }
 
                         }); 
 
-                    }, function(e){console.error(e);});
+                    }, function(e){ console.error(e); this.showError(); });
                 });
               });
 
-            }); //platform
+        }); //platform
       }); //sql service
   } //export
 
@@ -228,7 +250,6 @@ export class Tests {
               let item = data.res.rows.item(0);
               let section = this.app_data[item.section-1]; //get the section from app data
               // If not the last question from the section, go to next question
-              console.log(item.question_id);
               if(section.questions.length >= (item.question_id + 1)) {
                 this.nav.push(SectionsQuestionsPage, {
                     section: section,

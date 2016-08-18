@@ -31,7 +31,7 @@
 
       <ion-item>
         <button small purple outline (click)="showDetail(createdTest)">View details</button>
-        <button small purple outline (click)="export(createdTest)">Export</button>
+        <button small purple outline [disabled]="createdTest.percentage == 0" (click)="export(createdTest)">Export</button>
         <button small red outline (click)="deleteTest(createdTest)">Delete</button>
       </ion-item>
 

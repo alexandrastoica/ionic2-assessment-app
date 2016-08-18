@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-//import {Storage, SqlStorage} from 'ionic-angular';
 
-declare var require: any
+declare var require: any;
 let PouchDB = require('pouchdb');
 window["PouchDB"] = PouchDB;
 
