@@ -79,48 +79,62 @@ export class Tests {
     });
     alert.present();
   }
-  
-  export(test){
 
-    let body = "Assesment Date: " + test.date + "<BR> Assessment Location: " + test.name + "<BR><BR>";
-    let table = "<table style='font-size: 12pt'><tr><th>Section</th><th>Question</th><th>Score</th></tr>";
-    let tableHTML = "<table width='100%' style='width: 100% !important; min-width: 100%; border: 1px solid black; border-collapse: collapse;'><tr><th style='border: 1px solid black; border-collapse: collapse;'>Section</th><th style='border: 1px solid black; border-collapse: collapse;'>Question</th><th style='border: 1px solid black; border-collapse: collapse;'>Score</th></tr>";
+  convertArrayOfObjectsToCSV(args) {
+      var result, ctr, keys, columnDelimiter, lineDelimiter, data;
 
-    var tab_text = '\uFEFF';
-    tab_text = tab_text + '<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
-    tab_text = tab_text + '<head>';
-    tab_text = tab_text + '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    tab_text = tab_text + '<meta name="ProgId" content="Excel.Sheet" />';
-    tab_text = tab_text + '<meta name="Generator" content="Microsoft Excel 11" />';
-    tab_text = tab_text + '<title>Assessment_details_' + test.date + '</title>';
-    tab_text = tab_text +'<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
-    tab_text = tab_text + '<x:Name>Assessment_details_' + test.date + '</x:Name>';
-    tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
-    tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook>';
-    tab_text = tab_text + '</xml><![endif]--></head><body>';
+      data = args.data || null;
+      if (data == null || !data.length) {
+          return null;
+      }
 
-    this.dementiaSqlService.getResults(test.id).then(data => {
+      columnDelimiter = args.columnDelimiter || ',';
+      lineDelimiter = args.lineDelimiter || '\n';
+
+      keys = Object.keys(data[0]);
+
+      result = '';
+      result += keys.join(columnDelimiter);
+      result += lineDelimiter;
+
+      data.forEach(function(item) {
+          ctr = 0;
+          keys.forEach(function(key) {
+              if (ctr > 0) result += columnDelimiter;
+
+              result += item[key];
+              ctr++;
+          });
+          result += lineDelimiter;
+      });
+
+      return result;
+  }
+
+  exportCVS(test){
+      let details = [];
+      let body = "Assessment location: " + test.name + "<BR> Assessment date: " + test.date;
+    
+      this.dementiaSqlService.getResults(test.id).then(data => {
         if (data.res.rows.length > 0) {
           for (let i = 0; i < data.res.rows.length; i++) {
             let item = data.res.rows.item(i);
-            table += '<tr><td>' + item.section + '</td><td>' + item.question_id + '</td><td style="text-align: right;">' + item.score + '</td></tr>';
-            tableHTML += "<tr><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: center;'>" + item.section + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: center;'>" + item.question_id + "</td><td style='padding: 5px; border: 1px solid black; border-collapse: collapse; text-align: center;'>" + item.score + '</td></tr>';
+            details.push({section: item.section, question: item.question_id, score: item.score});
           }
         } // if
 
-        let emailbody = body + tableHTML + '</table>';
-        let template = tab_text + table + '</table></body></html>';
+        let cvs = this.convertArrayOfObjectsToCSV({data: details});
+        console.log(cvs);
 
         this.platform.ready().then(() => {
               let pathToFile = cordova.file.dataDirectory;
       
               window.resolveLocalFileSystemURL(pathToFile, function(dir) {
-                dir.getFile("assessment_details.xls", {create:true}, function(file) {
+                dir.getFile("assessment_details.csv", {create:true}, function(file) {
                     file.createWriter(function(fileWriter) {
-                        
-                        let blob = new Blob([template], { type: 'application/vnd.ms-excel' });
+                        let blob = new Blob([cvs], { type: 'text/csv;charset=utf-8;' });
                         fileWriter.write(blob); 
-                        pathToFile += 'assessment_details.xls';
+                        pathToFile += 'assessment_details.csv';
 
                         EmailComposer.isAvailable().then((available) => {
                             if(EmailComposer.isAvailable){
@@ -129,7 +143,7 @@ export class Tests {
                                     pathToFile
                                   ],
                                   subject: 'Assessment Details',
-                                  body: emailbody,
+                                  body: body,
                                   isHtml: true
                                 };
                                 // Send a text message using default options
@@ -143,9 +157,10 @@ export class Tests {
               });
 
         }); //platform
-      }); //sql service
-  } //export
 
+      });//sql
+  }
+  
   createAssesment(){
       //create prompt to allow the user enter the assessment location and create a new assesment
       let prompt = this.alertCtrl.create({
