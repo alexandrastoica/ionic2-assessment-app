@@ -63,19 +63,18 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-email-composer": {
+    "cordova-sqlite-storage": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/katzer/cordova-plugin-email-composer.git",
-            "subdir": "."
+            "type": "registry",
+            "id": "cordova-sqlite-storage@~1.4.6"
         },
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-sqlite-storage": {
+    "cordova-plugin-x-socialsharing": {
         "source": {
             "type": "registry",
-            "id": "cordova-sqlite-storage"
+            "id": "cordova-plugin-x-socialsharing"
         },
         "is_top_level": true,
         "variables": {}
