@@ -71,70 +71,6 @@ export class Tests {
     });
   }
 
-  exportCVS(test){
-      let details = [];
-      let body = "Assessment location: " + test.name + "<BR> Assessment date: " + test.date;
-    
-      this.dementiaSqlService.getResults(test.id).then(data => {
-        if (data.res.rows.length > 0) {
-          for (let i = 0; i < data.res.rows.length; i++) {
-            let item = data.res.rows.item(i);
-            details.push({section: item.section, question: item.question_id, score: item.score});
-          }
-        } // if
-
-        let cvs = this.convertArrayOfObjectsToCSV({data: details});
-        //console.log(cvs);
-
-        this.platform.ready().then(() => {
-              let pathToFile;
-
-              // platform bridges for storing csv file
-              if(this.platform.is('ios')) {
-                // path to store to iOS devices
-                pathToFile = cordova.file.dataDirectory;
-                console.log("iOS device");
-              } else if(this.platform.is('android')) {
-                // path to store to android devices
-                pathToFile = cordova.file.externalDataDirectory;
-                console.log("android device");
-              }
-
-              //console.log(pathToFile);
-
-              window.resolveLocalFileSystemURL(pathToFile, function(dir) {
-                dir.getFile("assessment_details.csv", {create:true}, function(file) {
-                    file.createWriter(function(fileWriter) {
-                        let blob = new Blob([cvs], { type: 'text/csv;charset=utf-8;' });
-                        fileWriter.write(blob); 
-                        pathToFile += 'assessment_details.csv';
-
-                        // Check if sharing via email is supported
-                        SocialSharing.canShareViaEmail().then(() => {
-                          // Sharing via email is possible
-
-                        }).catch(() => {
-                          // Sharing via email is not possible
-                          this.showError();
-                        });
-
-                        // Share via email
-                        SocialSharing.shareViaEmail(body, 'Assessment Details', null, null, null, pathToFile).then(() => {
-                          // Success!
-                        }).catch(() => {
-                          // Error!
-                          this.showError();
-                        });
-
-                    }, function(e){ console.error(e); this.showError(); });
-                });
-              });
-
-        }); //platform
-
-      });//sql
-  }
-
   convertArrayOfObjectsToCSV(args) {
       var result, ctr, keys, columnDelimiter, lineDelimiter, data;
 
@@ -165,14 +101,87 @@ export class Tests {
 
       return result;
   }
-  
-  showError() {
-    let alert = this.alertCtrl.create({
-      title: 'Something went wrong.',
-      subTitle: 'The app is unable to export at the moment, please try again.',
-      buttons: ['OK']
-    });
-    alert.present();
+
+  exportCVS(test){
+      let details = [];
+      let body = "Assessment location: " + test.name + "<BR> Assessment date: " + test.date;
+    
+      this.dementiaSqlService.getResults(test.id).then(data => {
+        if (data.res.rows.length > 0) {
+          for (let i = 0; i < data.res.rows.length; i++) {
+            let item = data.res.rows.item(i);
+            details.push({section: item.section, question: item.question_id, score: item.score});
+          }
+        } // if
+
+        this.platform.ready().then(() => {
+              let cvs = this.convertArrayOfObjectsToCSV({data: details});
+              let pathToFile; 
+
+              // platform bridges for storing csv file
+              if(this.platform.is('ios')) {
+                // path to store to iOS devices
+                pathToFile = cordova.file.dataDirectory;
+                console.log("iOS device");
+              } else if(this.platform.is('android')) {
+                // path to store to android devices
+                pathToFile = cordova.file.externalDataDirectory;
+                console.log("android device");
+              }
+
+              window.resolveLocalFileSystemURL(pathToFile, function(dir) {
+                  dir.getFile("assessment_details.csv", {create:true}, function(file) {
+                      file.createWriter(function(fileWriter) {
+                          let blob = new Blob([cvs], { type: 'text/csv;charset=utf-8;' });
+                          pathToFile += 'assessment_details.csv';
+                          fileWriter.write(blob);
+                          console.log("BLOB CREATED");
+
+                          // Check if sharing via email is supported
+                          SocialSharing.canShareViaEmail().then(() => {
+                            console.log("SHARE EMAIL");
+                            // Sharing via email is possible
+                            // Share via email
+                            SocialSharing.shareViaEmail(body, 'Assessment Details', null, null, null, pathToFile).then(() => {
+                                // Success!
+                                console.log("DONE");
+                            }).catch(() => {
+                              // Error!
+                              let alert = this.alertCtrl.create({
+                                title: 'Something went wrong.',
+                                subTitle: 'The app is unable to export at the moment, please configure your email default app and try again.',
+                                buttons: ['OK']
+                              });
+                              alert.present();
+
+                              //console.log("email not opened");
+                            });
+                          }).catch(() => {
+                            // Sharing via email is not possible
+                            let alert = this.alertCtrl.create({
+                              title: 'Something went wrong.',
+                              subTitle: 'The app is unable to export at the moment, please configure your email default app and try again.',
+                              buttons: ['OK']
+                            });
+                            alert.present();
+
+                            //console.log("sharing not possible");
+                          });
+
+                      }, function(e){ 
+                          //console.error(e); 
+
+                          let alert = this.alertCtrl.create({
+                            title: 'Something went wrong.',
+                            subTitle: 'The app is unable to export at the moment, please try again later.',
+                            buttons: ['OK']
+                          });
+                          alert.present();
+                      });
+                  });
+              }); // create file
+        }); //platform
+      });//sql
   }
 
   createAssesment(){
