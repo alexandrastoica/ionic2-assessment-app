@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Platform, Modal, ViewController, NavController, Storage, LocalStorage, AlertController} from 'ionic-angular';
-import {EmailComposer, File, SocialSharing} from 'ionic-native';
+import {EmailComposer, File, SocialSharing, Keyboard} from 'ionic-native';
 import {DementiaSQLiteService, CreateTest, Test} from '../../services/dementiasqlite.service';
 import {TestsDetailPage} from '../tests-detail/tests-detail';
 import {Sections} from "../sections/sections";
@@ -201,7 +201,9 @@ export class Tests {
               role: 'cancel',
               handler: data => {
                 console.log('Cancel clicked');
-                prompt.dismiss();
+                prompt.dismiss().then(() => {
+                  Keyboard.close();
+                });
               }
             },
             {
@@ -213,11 +215,14 @@ export class Tests {
                 if(data.location){
                   //dismiss and saveTest
                   prompt.dismiss().then(() => {
+                    Keyboard.close();
                     this.saveTest(data.location);
                   });
                 } else {
                   //dismiss the prompt
-                  prompt.dismiss();
+                  prompt.dismiss().then(() => {
+                    Keyboard.close();
+                  });
                 }
               }
             }
