@@ -31,10 +31,10 @@
         "cordova-plugin-x-toast": {
             "PACKAGE_NAME": "com.ionicframework.dementia.app"
         },
-        "cordova-sqlite-storage": {
+        "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.dementia.app"
         },
-        "ionic-plugin-keyboard": {
+        "cordova-sqlite-storage": {
             "PACKAGE_NAME": "com.ionicframework.dementia.app"
         }
     },
