@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
-//import { Storage } from '@ionic/storage';
-import { Http } from '@angular/http';
 import PouchDB from 'pouchdb';
 
 @Injectable()
-export class DementiaService {
+export class Pouch {
     _db: any;
     _data: any;
     _userData: any;
@@ -15,14 +13,13 @@ export class DementiaService {
 
     constructor(public platform: Platform){
       this.platform.ready().then(() => {
-        this._db = new PouchDB('dementia-db', { adapter: 'websql' });//location needs to be set for it to work on ios
-        this._remoteDB = 'https://medialab:e77871838@medialab.cloudant.com/users';
+        this.initDB();
       });
     }
 
     initDB() {
       this.platform.ready().then(() => {
-        this._db = new PouchDB('dementia-db', { adapter: 'websql' });//location needs to be set for it to work on ios
+        this._db = new PouchDB('users-db', { adapter: 'websql' });//location needs to be set for it to work on ios
         this._remoteDB = 'https://medialab:e77871838@medialab.cloudant.com/users';
 
         this._db.changes({
@@ -37,11 +34,11 @@ export class DementiaService {
       });
     }
 
-    private syncError() {
+    public syncError() {
      console.log("error unable to syn to remote database");
     }
 
-    private sync() {
+    public sync() {
         var opts = {
             live: true,
             retry: true,

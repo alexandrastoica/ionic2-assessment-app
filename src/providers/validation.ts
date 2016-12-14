@@ -10,7 +10,7 @@ export class ValidationService {
             return EMAIL_REGEXP.test(c.value) ? null : { 'invalidEmailAddress': true };;
       }
 
-    
+
       static getValidatorErrorMessage(code: string) {
             let config = {
                   'required': 'Email is required',

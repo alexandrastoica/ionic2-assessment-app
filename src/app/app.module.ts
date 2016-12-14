@@ -1,11 +1,13 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { MyApp } from './app.component';
 
-import { IonicApp, IonicModule } from 'ionic-angular';
+//import { REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
+
 import { Storage } from '@ionic/storage';
 import { SQLite } from 'ionic-native';
 
-import { MyApp } from './app.component';
-
+//pages
 import { LoginPage } from '../pages/login/login';
 import { RegistrationPage } from '../pages/registration/registration';
 import { Profile } from '../pages/profile/profile';
@@ -19,9 +21,10 @@ import { TestsQuestionsPage } from '../pages/tests-questions/tests-questions';
 import { Welcome } from '../pages/welcome/welcome';
 import { TabsPage } from '../pages/tabs/tabs';
 
-import { GetData } from '../providers/get-data/get-data'
-import { DementiaService } from '../services/dementia.service';
-import { DementiaSQLiteService, Test, CreateTest } from '../services/dementiasqlite.service';
+//providers
+import { Data } from '../providers/data'
+import { Pouch } from '../providers/pouchdb';
+import { SQLiteService } from '../providers/sqlite';
 
 @NgModule({
   declarations: [
@@ -37,12 +40,11 @@ import { DementiaSQLiteService, Test, CreateTest } from '../services/dementiasql
     TestsDetailPage,
     TestsQuestionsPage,
     Welcome,
-    TabsPage,
-    Test,
-    CreateTest
+    TabsPage
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    //REACTIVE_FORM_DIRECTIVES
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -60,6 +62,6 @@ import { DementiaSQLiteService, Test, CreateTest } from '../services/dementiasql
     Welcome,
     TabsPage
   ],
-  providers: [SQLite, Storage, DementiaService, DementiaSQLiteService, GetData]
+  providers: [Storage, SQLite, Data, SQLiteService, Pouch, {provide: ErrorHandler, useClass: IonicErrorHandler}]
 })
 export class AppModule {}

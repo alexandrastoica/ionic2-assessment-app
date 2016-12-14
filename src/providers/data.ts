@@ -3,7 +3,7 @@ import {Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class GetData {
+export class Data {
   data: any = null;
 
   constructor(public http: Http) {}
@@ -16,7 +16,7 @@ export class GetData {
 
     // don't have the data yet
     return new Promise(resolve => {
-    this.http.get('assets/data/data.json')
+    this.http.get('assets/data.json')
       .map(res => res.json())
         .subscribe(data => {
           this.data = data.sections;
