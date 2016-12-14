@@ -4,12 +4,10 @@ import { Storage } from '@ionic/storage';
 import { LoginPage } from '../login/login';
 import { RegistrationPage } from '../registration/registration';
 import { Welcome } from '../welcome/welcome';
-import { TabsPage } from '../tabs/tabs';
 
 @Component({
   templateUrl: 'profile-settings.html',
 })
-
 export class ProfileSettings {
   	public user;
     public local;

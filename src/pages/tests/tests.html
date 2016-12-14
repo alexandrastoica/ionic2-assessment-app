@@ -3,7 +3,7 @@
     <ion-title>Assessments</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only color="secondary" (click)="createAssesment()">
+      <button ion-button icon-only color="primary" (click)="createAssesment()">
         <ion-icon name="add"></ion-icon>
       </button>
     </ion-buttons>
@@ -12,6 +12,7 @@
 </ion-header>
 
 <ion-content class="tests">
+
   <ion-list>
     <p *ngIf="createdTests.length==0" class="empty">No assessments yet.</p>
 
@@ -30,9 +31,9 @@
       </button>
 
       <ion-item>
-        <button small purple outline (click)="showDetail(createdTest)">View details</button>
-        <button small purple outline [disabled]="createdTest.percentage == 0" (click)="exportCVS(createdTest)">Export</button>
-        <button small red outline (click)="deleteTest(createdTest)">Delete</button>
+        <button ion-button small color="primary" outline (click)="showDetail(createdTest)">View details</button>
+        <button ion-button small color="primary" outline [disabled]="createdTest.percentage == 0" (click)="exportCVS(createdTest)">Export</button>
+        <button ion-button small color="secondary" outline (click)="deleteTest(createdTest)">Delete</button>
       </ion-item>
 
     </ion-item-group>

@@ -1,18 +1,17 @@
 import { Component, NgZone } from '@angular/core';
 import { ModalController, NavController, Platform, ToastController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Welcome } from "../welcome/welcome";
 import { TabsPage } from "../tabs/tabs";
-import { DementiaService } from '../../services/dementia.service';
+import { Pouch } from '../../providers/pouchdb';
 import { RegistrationPage } from "../registration/registration";
-import { ValidationService } from '../../services/validation.service';
+import { ValidationService } from '../../providers/validation';
 
 @Component({
   selector: 'login-page',
   templateUrl: 'login.html'
 })
-
 export class LoginPage {
     userForm: FormGroup;
     public email;
@@ -20,25 +19,25 @@ export class LoginPage {
     public local;
     public done;
 
-    constructor(private _formBuilder: FormBuilder, public nav: NavController,
-        private dementiaService: DementiaService, private platform: Platform, public storage: Storage,
-        private zone: NgZone, private toastCtrl: ToastController, private modalCtrl: ModalController) {
+    constructor(public fb: FormBuilder, public nav: NavController,
+        public pouch: Pouch, public platform: Platform, public storage: Storage,
+        public zone: NgZone, public toastCtrl: ToastController, public modalCtrl: ModalController) {
 
-        this.userForm = this._formBuilder.group({
-            'email': ['', Validators.compose([Validators.required, ValidationService.validateEmail])]
+        this.userForm = this.fb.group({
+            email: ['', Validators.compose([Validators.required, ValidationService.validateEmail])]
         });
 
         this.storage.get('tutorialDone').then( (data:any) => {
             if (data != null) this.done = JSON.parse(data);
         });
 
-        this.dementiaService.initDB();
+        //this.pouch.initDB();
     }
 
     onSubmit(value): void {
         let found = false;
 
-        this.dementiaService.getUserData().then(data => {
+        this.pouch.getUserData().then(data => {
             this.zone.run(() => {
                 this.users = data;
                 for (let user of this.users) {

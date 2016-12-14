@@ -1,76 +1,74 @@
-import { Component, forwardRef, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { App, NavParams, NavController, ViewController, Platform, ToastController, AlertController } from 'ionic-angular';
-import { FormControl, FormGroup, FormBuilder, Validators, NG_VALIDATORS } from '@angular/forms';
-import { TabsPage } from "../tabs/tabs";
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { LoginPage } from "../login/login";
-import { DementiaService } from '../../services/dementia.service';
-import { DementiaSQLiteService } from '../../services/dementiasqlite.service';
-import { ValidationService } from '../../services/validation.service';
-
+import { Pouch } from '../../providers/pouchdb';
+import { SQLiteService } from '../../providers/sqlite';
+import { ValidationService } from '../../providers/validation';
 
 @Component({
   templateUrl: 'registration.html'
 })
-
 export class RegistrationPage {
     public user;
     public users = [];
     public isNew = true;
     public action = 'Add';
-    public title = "Registration";
     public local;
+    public titletab = "Registration";
+    registerForm: FormGroup;
 
-    authForm: FormGroup;
+    constructor(public formBuilder: FormBuilder, public viewCtrl: ViewController, public navParams: NavParams,
+        public platform: Platform,
+        public app: App, public storage: Storage,
+        public pouch: Pouch, public sqlite: SQLiteService, public nav: NavController,
+        public toastCtrl: ToastController, public alertCtrl: AlertController, public zone:NgZone) {
 
-    constructor(private fb: FormBuilder, private viewCtrl: ViewController,
-        private navParams: NavParams, public platform: Platform, public app: App, public storage: Storage,
-        private dementiaService: DementiaService, public sqlite: DementiaSQLiteService, public nav: NavController,
-        private toastCtrl: ToastController, private alertCtrl: AlertController, private zone:NgZone) {
+          this.user = this.navParams.get('user');
 
-        this.authForm = fb.group({
-            'title': [['Mr', 'Mrs', 'Miss']],
-            'firstname': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-            'lastname': ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-            'email': ['', Validators.compose([Validators.required, ValidationService.validateEmail])],
-            'role': [''],
-            'job': [''],
-            'organisation': [''],
-            'department': ['']
-        });
+          if (!this.user) {
+            this.user = {
+              title: 'Mr',
+              firstname: '',
+              lastname: '',
+              email: '',
+              role: '',
+              job: '',
+              organisation: '',
+              department: ''
+            };
+          }
+          else {
+              this.isNew = false;
+              this.action = 'Edit';
+              this.titletab = 'Edit Details';
+          }
 
-        //init database
-        this.platform.ready().then(() => {
-          this.sqlite.refreshDataSet();
-        });
+          this.registerForm = this.formBuilder.group({
+              title: [['Mr', 'Mrs', 'Miss'], Validators.compose([Validators.required])],
+              firstname: ['', Validators.compose([Validators.required, Validators.minLength(2)])],
+              lastname: ['', Validators.compose([Validators.required, Validators.minLength(2)])],
+              email: ['', Validators.compose([Validators.required, ValidationService.validateEmail])],
+              role: [''],
+              job: [''],
+              organisation: [''],
+              department: ['']
+          });
     }
 
     ionViewDidLoad() {
-        this.user = this.navParams.get('user');
-
-        if (!this.user) {
-            this.user = {
-              //leave this scope empty and just:
-              //object: use this to append properties in the view (registration.html) for adding to the database
-              //example [(ngMODEL)]="user.number"
-            };
-            this.user.title = "Mr"; //default
-        }
-        else {
-            this.isNew = false;
-            this.action = 'Edit';
-            this.title = 'Edit Details';
-        }
+        console.log(this.user);
     }
 
     onSubmit(value): void {
         if(this.isNew) {
           let found = false;
-          this.dementiaService.getUserData().then(data => {
+          this.pouch.getUserData().then(data => {
                   this.zone.run(() => {
                       this.users = data;
                     for(let user of this.users){
-                      if(this.authForm.value.email == user._id){
+                      if(this.registerForm.value.email == user._id){
                         found = true;
                         console.log('email', user._id);
                         console.log("found " + found);
@@ -109,9 +107,9 @@ export class RegistrationPage {
 
     save() {
        if (this.isNew) {
-            this.dementiaService.addUser(this.user);//.catch(console.error.bind(console));
+            this.pouch.addUser(this.user);//.catch(console.error.bind(console));
         } else {
-            this.dementiaService.updateData(this.user);//.catch(console.error.bind(console));
+            this.pouch.updateData(this.user);//.catch(console.error.bind(console));
         }
         this.dismiss();
     }
@@ -159,7 +157,7 @@ export class RegistrationPage {
             this.sqlite.deleteData(this.user._id); // delete data of tests by user
             this.sqlite.deleteTestByUser(this.user._id); // delete tests by user
 
-            this.dementiaService.removeData(this.user._id); //delete the account
+            this.pouch.removeData(this.user._id); //delete the account
 
         });
     }

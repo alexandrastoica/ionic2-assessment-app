@@ -10,8 +10,7 @@
 // To view all the possible Ionic variables, see:
 // http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
 
-$text-color:        #000;
-$background-color:  #fff;
+
 
 
 // Named Color Variables
@@ -23,8 +22,8 @@ $background-color:  #fff;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #f53d3d,
-  secondary:  #886aea,
+  primary:    #886aea,
+  secondary:  #f53d3d,
   light:      #f4f4f4,
   dark:       #222
 );
@@ -36,15 +35,18 @@ $colors: (
 
 
 
+
 // App Material Design Variables
 // --------------------------------------------------
 // Material Design only Sass variables can go here
 
 
 
+
 // App Windows Variables
 // --------------------------------------------------
 // Windows only Sass variables can go here
+
 
 
 

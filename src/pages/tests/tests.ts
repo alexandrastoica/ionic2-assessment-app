@@ -1,21 +1,20 @@
 import { Component} from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Platform, Modal, ViewController, NavController, AlertController, App } from 'ionic-angular';
-import { EmailComposer, File, SocialSharing, Keyboard } from 'ionic-native';
-import { DementiaSQLiteService, CreateTest, Test } from '../../services/dementiasqlite.service';
+import { Platform, ViewController, NavController, AlertController, App } from 'ionic-angular';
+import { File, SocialSharing, Keyboard } from 'ionic-native';
+import { SQLiteService, CreateTest, Test } from '../../providers/sqlite';
 import { TestsDetailPage } from '../tests-detail/tests-detail';
 import { Sections } from "../sections/sections";
-import { LoginPage } from '../login/login';
 import { SectionsQuestionsPage } from "../sections-questions/sections-questions";
-import { GetData } from "../../providers/get-data/get-data";
+import { Data } from "../../providers/data";
 
 declare var window;
 declare var cordova: any;
 
 @Component({
+  selector: 'tests',
   templateUrl: 'tests.html'
 })
-
 export class Tests {
   createdTests: CreateTest[];
   tests: Test[];
@@ -25,20 +24,19 @@ export class Tests {
   public createTest;
   public id;
   public app_data;
-  public x;
+  //public x;
 
-  constructor(public platform: Platform, public getData: GetData, public nav: NavController,
-          public view: ViewController, public dementiaSqlService: DementiaSQLiteService,
+  constructor(public platform: Platform, public getData: Data, public nav: NavController,
+          public view: ViewController, public sqlite: SQLiteService,
           public alertCtrl: AlertController, public app: App, public storage: Storage) {
 
-    //init database
-    this.platform.ready().then(() => {
-      this.dementiaSqlService.refreshDataSet();
-    });
+    this.createdTests = [];
 
     //get current user from local storage
-    this.storage.get('email').then((data: any) => {
+    this.storage.get('email').then((data) => {
+        console.log(data);
         this.user_id = data;
+        this.init();
     });
 
     //get total number of questions available for the assesment
@@ -49,21 +47,24 @@ export class Tests {
       }
     });
 
-    this.createdTests = [];
-
   }
 
   ionViewDidEnter(){
-    console.log("run did enter on tests.ts");
+    console.log("run did enter on tests.ts", this.user_id);
     //initialise created tests and get them from SQL service
+    this.init();
+  }
+
+  init(){
     this.createdTests = [];
-    this.dementiaSqlService.getCreatedTests(this.user_id).then(data => {
-        if (data.res.rows.length > 0) {
-          for (var i = 0; i < data.res.rows.length; i++) {
-            let item = data.res.rows.item(i);
-            this.dementiaSqlService.getAnsweredQuestions(item.id).then(data => {
+    this.sqlite.getCreatedTests(this.user_id).then(data => {
+      console.log(data);
+        if (data.rows.length > 0) {
+          for (var i = 0; i < data.rows.length; i++) {
+            let item = data.rows.item(i);
+            this.sqlite.getAnsweredQuestions(item.id).then(data => {
               if (item) {
-                let percentage = ((data.res.rows.length / this.questionCount) * 100).toFixed(1);
+                let percentage = ((data.rows.length / this.questionCount) * 100).toFixed(1);
                 this.createdTests.push(new CreateTest(item.id, item.name, item.user_id, item.date, percentage));
               }
             });
@@ -103,21 +104,14 @@ export class Tests {
       return result;
   }
 
-  logout() {
-      this.storage.remove('email');
-      this.storage.set('tutorialDone', false);
-
-      this.app.getRootNav().push(LoginPage);
-  }
-
   exportCVS(test){
       let details = [];
       let body = "Assessment location: " + test.name + "<BR> Assessment date: " + test.date;
 
-      this.dementiaSqlService.getResults(test.id).then(data => {
-        if (data.res.rows.length > 0) {
-          for (let i = 0; i < data.res.rows.length; i++) {
-            let item = data.res.rows.item(i);
+      this.sqlite.getResults(test.id).then(data => {
+        if (data.rows.length > 0) {
+          for (let i = 0; i < data.rows.length; i++) {
+            let item = data.rows.item(i);
             details.push({section: item.section, question: item.question_id, score: item.score});
           }
         } // if
@@ -242,13 +236,14 @@ export class Tests {
   saveTest(name) {
       console.log('called saveTest');
       //create new object with data
-      this.createTest = new CreateTest(0, name, this.user_id, '', '');
-      console.log("created test" + JSON.stringify(this.createTest));
+      let new_test = new CreateTest(0, name, this.user_id, '', '');
+      console.log("created test" + JSON.stringify(new_test));
       //call the service to insert the new test in by passing the data
-      this.dementiaSqlService.insertCreateTest(this.createTest).then(data => {
+      this.sqlite.insertCreateTest(new_test).then(data => {
         console.log("insertedCreateTest");
-        this.id = data.res.insertId;
-        //console.log(this.id);
+        console.log(data);
+        this.id = data.insertId;
+        console.log(this.id);
         //redirect the user to the sections page to begin the test
         this.nav.push(Sections, {testId: this.id});
       });
@@ -277,8 +272,8 @@ export class Tests {
           handler: () => {
             //console.log('Agree clicked');
             //delete from database
-            this.dementiaSqlService.deleteTest(test.id); //delete the test
-            this.dementiaSqlService.deleteAnswers(test.id); //delete all the answers for that test
+            this.sqlite.deleteTest(test.id); //delete the test
+            this.sqlite.deleteAnswers(test.id); //delete all the answers for that test
             //delete from view
             for(let i = 0; i < this.createdTests.length; i++) {
               if(this.createdTests[i] == test){
@@ -295,10 +290,10 @@ export class Tests {
   resume(createdtest) {
       let testId = createdtest.id; //get test id
 
-      this.dementiaSqlService.getLast(testId).then(data => {
+      this.sqlite.getLast(testId).then(data => {
           // Get last record of test
-          if(data.res.rows.length > 0){
-              let item = data.res.rows.item(0);
+          if(data.rows.length > 0){
+              let item = data.rows.item(0);
               let section = this.app_data[item.section-1]; //get the section from app data
               // If not the last question from the section, go to next question
               if(section.questions.length >= (item.question_id + 1)) {

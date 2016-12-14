@@ -1,18 +1,16 @@
 import { Component } from "@angular/core";
-import { GetData } from "../../providers/get-data/get-data";
+import { Data } from "../../providers/data";
 import { SectionsDetailPage } from "../sections-detail/sections-detail";
 import { NavController, NavParams } from 'ionic-angular';
-import { LoginPage } from "../login/login";
 
 @Component({
 	templateUrl: 'sections.html'
 })
-
 export class Sections {
 	public sections: any;
-    public testId;
+  public testId;
 
-	constructor(public getData: GetData, public nav: NavController, private navParams: NavParams){
+	constructor(public getData: Data, public nav: NavController, private navParams: NavParams){
 		this.nav = nav;
         this.testId = this.navParams.get('testId');
 	}

@@ -1,16 +1,10 @@
 <ion-header>
   <ion-navbar>
-  <ion-title>{{title}}</ion-title>
+  <ion-title>{{titletab}}</ion-title>
 
     <ion-buttons start *ngIf="isNew">
         <button ion-button (click)="dismiss()">
             <ion-icon name="arrow-back"></ion-icon>
-        </button>
-    </ion-buttons>
-
-    <ion-buttons end *ngIf="!isNew">
-        <button ion-button (click)="delete()">
-            <ion-icon name="trash"></ion-icon>
         </button>
     </ion-buttons>
 
@@ -19,56 +13,56 @@
 
 <ion-content padding class="registration">
 <ion-list>
-   <form [formGroup]="authForm" (ngSubmit)="onSubmit(authForm.value)">
+   <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.value)">
       <ion-item>
           <ion-label>Title</ion-label>
-          <ion-select [(ngModel)]="user.title" name="title" formControlName="title">
+          <ion-select [(ngModel)]="user.title" formControlName="title">
               <ion-option value="Mr" selected="true">Mr</ion-option>
               <ion-option value="Mrs">Mrs</ion-option>
               <ion-option value="Miss">Miss</ion-option>
           </ion-select>
       </ion-item>
-      <p *ngIf="authForm.controls.title.errors && authForm.controls.title.touched" class="error-box">Title is required</p>
+      <p *ngIf="registerForm.get('title').errors && registerForm.get('title').touched" class="error-box">Title is required</p>
 
       <ion-item>
           <ion-label>First name</ion-label>
-          <ion-input type="text"  [(ngModel)]="user.firstname" name="firstname" formControlName="firstname"></ion-input>
+          <ion-input type="text" [(ngModel)]="user.firstname" formControlName="firstname"></ion-input>
       </ion-item>
-      <p *ngIf="authForm.controls.firstname.errors && authForm.controls.firstname.touched" class="error-box">First Name is required</p>
+      <p *ngIf="registerForm.get('firstname').errors && registerForm.get('firstname').touched" class="error-box">First Name is required</p>
 
       <ion-item>
           <ion-label>Last name</ion-label>
-          <ion-input type="text"  [(ngModel)]="user.lastname" name="lastname" formControlName="lastname"></ion-input>
+          <ion-input type="text" [(ngModel)]="user.lastname" formControlName="lastname"></ion-input>
       </ion-item>
-      <p *ngIf="authForm.controls.lastname.errors && authForm.controls.lastname.touched" class="error-box">Last Name is required</p>
+      <p *ngIf="registerForm.get('lastname').errors && registerForm.get('lastname').touched" class="error-box">Last Name is required</p>
 
       <ion-item *ngIf="isNew">
           <ion-label>Email</ion-label>
-          <ion-input type="email" [(ngModel)]="user.email" name="email" formControlName="email"></ion-input>
+          <ion-input type="email" [(ngModel)]="user.email" formControlName="email"></ion-input>
       </ion-item>
-      <p *ngIf="authForm.controls.email.errors && authForm.controls.email.touched" class="error-box">Must be a valid email address</p>
+      <p *ngIf="registerForm.get('email').errors && registerForm.get('email').touched" class="error-box">Must be a valid email address</p>
 
       <ion-item>
           <ion-label>Role</ion-label>
-          <ion-input type="text" [(ngModel)]="user.role" name="role" formControlName="role"></ion-input>
+          <ion-input type="text" [(ngModel)]="user.role" formControlName="role"></ion-input>
       </ion-item>
 
       <ion-item>
           <ion-label>Job Title</ion-label>
-          <ion-input type="text" [(ngModel)]="user.job" name="job" formControlName="job"></ion-input>
+          <ion-input type="text" [(ngModel)]="user.job" formControlName="job"></ion-input>
       </ion-item>
 
       <ion-item>
           <ion-label>Organisation</ion-label>
-          <ion-input type="text" [(ngModel)]="user.organisation" name="organisation" formControlName="organisation"></ion-input>
+          <ion-input type="text" [(ngModel)]="user.organisation" formControlName="organisation"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label>Department</ion-label>
-        <ion-input type="text" [(ngModel)]="user.department" name="department" formControlName="department"></ion-input>
+        <ion-input type="text" [(ngModel)]="user.department" formControlName="department"></ion-input>
       </ion-item>
 
-      <button ion-button color="red" type="submit" [disabled]="!authForm.valid && isNew" block>Submit</button>
+      <button ion-button color="red" type="submit" [disabled]="!registerForm.valid && isNew" block>Submit</button>
   </form>
 </ion-list>
 

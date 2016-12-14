@@ -1,13 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { Content, ViewController, NavController, NavParams, ToastController } from 'ionic-angular';
-import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Sections } from "../sections/sections";
-import { DementiaSQLiteService, Test } from '../../services/dementiasqlite.service';
+import { SQLiteService, Test } from '../../providers/sqlite';
 
 @Component({
   templateUrl: 'sections-questions.html'
 })
-
 export class SectionsQuestionsPage {
 	public questions;
 	public section;
@@ -23,7 +22,7 @@ export class SectionsQuestionsPage {
   @ViewChild(Content) content: Content;
 
 	constructor(private fb: FormBuilder, params: NavParams, public nav: NavController, public view: ViewController,
-		public dementiaSqlService: DementiaSQLiteService, private toastCtrl: ToastController) {
+		public sqliteService: SQLiteService, private toastCtrl: ToastController) {
         this.nav = nav;
         this.section = params.data.section;
         this.questions = params.data.questions;
@@ -32,8 +31,8 @@ export class SectionsQuestionsPage {
         this.n = params.data.next_question?params.data.next_question:0;
         this.currentQuestion = this.questions[this.n];
 
-        this.questionForm = fb.group({
-            'score': ['', Validators.required]
+        this.questionForm = this.fb.group({
+            score: ['', Validators.required]
         });
 	}
 
@@ -54,8 +53,8 @@ export class SectionsQuestionsPage {
     {
         this.question = new Test(this.section.id, this.currentQuestion, this.score, this.n+1, this.testId);
 
-		    this.dementiaSqlService.add(this.question);
-		    this.dementiaSqlService.update(this.question);
+		    this.sqliteService.add(this.question);
+		    this.sqliteService.update(this.question);
 
         let toast = this.toastCtrl.create({
             message: 'Answer score was saved',
@@ -69,13 +68,14 @@ export class SectionsQuestionsPage {
     }
 
     getScore(){
-    	this.dementiaSqlService.getScore(this.testId, this.n+1, this.section.id).then(data => {
-			if(data.res.rows.length > 0){
-          		this.score = data.res.rows.item(0).score;
-			} else {
-				this.score = null;
-			}
-		}).catch(console.error.bind(console));
+    	this.sqliteService.getScore(this.testId, this.n+1, this.section.id).then((data) => {
+        console.log(data);
+  			if(data.rows.length > 0){
+          this.score = data.rows.item(0).score;
+  			} else {
+  				this.score = null;
+  			}
+  		}).catch(console.error.bind(console));
     }
 
 	//move to next sections-questions page
@@ -85,7 +85,7 @@ export class SectionsQuestionsPage {
 
 		//if more questions increment n and replace question
 		if(this.n < this.maxN - 1){
-            this.n += 1;
+      this.n += 1;
 			this.currentQuestion = this.questions[this.n];
 			// In case the user has already completed this question of this test, let them know what they answered
 			this.getScore();
@@ -93,7 +93,7 @@ export class SectionsQuestionsPage {
 			//sections page, passing the test id and reset values
 			this.nav.push(Sections,  {testId: this.testId}).then(() => {
 				this.n = 0;
-	            this.currentQuestion = null;
+	      this.currentQuestion = null;
 			});
 		}
 	}

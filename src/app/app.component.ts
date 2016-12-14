@@ -1,29 +1,25 @@
-import { Component, enableProdMode } from "@angular/core";
-import { App, Platform } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
-import { StatusBar, SQLite } from 'ionic-native';
+import { Component } from '@angular/core';
+import { Platform } from 'ionic-angular';
+import { StatusBar, Splashscreen, SQLite } from 'ionic-native';
 
-import { TabsPage } from '../pages/tabs/tabs';
-import { RegistrationPage} from '../pages/registration/registration';
 import { LoginPage } from '../pages/login/login';
-import { DementiaService } from '../services/dementia.service';
-import { DementiaSQLiteService } from '../services/dementiasqlite.service';
+import { Storage } from '@ionic/storage';
+import { Data } from '../providers/data'
+import { Pouch } from '../providers/pouchdb';
+import { SQLiteService } from '../providers/sqlite';
 
 @Component({
-  template: '<ion-nav [root]="rootPage" swipeBackEnabled="false"></ion-nav>'
+  template: '<ion-nav [root]="rootPage"></ion-nav>'
 })
 export class MyApp {
-  rootPage: any = LoginPage;
+  rootPage = LoginPage;
 
-  constructor(public platform: Platform, public dementiaService: DementiaService,
-    public dementiasqlite: DementiaSQLiteService, public storage: Storage, public app: App) {
-    //prepare platform
-    this.platform.ready().then(() => {
+  constructor(platform: Platform, storage: Storage, public sql: SQLiteService, pouch: Pouch, data: Data) {
+    platform.ready().then(() => {
+      // Okay, so the platform is ready and our plugins are available.
+      // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
-      //initialise pouchdb
-      this.dementiaService.initDB();
-      //initialise SQLite
-      this.dementiasqlite.initDB();
-    });//platform
-  }//constructor
-}//export
+      Splashscreen.hide();
+    });
+  }
+}

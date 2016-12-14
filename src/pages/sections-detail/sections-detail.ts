@@ -5,15 +5,14 @@ import { SectionsQuestionsPage } from "../sections-questions/sections-questions"
 @Component({
 	templateUrl: 'sections-detail.html',
 })
-
 export class SectionsDetailPage {
 
 	public section;
-    public testId;
+  public testId;
 
 	constructor(params: NavParams, public nav: NavController) {
 		this.nav = nav;
-        this.section = params.data.section;
+    this.section = params.data.section;
 		this.testId = params.data.testId;
 
 	}
