@@ -30,6 +30,12 @@ export class SectionsQuestionsPage {
         this.maxN = this.questions.length;
         this.n = params.data.next_question?params.data.next_question:0;
         this.currentQuestion = this.questions[this.n];
+        /*this.section = "1";
+        this.questions = "Question";
+        this.testId = "1";
+        this.maxN = 1;
+        this.n = 1;
+        this.currentQuestion = "Question";*/
 
         this.questionForm = this.fb.group({
             score: ['', Validators.required]
@@ -49,34 +55,39 @@ export class SectionsQuestionsPage {
     }
   }
 
-    saveTest(showBadge: boolean = false)
-    {
-        this.question = new Test(this.section.id, this.currentQuestion, this.score, this.n+1, this.testId);
+  goToSections(){
+    this.nav.push(Sections,  {testId: this.testId});
+  }
 
-		    this.sqliteService.add(this.question);
-		    this.sqliteService.update(this.question);
+  saveTest(showBadge: boolean = false)
+  {
+      this.question = new Test(this.section.id, this.currentQuestion, this.score, this.n+1, this.testId);
 
-        let toast = this.toastCtrl.create({
-            message: 'Answer score was saved',
-            duration: 600
-         });
+	    this.sqliteService.add(this.question);
+	    this.sqliteService.update(this.question);
 
-        //skip to next page after saving
-        toast.present().then(() => {
-        	this.next();
-        });
-    }
+      let toast = this.toastCtrl.create({
+          message: 'Answer score was saved',
+          duration: 600,
+          cssClass: "toastCls"
+       });
 
-    getScore(){
-    	this.sqliteService.getScore(this.testId, this.n+1, this.section.id).then((data) => {
-        console.log(data);
-  			if(data.rows.length > 0){
-          this.score = data.rows.item(0).score;
-  			} else {
-  				this.score = null;
-  			}
-  		}).catch(console.error.bind(console));
-    }
+      //skip to next page after saving
+      toast.present().then(() => {
+      	this.next();
+      });
+  }
+
+  getScore(){
+  	this.sqliteService.getScore(this.testId, this.n+1, this.section.id).then((data) => {
+      console.log(data);
+			if(data.rows.length > 0){
+        this.score = data.rows.item(0).score;
+			} else {
+				this.score = null;
+			}
+		}).catch(console.error.bind(console));
+  }
 
 	//move to next sections-questions page
 	next(){

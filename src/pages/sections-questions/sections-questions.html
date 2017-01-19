@@ -1,6 +1,12 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <ion-title>Section {{section.id}} Question {{n+1}}</ion-title>
+
+    <ion-buttons start>
+      <button ion-button icon-only color="secondary" (click)="goToSections()">
+        <ion-icon name="list"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -10,7 +16,7 @@
     <ion-list radio-group [(ngModel)]="score" formControlName="score">
       <ion-item>
         <ion-label>1</ion-label>
-        <ion-radio value="1"></ion-radio>
+          <ion-radio value="1"></ion-radio>
       </ion-item>
 
       <ion-item>
@@ -39,16 +45,17 @@
       </ion-item>
     </ion-list>
 
-    <p *ngIf="questionForm.get('score').errors && questionForm.get('score').touched" secondary>Must select a score to continue</p>
+    <p *ngIf="questionForm.get('score').errors && questionForm.get('score').touched" ion-text color="secondary">Must select a score to continue</p>
     <p>1 = Barely met <BR> 5 = Completely met <BR> N/A = non-applicable</p>
 
-    <button ion-fab right color="primary" type="submit" [disabled]="!questionForm.valid">
-      <ion-icon name="arrow-forward"></ion-icon>
-    </button>
+    <ion-buttons>
+      <button ion-fab color="secondary" type="button" (click)="previous()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+      <button ion-fab color="primary" type="submit" [disabled]="!questionForm.valid">
+        <ion-icon name="arrow-forward"></ion-icon>
+      </button>
+    </ion-buttons>
+
   </form>
-
-  <button ion-fab left color="secondary" (click)="previous()">
-    <ion-icon name="arrow-back"></ion-icon>
-  </button>
-
 </ion-content>

@@ -24,7 +24,6 @@ export class Tests {
   public createTest;
   public id;
   public app_data;
-  //public x;
 
   constructor(public platform: Platform, public getData: Data, public nav: NavController,
           public view: ViewController, public sqlite: SQLiteService,
@@ -50,7 +49,6 @@ export class Tests {
   }
 
   ionViewDidEnter(){
-    console.log("run did enter on tests.ts", this.user_id);
     //initialise created tests and get them from SQL service
     this.init();
   }
@@ -58,7 +56,6 @@ export class Tests {
   init(){
     this.createdTests = [];
     this.sqlite.getCreatedTests(this.user_id).then(data => {
-      console.log(data);
         if (data.rows.length > 0) {
           for (var i = 0; i < data.rows.length; i++) {
             let item = data.rows.item(i);
@@ -100,7 +97,6 @@ export class Tests {
           });
           result += lineDelimiter;
       });
-
       return result;
   }
 
@@ -124,11 +120,11 @@ export class Tests {
               if(this.platform.is('ios')) {
                 // path to store to iOS devices
                 pathToFile = cordova.file.dataDirectory;
-                console.log("iOS device");
+                //console.log("iOS device");
               } else if(this.platform.is('android')) {
                 // path to store to android devices
                 pathToFile = cordova.file.externalDataDirectory;
-                console.log("android device");
+                //console.log("android device");
               }
 
               window.resolveLocalFileSystemURL(pathToFile, function(dir) {
@@ -137,16 +133,16 @@ export class Tests {
                           let blob = new Blob([cvs], { type: 'text/csv;charset=utf-8;' });
                           pathToFile += 'assessment_details.csv';
                           fileWriter.write(blob);
-                          console.log("BLOB CREATED");
+                          //console.log("BLOB CREATED");
 
                           // Check if sharing via email is supported
                           SocialSharing.canShareViaEmail().then(() => {
-                            console.log("SHARE EMAIL");
+                            //console.log("SHARE EMAIL");
                             // Sharing via email is possible
                             // Share via email
                             SocialSharing.shareViaEmail(body, 'Assessment Details', null, null, null, pathToFile).then(() => {
                                 // Success!
-                                console.log("DONE");
+                                //console.log("DONE");
                             }).catch(() => {
                               // Error!
                               let alert = this.alertCtrl.create({
@@ -172,7 +168,6 @@ export class Tests {
 
                       }, function(e){
                           //console.error(e);
-
                           let alert = this.alertCtrl.create({
                             title: 'Something went wrong.',
                             subTitle: 'The app is unable to export at the moment, please try again later.',
@@ -202,7 +197,7 @@ export class Tests {
               text: 'Cancel',
               role: 'cancel',
               handler: data => {
-                console.log('Cancel clicked');
+                //console.log('Cancel clicked');
                 prompt.dismiss().then(() => {
                   Keyboard.close();
                 });
@@ -240,10 +235,10 @@ export class Tests {
       console.log("created test" + JSON.stringify(new_test));
       //call the service to insert the new test in by passing the data
       this.sqlite.insertCreateTest(new_test).then(data => {
-        console.log("insertedCreateTest");
-        console.log(data);
+        //console.log("insertedCreateTest");
+        //console.log(data);
         this.id = data.insertId;
-        console.log(this.id);
+        //console.log(this.id);
         //redirect the user to the sections page to begin the test
         this.nav.push(Sections, {testId: this.id});
       });

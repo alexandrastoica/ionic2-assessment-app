@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { StatusBar, Splashscreen, SQLite } from 'ionic-native';
+import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { LoginPage } from '../pages/login/login';
 import { Storage } from '@ionic/storage';
-import { Data } from '../providers/data'
+import { Data } from '../providers/data';
 import { Pouch } from '../providers/pouchdb';
 import { SQLiteService } from '../providers/sqlite';
 
