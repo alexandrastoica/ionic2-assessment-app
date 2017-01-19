@@ -39,9 +39,11 @@ export class CreateTest {
 @Injectable()
 export class SQLiteService {
 
-    constructor(public platform:Platform, public storage: Storage, public db: SQLite) {
+    constructor(public platform: Platform, public storage: Storage, public db: SQLite) {
       console.log("in constructor");
-      this.initDB();
+      this.platform.ready().then(() => {
+        this.initDB();
+      });
     }
 
     public initDB(){
@@ -78,71 +80,36 @@ export class SQLiteService {
      public insertCreateTest(createTest: CreateTest) {
         let sql = 'INSERT INTO tests (name, user_id, date) VALUES (?, ?, DATE())';
         return this.db.executeSql(sql, [createTest.name, createTest.user_id]);
-        /*.then((data) =>{
-          console.log("Inserted into tests: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error insert into tests", JSON.stringify(error.err));
-        });*/
      }
 
      public getCreatedTests(user_id: string) {
         let sql = 'SELECT * FROM tests WHERE user_id = ? ORDER BY id DESC';
         return this.db.executeSql(sql, [user_id]);
-        /*.then((data) =>{
-          console.log("Selected from tests: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error selecting from tests", JSON.stringify(error.err));
-        });*/
      }
 
      public getAnsweredQuestions(test_id: number) {
         let sql = 'SELECT * FROM test_sections WHERE test_id = ? ORDER BY id ASC';
         return this.db.executeSql(sql, [test_id]);
-        /*.then((data) =>{
-          console.log("Selected from test_sections: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error selecting from test_sections", JSON.stringify(error.err));
-        });*/
      }
 
       public getLast(test_id: number) {
         let sql = 'SELECT * FROM test_sections WHERE id = (SELECT MAX(id) FROM test_sections WHERE test_id = ?);';
         return this.db.executeSql(sql, [test_id]);
-        /*.then((data) =>{
-          console.log("Selected from test_sections last record", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error selecting last record", JSON.stringify(error.err));
-        });*/
      }
 
      public deleteTest(id: number) {
         let sql = 'DELETE FROM tests WHERE id = ?';
         return this.db.executeSql(sql, [id]);
-        /*.then((data) =>{
-          console.log("Deleted from tests: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error deleting from tests", JSON.stringify(error.err));
-        });*/
      }
 
      public deleteTestByUser(user_id: number) {
         let sql = 'DELETE FROM tests WHERE user_id = ?';
         return this.db.executeSql(sql, [user_id]);
-        /*.then((data) =>{
-          console.log("Deleted test by user: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error deleting test by user", JSON.stringify(error.err));
-        });*/
      }
 
      public deleteData(user_id: number) {
         let sql = 'DELETE FROM test_sections WHERE test_id = (SELECT test_id FROM tests WHERE user_id = ?)';
         return this.db.executeSql(sql, [user_id]);
-        /*.then((data) =>{
-          console.log("Deleted data: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error deleting data", JSON.stringify(error.err));
-        });*/
      }
 
     ////////////////////////// QUERIES FOR TEST_SECTIONS //////////////////////
@@ -152,73 +119,46 @@ export class SQLiteService {
     public get(id: number) {
         let sql = 'SELECT * FROM test_sections WHERE test_id = ? GROUP BY section ORDER BY section ASC';
         return this.db.executeSql(sql, [id]);
-        /*.then((data) =>{
-          console.log("Get sections by test id", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error getting sections by test id", JSON.stringify(error.err));
-        });*/
     }
 
     // Get score for test, section and question to display on page if already submitted
     public getScore(test_id: number, question_id: number, section: number) {
         let sql = 'SELECT score FROM test_sections WHERE test_id = ? AND question_id = ? AND section = ?';
         return this.db.executeSql(sql, [test_id, question_id, section]);
-        /*.then((data) =>{
-          console.log("Get score: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error getting score", JSON.stringify(error.err));
-        });*/
     }
 
     // Get results of test to attach to the email
     public getResults(id: number) {
         let sql = 'SELECT * FROM test_sections WHERE test_id = ? ORDER BY section ASC';
         return this.db.executeSql(sql, [id]);
-        /*.then((data) =>{
-          console.log("Get results for email: ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error getting results for email", JSON.stringify(error.err));
-        });*/
+    }
+
+    // Get results by section
+    public getResultsBySectionTest(section_id: number, test_id) {
+       let sql = 'SELECT question_id, COUNT(*) as count FROM test_sections WHERE section = ? AND test_id = ?';
+       return this.db.executeSql(sql, [section_id, test_id]);
     }
 
     // Get tests by section and test id
     public getBySection(section: number, id: number) {
         let sql = 'SELECT * FROM test_sections WHERE section = ? and test_id = ? ORDER BY section ASC';
         return this.db.executeSql(sql, [section, id]);
-        /*.then((data) =>{
-          console.log("Get tests by section and test id", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error getting test by section and id", JSON.stringify(error.err));
-        });*/
     }
 
     // Save a new note to the DB
     public add(test: Test) {
         let sql = 'INSERT OR IGNORE INTO test_sections (section, question, score, question_id, test_id) VALUES (?, ?, ?, ?, ?)';
         return this.db.executeSql(sql, [test.section, test.question, test.score, test.question_id, test.test_id]);
-        /*.then((data) =>{
-          console.log("Inserted into test section ", JSON.stringify(data.res));
-        }, (error) => {
-          console.log("Error inserting into test section", JSON.stringify(error.err));
-        });*/
     }
 
     // Update an existing note with a given ID
     public update(test: Test) {
         let sql = 'UPDATE test_sections SET score = ? WHERE section = ? AND question_id = ? AND test_id = ?';
-        return this.db.executeSql(sql, [test.score, test.section, test.question_id, test.test_id]);//.then((data) =>{
-        //  console.log("Udated score", JSON.stringify(data.res));
-        //}, (error) => {
-          //console.log("Error updating score", JSON.stringify(error.err));
-        //});
+        return this.db.executeSql(sql, [test.score, test.section, test.question_id, test.test_id]);
     }
 
     public deleteAnswers(id: number){
         let sql = 'DELETE FROM test_sections WHERE test_id = ?';
-        return this.db.executeSql(sql, [id]);//.then((data) =>{
-        //  console.log("Deleted answers ", JSON.stringify(data.res));
-        //}, (error) => {
-        //  console.log("Error deleting answers", JSON.stringify(error.err));
-        //});
+        return this.db.executeSql(sql, [id]);
     }
 }
