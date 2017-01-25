@@ -1,2 +1,2 @@
-# ionic2-dementia-test-app
-An ionic 2 application with tests for dementia people.
+# ionic2-assessment-app
+An ionic 2 application for assessments using PouchDB and SQLite. 
