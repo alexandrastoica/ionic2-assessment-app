@@ -1,8 +1,10 @@
 import { Component, NgZone } from "@angular/core";
-import { NavController, Platform, NavParams } from 'ionic-angular';
+import { NavController, Platform, NavParams, App, ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Pouch } from '../../providers/pouchdb';
-import { ProfileSettings } from '../profile-settings/profile-settings';
+import { RegistrationPage } from '../registration/registration';
+import { LoginPage } from '../login/login';
+import { Welcome } from '../welcome/welcome';
 
 @Component({
   templateUrl: 'profile.html',
@@ -11,18 +13,13 @@ export class Profile {
     public user;
     public local;
 
-    constructor(public pouch: Pouch, public nav: NavController, public platform: Platform,
-        public storage: Storage, public zone: NgZone, public navparams: NavParams) {
+    constructor(public pouch: Pouch, public nav: NavController, public platform: Platform, public modalCtrl: ModalController,
+        public storage: Storage, public zone: NgZone, public navparams: NavParams, public app: App) {
 
           this.user = {
-            title: 'Mr',
             firstname: '',
             lastname: '',
-            email: '',
-            role: '',
-            job: '',
-            organisation: '',
-            department: ''
+            email: ''
           };
 
           this.storage.get('email').then((currentUser) => {
@@ -39,9 +36,19 @@ export class Profile {
 
     }
 
-    showDetail(user) {
-        this.nav.push(ProfileSettings, {
-            user: user
-        });
+    edit(): void {
+      let modal = this.modalCtrl.create(RegistrationPage, { user: this.user });
+      modal.present();
+  	}
+
+    tutorial() {
+      this.app.getRootNav().push(Welcome);
     }
+
+  	logout() {
+    	this.storage.remove('email');
+      this.storage.set('tutorialDone', false);
+
+      this.app.getRootNav().push(LoginPage);
+	}
 }

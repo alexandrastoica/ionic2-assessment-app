@@ -1,22 +1,17 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Profile</ion-title>
-
-    <ion-buttons end>
-      <button ion-button icon-only color="secondary" (click)="showDetail(user)">
-        <ion-icon name="settings"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content class="profile">
-   <ion-list>
-    		<ion-item> {{ user.title }} {{ user.firstname }} {{ user.lastname }}</ion-item>
-        <ion-item> {{ user._id }}</ion-item>
-        <ion-item [hidden]="!user.role"> {{ user.role }}</ion-item>
-        <ion-item [hidden]="!user.job"> {{ user.job }}</ion-item>
-        <ion-item [hidden]="!user.organisation"> {{ user.organisation }}</ion-item>
-        <ion-item [hidden]="!user.department"> {{ user.department }}</ion-item>
-    </ion-list>
+  <ion-list>
+    <ion-list-header color="light">Details</ion-list-header>
+    <ion-item> {{ user.firstname }} {{ user.lastname }}</ion-item>
+    <ion-item> {{ user._id }}</ion-item>
+    <ion-list-header color="light">Settings</ion-list-header>
+    <button ion-item (click)="edit()">Edit</button>
+    <button ion-item (click)="tutorial()">Tutorial</button>
+    <button ion-item (click)="logout()">Logout</button>
+  </ion-list>
 </ion-content>
