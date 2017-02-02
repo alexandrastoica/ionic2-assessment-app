@@ -1,2 +1,3 @@
-# ionic2-dementia-test-app
-Dementia Environment Assessment Tool
+# ionic2-assessment-app
+An ionic 2 application for assessments using PouchDB and SQLite. <BR>
+This is an updated version to Ionic RC. 
