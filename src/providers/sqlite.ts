@@ -134,7 +134,7 @@ export class SQLiteService {
     }
 
     // Get results by section
-    public getResultsBySectionTest(section_id: number, test_id) {
+    public getResultsBySectionTest(section_id: number, test_id: number) {
        let sql = 'SELECT question_id, COUNT(*) as count FROM test_sections WHERE section = ? AND test_id = ?';
        return this.db.executeSql(sql, [section_id, test_id]);
     }

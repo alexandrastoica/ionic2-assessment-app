@@ -21,15 +21,17 @@ export class Pouch {
       this.platform.ready().then(() => {
         this._db = new PouchDB('users-db', { adapter: 'websql' });//location needs to be set for it to work on ios
         this._remoteDB = 'https://medialab:e77871838@medialab.cloudant.com/users';
+        window["PouchDB"] = PouchDB;
 
         this._db.changes({
-            since: 'now',
-            live: true
+          since: 'now',
+          live: true
         }).on('change', this.getUserData);
 
         if(this._remoteDB) {
             this.sync();
         }
+
         console.log("db is ", JSON.stringify(this._db));
       });
     }
@@ -49,15 +51,10 @@ export class Pouch {
 
     public addUser(userData) {
         let user = {
-            _id: userData.email,
-            _rev: userData._rev,
-            title: userData.title,
-            firstname: userData.firstname,
-            lastname: userData.lastname,
-            role: userData.role,
-            job: userData.job,
-            organisation: userData.organisation,
-            department: userData.department
+          _id: userData.email,
+          _rev: userData._rev,
+          firstname: userData.firstname,
+          lastname: userData.lastname
         }
         this._db.put(user);
     }
@@ -65,22 +62,21 @@ export class Pouch {
     public getUserData(){
         if (!this._userData) {
             return this._db.allDocs({ include_docs: true }).then(data => {
-                    // Each row has a .doc object and we just want to send an
-                    // array of  objects back to the calling controller,
-                    // so let's map the array to contain just the .doc objects.
-                    this._userData = data.rows.map(row => {
-                        // Dates are not automatically converted from a string.
-                       // row.doc.Date = new Date(row.doc.Date);
-                       //console.log(row.doc);
-                        return row.doc;
-                    });
-
-                    // Listen for changes on the database.
-                    this._db.changes({ live: true, since: 'now', include_docs: true})
-                        .on('change', this.onDatabaseChange);
-
-                    return this._userData;
+                // Each row has a .doc object and we just want to send an
+                // array of objects back to the calling controller,
+                // so let's map the array to contain just the .doc objects.
+                this._userData = data.rows.map(row => {
+                  // Dates are not automatically converted from a string.
+                  // row.doc.Date = new Date(row.doc.Date);
+                  //console.log(row.doc);
+                  return row.doc;
                 });
+
+                // Listen for changes on the database.
+                this._db.changes({ live: true, since: 'now', include_docs: true}).on('change', this.onDatabaseChange);
+
+                return this._userData;
+            });
         } else {
             // Return cached data as a promise
             return Promise.resolve(this._userData);
@@ -93,9 +89,8 @@ export class Pouch {
             this._currentUserData = data;
 
             // Listen for changes on the database.
-           /* this._db.changes({ live: true, since: 'now', include_docs: true})
+           this._db.changes({ live: true, since: 'now', include_docs: true})
                                 .on('change', this.onDatabaseChange);
-*/
             return this._currentUserData;
 
         }).catch(function (err) {
@@ -103,49 +98,42 @@ export class Pouch {
         });
     }
 
-    public addData(insertData)
-    {
+    public addData(insertData) {
         return this._db.post(insertData);
     }
 
     //inserts data and automatically generates a unique id
-    public updateData(updateData)
-    {
+    public updateData(updateData) {
         return this._db.put(updateData).catch((err) => {
                   console.log(err);
                });
     }
     //doesn't generate a unique id, however will update data with matching id's
     removeData(removeData) {
-        console.log(this._db);
         this._db.get(removeData).then(function (doc) {
           return this._db.remove(doc);
         });
     }
 
-    getAllData()
-    {
+    getAllData() {
         if (!this._data) {
-            return this._db.allDocs({ include_docs: true, descending: true})
-                .then(data => {
+            return this._db.allDocs({ include_docs: true, descending: true}).then(data => {
+              // Each row has a .doc object and we just want to send an
+              // array of  objects back to the calling controller,
+              // so let's map the array to contain just the .doc objects.
+              this._data = data.rows.map(row => {
+                  // Dates are not automatically converted from a string.
+                  // row.doc.Date = new Date(row.doc.Date);
+                  return row.doc;
+              });
 
-                    // Each row has a .doc object and we just want to send an
-                    // array of  objects back to the calling controller,
-                    // so let's map the array to contain just the .doc objects.
-                    this._data = data.rows.map(row => {
-                        // Dates are not automatically converted from a string.
-                        // row.doc.Date = new Date(row.doc.Date);
-                        return row.doc;
-                    });
-
-                    // Listen for changes on the database.
-                    this._db.changes({ live: true, since: 'now', include_docs: true})
-                        .on('change', function (change) {
-                            this.onDatabaseChange(change.id);
-                        }).on('error', console.log.bind(console));
-                    return this._data;
-
-                });
+              // Listen for changes on the database.
+              this._db.changes({ live: true, since: 'now', include_docs: true})
+                  .on('change', function (change) {
+                      this.onDatabaseChange(change.id);
+                  }).on('error', console.log.bind(console));
+              return this._data;
+            });
         } else {
             // Return cached data as a promise
             return Promise.resolve(this._data);
@@ -159,14 +147,14 @@ export class Pouch {
 
         if (change.deleted) {
             if (data) {
-                this._userData.splice(index, 1); // delete
+              this._userData.splice(index, 1); // delete
             }
         } else {
             //change.doc.Date = new Date(change.doc.Date);
             if (data && data._id === change.id) {
-                this._userData[index] = change.doc; // update
+              this._userData[index] = change.doc; // update
             } else {
-                this._userData.splice(index, 0, change.doc) // insert
+              this._userData.splice(index, 0, change.doc) // insert
             }
         }
     }
