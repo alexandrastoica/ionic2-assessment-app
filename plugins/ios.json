@@ -13,6 +13,9 @@
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.deatapp"
         },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.ionicframework.deatapp"
+        },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ionicframework.deatapp"
         },
@@ -29,9 +32,6 @@
             "PACKAGE_NAME": "com.ionicframework.deatapp"
         },
         "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "com.ionicframework.deatapp"
-        },
-        "cordova-plugin-file": {
             "PACKAGE_NAME": "com.ionicframework.deatapp"
         }
     },
