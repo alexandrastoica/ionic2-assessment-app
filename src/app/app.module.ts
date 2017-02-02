@@ -2,8 +2,6 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-//import { REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
-
 import { Storage } from '@ionic/storage';
 import { SQLite } from 'ionic-native';
 
@@ -11,7 +9,6 @@ import { SQLite } from 'ionic-native';
 import { LoginPage } from '../pages/login/login';
 import { RegistrationPage } from '../pages/registration/registration';
 import { Profile } from '../pages/profile/profile';
-import { ProfileSettings } from '../pages/profile-settings/profile-settings';
 import { Sections } from '../pages/sections/sections';
 import { SectionsDetailPage } from '../pages/sections-detail/sections-detail';
 import { SectionsQuestionsPage } from '../pages/sections-questions/sections-questions';
@@ -32,7 +29,6 @@ import { SQLiteService } from '../providers/sqlite';
     LoginPage,
     RegistrationPage,
     Profile,
-    ProfileSettings,
     Sections,
     SectionsDetailPage,
     SectionsQuestionsPage,
@@ -43,8 +39,7 @@ import { SQLiteService } from '../providers/sqlite';
     TabsPage
   ],
   imports: [
-    IonicModule.forRoot(MyApp),
-    //REACTIVE_FORM_DIRECTIVES
+    IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -52,7 +47,6 @@ import { SQLiteService } from '../providers/sqlite';
     LoginPage,
     RegistrationPage,
     Profile,
-    ProfileSettings,
     Sections,
     SectionsDetailPage,
     SectionsQuestionsPage,
