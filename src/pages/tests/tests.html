@@ -12,14 +12,14 @@
 </ion-header>
 
 <ion-content class="tests">
-
   <ion-list>
+    <p *ngIf="!createdTests.length==0" class="empty">Click on each assessment's progress bar to continue.</p>
     <p *ngIf="createdTests.length==0" class="empty">No assessments yet.</p>
 
     <ion-item-group *ngFor="let createdTest of createdTests">
-      <ion-item-divider light>
+      <ion-list-header color="light">
           {{createdTest.name}}
-      </ion-item-divider>
+      </ion-list-header>
 
       <button ion-item (click)="resume(createdTest)">
         <p>{{createdTest.date | date: shortDate}}
@@ -30,12 +30,26 @@
         </ion-row>
       </button>
 
-      <ion-item>
-        <button ion-button small color="primary" outline (click)="showDetail(createdTest)">View details</button>
-        <button ion-button small color="primary" outline [disabled]="createdTest.percentage == 0" (click)="exportCVS(createdTest)">Export</button>
-        <button ion-button small color="secondary" outline (click)="deleteTest(createdTest)">Delete</button>
-      </ion-item>
-
+      <ion-row padding>
+         <ion-col>
+           <button ion-button outline small color="primary" (click)="showDetail(createdTest)" icon-left>
+             <ion-icon ios="ios-more" md="md-more"></ion-icon>
+             Details
+           </button>
+         </ion-col>
+         <ion-col text-center>
+           <button ion-button small outline color="primary" [disabled]="createdTest.percentage == 0" (click)="exportCVS(createdTest)" icon-left>
+             <ion-icon ios="ios-download" md="md-download"></ion-icon>
+             Export
+           </button>
+         </ion-col>
+         <ion-col text-right>
+           <button ion-button small color="secondary" outline (click)="deleteTest(createdTest)" icon-left>
+             <ion-icon ios="ios-trash" md="md-trash"></ion-icon>
+             Delete
+           </button>
+         </ion-col>
+      </ion-row>
     </ion-item-group>
 
   </ion-list>

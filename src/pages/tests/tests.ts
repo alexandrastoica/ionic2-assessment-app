@@ -197,27 +197,24 @@ export class Tests {
               text: 'Cancel',
               role: 'cancel',
               handler: data => {
-                //console.log('Cancel clicked');
-                prompt.dismiss().then(() => {
-                  Keyboard.close();
-                });
+                prompt.dismiss();
+                Keyboard.close();
               }
             },
             {
               text: 'Save',
               handler: data => {
                 //if saved, call saveTest function to save the test
-                console.log('Saved clicked', data.location);
                 // check if location has been submitted first
                 if(data.location){
                   //dismiss and saveTest
                   prompt.dismiss().then(() => {
-                    Keyboard.close();
                     this.saveTest(data.location);
+                    Keyboard.close();
                   });
                 } else {
                   //dismiss the prompt
-                  prompt.dismiss().then(() => {
+                  prompt.dismiss().then(()=>{
                     Keyboard.close();
                   });
                 }
@@ -226,13 +223,13 @@ export class Tests {
           ]
       });
       prompt.present();
+      Keyboard.show();
   }
 
   saveTest(name) {
       console.log('called saveTest');
       //create new object with data
       let new_test = new CreateTest(0, name, this.user_id, '', '');
-      console.log("created test" + JSON.stringify(new_test));
       //call the service to insert the new test in by passing the data
       this.sqlite.insertCreateTest(new_test).then(data => {
         //console.log("insertedCreateTest");
@@ -258,7 +255,6 @@ export class Tests {
         {
           text: 'Cancel',
           handler: () => {
-            console.log('Disagree clicked');
             confirm.dismiss();
           }
         },
