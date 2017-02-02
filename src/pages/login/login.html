@@ -5,13 +5,18 @@
 </ion-header>
 
 <ion-content padding class="login">
-	<form [formGroup]="userForm" (ngSubmit)="onSubmit(userForm.value)">
-		<ion-item>
-	    <ion-input type="email" formControlName="email" placeholder="Enter the email here to login"></ion-input>
-		</ion-item>
+	<ion-row center>
+		<ion-col>
+			<form [formGroup]="userForm" (ngSubmit)="onSubmit(userForm.value)">
+				<ion-item>
+					<ion-label stacked>Email</ion-label>
+					<ion-input type="email" formControlName="email" placeholder="Enter the email here to login"></ion-input>
+				</ion-item>
 
-		<p *ngIf="userForm.get('email').touched && userForm.get('email').errors">This field must be an email address</p>
-	  <button ion-button color="primary" type="submit" [disabled]="!userForm.valid" block>Login</button>
-	</form>
-  	<button ion-button color="secondary" (click)="register()" block>Register</button>
+				<p *ngIf="userForm.get('email').touched && userForm.get('email').errors">This field must be an email address</p>
+				<button ion-button color="primary" type="submit" [disabled]="!userForm.valid" block>Login</button>
+			</form>
+				<button ion-button color="secondary" (click)="register()" block>Register</button>
+		</ion-col>
+	</ion-row>
 </ion-content>

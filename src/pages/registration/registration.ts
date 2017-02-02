@@ -29,14 +29,9 @@ export class RegistrationPage {
 
           if (!this.user) {
             this.user = {
-              title: 'Mr',
               firstname: '',
               lastname: '',
-              email: '',
-              role: '',
-              job: '',
-              organisation: '',
-              department: ''
+              email: ''
             };
           }
           else {
@@ -46,14 +41,9 @@ export class RegistrationPage {
           }
 
           this.registerForm = this.formBuilder.group({
-              title: [['Mr', 'Mrs', 'Miss'], Validators.compose([Validators.required])],
               firstname: ['', Validators.compose([Validators.required, Validators.minLength(2)])],
               lastname: ['', Validators.compose([Validators.required, Validators.minLength(2)])],
-              email: ['', Validators.compose([Validators.required, ValidationService.validateEmail])],
-              role: [''],
-              job: [''],
-              organisation: [''],
-              department: ['']
+              email: ['', Validators.compose([Validators.required, ValidationService.validateEmail])]
           });
     }
 
@@ -65,36 +55,36 @@ export class RegistrationPage {
         if(this.isNew) {
           let found = false;
           this.pouch.getUserData().then(data => {
-                  this.zone.run(() => {
-                      this.users = data;
-                    for(let user of this.users){
-                      if(this.registerForm.value.email == user._id){
-                        found = true;
-                        console.log('email', user._id);
-                        console.log("found " + found);
-                        return;
-                      }
-                    }
-                  });
-                  if (found == true) {//User was found
-                        let toast = this.toastCtrl.create({
-                              message: 'Sorry that email already exists',
-                              duration: 600
-                             });
-                          toast.present();
-                  } else {
-                     console.log("not a user" + found);
-                       console.log("didnt find a matching email");
-                       this.storage.set('email', value.email);
-                        this.save();
-                        let toast = this.toastCtrl.create({
-                            message: 'Thank you for registering. You are now able to login',
-                            duration: 600
-                        });
-                        toast.present();
-                        this.viewCtrl.dismiss();
+              this.zone.run(() => {
+                this.users = data;
+                for(let user of this.users){
+                  if(this.registerForm.value.email == user._id){
+                    found = true;
+                    console.log('email', user._id);
+                    console.log("found " + found);
+                    return;
                   }
-              }).catch(console.error.bind(console));
+                }
+              });
+              if (found == true) {//User was found
+                    let toast = this.toastCtrl.create({
+                          message: 'Sorry that email already exists',
+                          duration: 600
+                         });
+                      toast.present();
+              } else {
+                 console.log("not a user" + found);
+                   console.log("didnt find a matching email");
+                   this.storage.set('email', value.email);
+                    this.save();
+                    let toast = this.toastCtrl.create({
+                        message: 'Thank you for registering. You are now able to login',
+                        duration: 600
+                    });
+                    toast.present();
+                    this.viewCtrl.dismiss();
+              }
+          }).catch(console.error.bind(console));
         } else {
             this.save();
             let toast = this.toastCtrl.create({
