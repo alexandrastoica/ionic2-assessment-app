@@ -7,10 +7,12 @@
 <ion-content class="sections has-header">
   <ion-list>
     <ion-item-divider text-wrap>
-      Click on a section to complete the test:
+      Click on a section to begin:
     </ion-item-divider>
-      <button ion-item *ngFor="let section of sections" text-wrap (click)="navigate(section)">
-       {{section.id}}. The environment promotes {{section.intro | lowercase }}
+      <button ion-item *ngFor="let section of sections" text-wrap (click)="navigate(section)" [ngClass]="{'done': section.completed}">
+				<ion-icon ios="ios-checkmark-circle" md="md-checkmark-circle" item-left [hidden]="!section.completed"></ion-icon>
+				<ion-icon ios="ios-checkmark-circle-outline" md="md-checkmark-circle-outline" item-left [hidden]="section.completed"></ion-icon>
+			 {{section.id}}. The environment promotes {{section.intro | lowercase }}
       </button>
   </ion-list>
 </ion-content>
