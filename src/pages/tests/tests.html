@@ -1,19 +1,17 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <ion-title>Assessments</ion-title>
-
     <ion-buttons end>
       <button ion-button icon-only color="primary" (click)="createAssesment()">
         <ion-icon name="add"></ion-icon>
       </button>
     </ion-buttons>
-
   </ion-navbar>
 </ion-header>
 
 <ion-content class="tests">
   <ion-list>
-    <p *ngIf="!createdTests.length==0" class="empty">Click on each assessment's progress bar to continue.</p>
+    <p *ngIf="!createdTests.length==0" class="empty">Tap on each assessment's progress bar to continue.</p>
     <p *ngIf="createdTests.length==0" class="empty">No assessments yet.</p>
 
     <ion-item-group *ngFor="let createdTest of createdTests">
@@ -21,7 +19,7 @@
           {{createdTest.name}}
       </ion-list-header>
 
-      <button ion-item (click)="resume(createdTest)">
+      <button ion-item detail-none (click)="resume(createdTest)">
         <p>{{createdTest.date | date: shortDate}}
           <span style="float: right">{{createdTest.percentage}}%</span>
         </p>

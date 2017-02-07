@@ -47,7 +47,6 @@ export class SQLiteService {
     }
 
     public initDB(){
-      console.log("open db");
       this.platform.ready().then(() => {
         this.db.openDatabase({
           name: 'test.db',
